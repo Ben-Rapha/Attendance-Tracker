@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Attendance Tracker</string>
+    <string name="app_logo">app logo</string>
 </resources>
