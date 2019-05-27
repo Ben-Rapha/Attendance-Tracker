@@ -3,4 +3,7 @@
     <color name="colorPrimary">#292634</color>
     <color name="colorPrimaryDark">#211E2B</color>
     <color name="colorAccent">#E69955</color>
+    <color name="copperGold">#938787</color>
+    <color name="white">#fff</color>
+    <color name="light_color_text">#534747</color>
 </resources>

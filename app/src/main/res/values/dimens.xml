@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="loading_logo_300dp">300dp</dimen>
-    <dimen name="height_100dp">100dp</dimen>
+    <dimen name="height_100dp">200dp</dimen>
+    <dimen name="margin_25dp">25dp</dimen>
+    <dimen name="sixteen_dp">16dp</dimen>
+    <dimen name="eight_dp">8dp</dimen>
+    <dimen name="two_hundred_dp">200dp</dimen>
+    <dimen name="hundred_dp">100dp</dimen>
+    <dimen name="edit_text_width_land">500dp</dimen>
 </resources>

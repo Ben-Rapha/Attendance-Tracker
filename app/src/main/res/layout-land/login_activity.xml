@@ -32,7 +32,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/username"
             style="@style/Widget.AttendanceTracker.TextInputLayout"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/edit_text_width_land"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_25dp"
             android:layout_marginTop="75dp"
@@ -57,7 +57,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password"
             style="@style/Widget.AttendanceTracker.TextInputLayout"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/edit_text_width_land"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_25dp"
             android:layout_marginTop="@dimen/margin_25dp"
