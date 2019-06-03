@@ -46,7 +46,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/reset_reset_passcode_Button"
+        android:id="@+id/reset_passcode_Button"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="@dimen/two_hundred_dp"
         android:layout_height="wrap_content"

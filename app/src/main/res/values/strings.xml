@@ -17,4 +17,11 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="testing">Testing ...</string>
+    <string name="error_username">password must be more than 3</string>
+    <string name="password_error">password must be more than 5</string>
+    <string name="same_password_error">password must be the same</string>
+    <string name="password_not_set">Password is not set</string>
+    <string name="username_not_set">User name is not set</string>
+    <string name="email_not_set">Email not set</string>
 </resources>

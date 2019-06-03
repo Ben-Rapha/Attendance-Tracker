@@ -40,7 +40,10 @@
             app:counterMaxLength="10"
             app:counterTextColor="@color/colorAccent"
             app:endIconMode="clear_text"
-            app:hintEnabled="false"
+            android:hint="@string/username"
+            app:hintEnabled="true"
+            app:hintTextColor="@color/colorAccent"
+            android:textColorHint="@color/light_color_text"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/logo"
@@ -48,10 +51,12 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/usernameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/username"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:maxLines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -59,21 +64,29 @@
             style="@style/Widget.AttendanceTracker.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:errorEnabled="true"
             android:layout_marginLeft="@dimen/margin_25dp"
             android:layout_marginTop="@dimen/margin_25dp"
             android:layout_marginRight="@dimen/margin_25dp"
             app:counterMaxLength="10"
+            app:counterEnabled="true"
+            app:counterTextColor="@color/colorAccent"
             app:endIconMode="password_toggle"
-            app:hintEnabled="false"
+            app:hintEnabled="true"
+            android:hint="@string/password"
+            app:hintTextColor="@color/colorAccent"
+            android:textColorHint="@color/light_color_text"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/username">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordEditTex"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/password"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:maxLines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.switchmaterial.SwitchMaterial
@@ -140,6 +153,7 @@
             android:layout_marginTop="@dimen/eight_dp"/>
 
         <TextView
+            android:id="@+id/signUpFrom_Login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

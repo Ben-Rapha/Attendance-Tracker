@@ -8,4 +8,5 @@
     <dimen name="two_hundred_dp">200dp</dimen>
     <dimen name="hundred_dp">100dp</dimen>
     <dimen name="edit_text_width_land">500dp</dimen>
+    <dimen name="sixteen_sp">16sp</dimen>
 </resources>

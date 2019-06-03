@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/main_destination"
-        android:name="com.example.attendancetracker.Login_Fragment"
+        android:name="com.example.attendancetracker.LoginFragment"
         android:label="login_fragment" >
         <action
             android:id="@+id/action_main_destination_to_signUpFragment"
@@ -15,6 +15,9 @@
         <action
             android:id="@+id/action_main_destination_to_reset_fragment"
             app:destination="@id/reset_fragment" />
+        <action
+            android:id="@+id/action_main_destination_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -35,4 +38,9 @@
         android:name="com.example.attendancetracker.AuthenticatePasswordFragment"
         android:label="authenticate_password_fragment"
         tools:layout="@layout/authenticate_password_fragment" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.example.attendancetracker.MainActivity"
+        android:label="main_activity"
+        tools:layout="@layout/main_activity" />
 </navigation>
