@@ -24,4 +24,11 @@
     <string name="password_not_set">Password is not set</string>
     <string name="username_not_set">User name is not set</string>
     <string name="email_not_set">Email not set</string>
+    <string name="today">TODAY</string>
+    <string name="settings">SETTINGS</string>
+    <string name="profile">PROFILE</string>
+    <string name="classes">CLASSES</string>
+    <string name="attendance_tracker">Attendance Tracker</string>
+    <string name="history">HISTORY</string>
+    <string name="up_next">UP NEXT</string>
 </resources>
