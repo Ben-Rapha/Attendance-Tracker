@@ -61,4 +61,6 @@ public class LoadingScreenActivity extends AppCompatActivity {
         });
         thread.start();
     }
+
+    //TODO set listener on menu list to navigate to right fragment
 }
