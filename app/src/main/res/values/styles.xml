@@ -15,10 +15,23 @@
         <item name="boxStrokeColor">@color/colorAccent</item>
        <item name="hintTextColor">@color/colorAccent</item>
         <item name="android:textColorHint">@color/colorAccent</item>
-
-
     </style>
+
     <style name="TextLabel" parent="TextAppearance.MaterialComponents.Subtitle2">
         <item name="android:colorAccent">@color/colorAccent</item>
     </style>
+    <style name="MenuTextVIew" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:layout_marginStart">@dimen/fifty_dp</item>
+        <item name="android:padding">@dimen/sixteen_dp</item>
+        <item name="android:textColor">@color/darkCopperGold</item>
+    </style>
+
+    <style name="AttendanceTrackerToolbar" parent="Widget.AppCompat.Toolbar">
+       <item name="titleTextAppearance">@style/TextAppearance.AttendanceTracker.Title</item>
+    </style>
+
+    <style name="TextAppearance.AttendanceTracker.Title" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textSize">@dimen/sixteen_sp</item>
+    </style>
+
 </resources>

@@ -9,4 +9,6 @@
     <dimen name="hundred_dp">100dp</dimen>
     <dimen name="edit_text_width_land">500dp</dimen>
     <dimen name="sixteen_sp">16sp</dimen>
+    <dimen name="fifty_dp">50dp</dimen>
+    <dimen name="drop_down_foreground_marginTop">70dp</dimen>
 </resources>
