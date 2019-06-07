@@ -63,4 +63,7 @@ public class LoadingScreenActivity extends AppCompatActivity {
     }
 
     //TODO set listener on menu list to navigate to right fragment
+    //TODO added the various menu items fragment, next compose the navigation graph tree
+
+
 }
