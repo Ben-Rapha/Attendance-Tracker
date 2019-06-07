@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<color name="colorPrimary">#292634</color>
-<color name="colorPrimaryDark">#211E2B</color>
-<color name="colorAccent">#E69955</color>
-<color name="copperGold">#938787</color>
-<color name="white">#fff</color>
-<color name="light_color_text">#534747</color>
-<color name="darkCopperGold">#695E5E</color>
-<color name="lightBlue">#2cc2f0</color>
+    <color name="colorPrimary">#292634</color>
+    <color name="colorPrimaryDark">#211E2B</color>
+    <color name="colorAccent">#E69955</color>
+    <color name="copperGold">#938787</color>
+    <color name="white">#fff</color>
+    <color name="light_color_text">#534747</color>
+    <color name="darkCopperGold">#695E5E</color>
+    <color name="lightBlue">#2cc2f0</color>
     <color name="lightViolet">#8581E5</color>
     <color name="lightBakedBrown">#8C4A6F</color>
 </resources>
