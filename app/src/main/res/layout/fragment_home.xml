@@ -81,6 +81,7 @@
                 android:text="@string/settings" />
 
             <TextView
+                android:id="@+id/historyTextView"
                 style="@style/MenuTextVIew"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,5 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_activity_nav_graph">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_activity_nav_graph"
+    app:startDestination="@id/home2">
+    <fragment
+        android:id="@+id/home2"
+        android:name="com.example.attendancetracker.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home2_to_today"
+            app:destination="@id/today" />
+        <action
+            android:id="@+id/action_home2_to_userSettings"
+            app:destination="@id/userSettings" />
+        <action
+            android:id="@+id/action_home2_to_userProfile"
+            app:destination="@id/userProfile" />
+        <action
+            android:id="@+id/action_home2_to_registeredClasses"
+            app:destination="@id/registeredClasses" />
+        <action
+            android:id="@+id/action_home2_to_history"
+            app:destination="@id/userHistory" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/today"
+        android:name="com.example.attendancetracker.Today"
+        android:label="fragment_today"
+        tools:layout="@layout/fragment_today" />
+    <fragment
+        android:id="@+id/registeredClasses"
+        android:name="com.example.attendancetracker.RegisteredClasses"
+        android:label="fragment_registered_classes"
+        tools:layout="@layout/fragment_registered_classes" />
+    <fragment
+        android:id="@+id/userProfile"
+        android:name="com.example.attendancetracker.UserProfile"
+        android:label="fragment_user_profile"
+        tools:layout="@layout/fragment_user_profile" />
+    <fragment
+        android:id="@+id/userSettings"
+        android:name="com.example.attendancetracker.UI.UserSettings"
+        android:label="fragment_user_settings"
+        tools:layout="@layout/fragment_user_settings" />
+    <fragment
+        android:id="@+id/userHistory"
+        android:name="com.example.attendancetracker.History"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_history" />
 
 </navigation>

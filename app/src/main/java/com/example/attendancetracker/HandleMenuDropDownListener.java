@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 
 public class HandleMenuDropDownListener implements View.OnClickListener {
+
     private int rotate = 180;
     private boolean droppedDown = false,isBackgroundLogoShowing = false;
     private Context context;
@@ -22,8 +23,6 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
     private int deviceHeight;
     private Drawable openedMenu, closedMenu;
     private ImageView menuBackGroundImage;
-
-
 
 
     public HandleMenuDropDownListener(
