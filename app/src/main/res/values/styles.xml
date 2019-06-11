@@ -33,6 +33,11 @@
     <style name="TextAppearance.AttendanceTracker.Title" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textSize">@dimen/sixteen_sp</item>
     </style>
+    <style name="TextAppearance.AttendanceTracker.Subtitle" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textSize">@dimen/subtitle_14sp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+
+    </style>
 
     <style name="AppSearchView" parent="Widget.AppCompat.SearchView">
         <item name="android:textColor">@color/colorAccent</item>

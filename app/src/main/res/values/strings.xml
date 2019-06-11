@@ -38,4 +38,16 @@
     <string name="science_201_02_biology">SCIENCE 201 - 02 BIOLOGY</string>
     <string name="english_01_1_poetry">ENGLISH 01 - 1 POETRY</string>
     <string name="account">Account</string>
+    <string name="classname">Classname</string>
+    <string name="start_date">Start date</string>
+    <string name="end_date">End Date</string>
+    <string name="_10_06_20">10/06/20</string>
+    <string name="from">From</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="_10_00am">10:00am</string>
+    <string name="_08_30am">08:30am</string>
+    <string name="cancel">cancel</string>
+    <string name="add_new_class">Add new class</string>
+    <string name="location">Location</string>
 </resources>

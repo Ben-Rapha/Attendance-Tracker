@@ -12,5 +12,7 @@
     <dimen name="fifty_dp">50dp</dimen>
     <dimen name="drop_down_foreground_marginTop">70dp</dimen>
     <dimen name="thirty_dp">30dp</dimen>
+    <dimen name="zero_dp">0dp</dimen>
+    <dimen name="subtitle_14sp">14sp</dimen>
 
 </resources>
