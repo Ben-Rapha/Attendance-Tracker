@@ -63,7 +63,7 @@ public class LoginFragment extends Fragment {
        View view =  inflater.inflate(R.layout.login_fragment,container,false);
         Log.v(LoginFragment.class.getSimpleName(),"on createView is called ");
 
-       mSignInButton = view.findViewById(R.id.signInButton);
+       mSignInButton = view.findViewById(R.id.addClassButton);
        mForgotPassword = view.findViewById(R.id.forgot_password);
        mSignUp = view.findViewById(R.id.signUpFrom_Login);
        mTextInputLayoutUserName = view.findViewById(R.id.username);

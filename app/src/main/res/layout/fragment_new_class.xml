@@ -10,7 +10,7 @@
         >
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/createClassname"
+            android:id="@+id/createClassnameTextInputLayout"
             style="@style/Widget.AttendanceTracker.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,6 +29,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/classnameTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
@@ -37,10 +38,10 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.AttendanceTracker.TextInputLayout"
-            android:id="@+id/createLocation"
+            android:id="@+id/createLocationTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/createClassname"
+            app:layout_constraintTop_toBottomOf="@id/createClassnameTextInputLayout"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_margin="@dimen/sixteen_dp"
@@ -48,6 +49,7 @@
             android:hint="@string/location"
             android:textColorHint="@color/light_color_text">
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/locationTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
@@ -60,7 +62,7 @@
             android:layout_height="wrap_content"
             android:text="@string/start_date"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/createLocation"
+            app:layout_constraintTop_toBottomOf="@id/createLocationTextInputLayout"
             android:drawableEnd="@drawable/ic_date"
             android:layout_margin="@dimen/sixteen_dp"
             style="@style/TextAppearance.AttendanceTracker.Subtitle"
@@ -72,7 +74,7 @@
             android:layout_height="wrap_content"
             android:text="@string/end_date"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/createLocation"
+            app:layout_constraintTop_toBottomOf="@id/createLocationTextInputLayout"
             android:drawableEnd="@drawable/ic_date"
             android:layout_margin="@dimen/sixteen_dp"
             style="@style/TextAppearance.AttendanceTracker.Subtitle"
@@ -125,7 +127,7 @@
             style="@style/TextAppearance.AttendanceTracker.Subtitle"/>
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/appCompatTextView"
+            android:id="@+id/appCompatTextViewActualEndTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/sixteen_dp"
@@ -145,7 +147,7 @@
             />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/signInButton"
+            android:id="@+id/addClassButton"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -156,9 +158,10 @@
             android:textColor="?attr/colorPrimary"
             app:backgroundTint="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextViewActualEndTime" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancel_new_class"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -166,7 +169,7 @@
             android:layout_marginEnd="@dimen/sixteen_dp"
             android:text="@string/cancel"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toStartOf="@+id/signInButton"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView"
+            app:layout_constraintEnd_toStartOf="@+id/addClassButton"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextViewActualEndTime"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

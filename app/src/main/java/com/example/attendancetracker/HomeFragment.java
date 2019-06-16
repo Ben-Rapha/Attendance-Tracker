@@ -18,6 +18,10 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Objects;
+
 
 public class HomeFragment extends Fragment {
 
@@ -27,6 +31,8 @@ public class HomeFragment extends Fragment {
     private TextView mHomeTextView,mClassesTextView,
             mProfileTextView,mHistoryTextVIew,
             mSettingTextView;
+
+    FloatingActionButton mAddNewClassFloatingActionButton;
 
     private  MainMenuListeners mMainMenuListeners;
 
@@ -54,20 +60,24 @@ public class HomeFragment extends Fragment {
         mHistoryTextVIew = view.findViewById(R.id.historyTextView);
         mSettingTextView = view.findViewById(R.id.settingTextView);
         mProfileTextView = view.findViewById(R.id.profileTextView);
+        mAddNewClassFloatingActionButton = view.findViewById(R.id.addNewClassFab);
+
 
         if (toolbar != null){
             toolbar.setTitle("");
-            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) Objects.requireNonNull(getActivity())).
+                    setSupportActionBar(toolbar);
             toolbar.setNavigationOnClickListener(new HandleMenuDropDownListener(
-                    getContext(), constraintLayout,getContext().getDrawable(R.drawable.ic_openedmenusvg),
+                    getContext(), constraintLayout,
+                    Objects.requireNonNull(getContext()).getDrawable(R.drawable.ic_openedmenusvg),
                     getContext().getDrawable(R.drawable.ic_closed_menu),
                     new AccelerateDecelerateInterpolator(),
-                    new OvershootInterpolator(), menuListContainer));
+                    new OvershootInterpolator(), menuListContainer,mAddNewClassFloatingActionButton));
         }
 
-        mHomeTextView.setOnClickListener((View v) -> {
-                mMainMenuListeners.goToHome();
-        });
+//        mHomeTextView.setOnClickListener((View v) -> {
+//                mMainMenuListeners.goToHome();
+//        });
 
         mClassesTextView.setOnClickListener((View v) -> {
                 mMainMenuListeners.goToClasses();
@@ -83,6 +93,10 @@ public class HomeFragment extends Fragment {
 
         mProfileTextView.setOnClickListener((View v)->{
                 mMainMenuListeners.goToProfile();
+        });
+
+        mAddNewClassFloatingActionButton.setOnClickListener((View v) ->{
+            mMainMenuListeners.goToAddNewClass();
         });
         return view;
     }

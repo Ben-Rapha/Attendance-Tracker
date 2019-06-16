@@ -50,4 +50,9 @@
     <string name="cancel">cancel</string>
     <string name="add_new_class">Add new class</string>
     <string name="location">Location</string>
+    <string name="add_class">ADD CLASS</string>
+    <string name="start_date_here">Start date here</string>
+    <string name="end_date_here">End date here</string>
+    <string name="end_time_here">End time here</string>
+    <string name="start_time_here">Start time here</string>
 </resources>

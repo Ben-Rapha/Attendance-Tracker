@@ -1,7 +1,6 @@
 package com.example.attendancetracker;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,7 +22,7 @@ import butterknife.ButterKnife;
 
 public class SignUpFragment extends Fragment {
 
-    @BindView(R.id.signInButton)
+    @BindView(R.id.addClassButton)
     MaterialButton  mSignInButton;
 
     @BindView(R.id.usernameEditText)

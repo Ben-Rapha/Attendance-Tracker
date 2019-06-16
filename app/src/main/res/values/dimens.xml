@@ -14,5 +14,6 @@
     <dimen name="thirty_dp">30dp</dimen>
     <dimen name="zero_dp">0dp</dimen>
     <dimen name="subtitle_14sp">14sp</dimen>
+    <dimen name="animDuration">1000</dimen>
 
 </resources>

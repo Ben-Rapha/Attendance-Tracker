@@ -10,4 +10,6 @@ public interface MainMenuListeners {
     void goToHistory();
 
     void goToClasses();
+
+    void goToAddNewClass();
 }

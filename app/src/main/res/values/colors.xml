@@ -12,4 +12,5 @@
     <color name="lightBakedBrown">#8C4A6F</color>
     <color name="aqua">#00FFFF</color>
     <color name="light_cyan">#E0FFFF</color>
+    <color name="red">#FF0000</color>
 </resources>

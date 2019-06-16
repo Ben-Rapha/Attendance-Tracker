@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 public class HandleMenuDropDownListener implements View.OnClickListener {
@@ -23,13 +24,14 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
     private int deviceHeight;
     private Drawable openedMenu, closedMenu;
     private ImageView menuBackGroundImage;
+    private FloatingActionButton mAddNewClassFloatingActionButton;
 
 
     public HandleMenuDropDownListener(
             Context context, View animateView ,
             Drawable openedMenu , Drawable closedMenu
             ,Interpolator interpolator, Interpolator menuInterpolator,
-           View menuListContainer ){
+           View menuListContainer,FloatingActionButton mAddNewClassFloatingActionButton ){
 
         this.context = context;
         this.view = animateView;
@@ -39,6 +41,7 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
         this.menuInterpolator = menuInterpolator;
         this.menuListContainer = menuListContainer;
         deviceHeight =  getHeight() - 150;
+        this.mAddNewClassFloatingActionButton = mAddNewClassFloatingActionButton;
 
     }
 
@@ -55,6 +58,9 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
         animatorSet.removeAllListeners();
         animatorSet.end();
         animatorSet.cancel();
+        if (droppedDown){
+            mAddNewClassFloatingActionButton.hide();
+        }
         int translateY = deviceHeight - context.getResources().
                 getDimensionPixelSize(R.dimen.drop_down_foreground_marginTop);
         ObjectAnimator mObjectAnimator = ObjectAnimator.ofFloat(view,
@@ -92,6 +98,9 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
             @Override
             public void onAnimationEnd(Animator animation) {
                 updateMenuIcon(v);
+                if (!droppedDown){
+                    mAddNewClassFloatingActionButton.show();
+                }
 
             }
 
@@ -105,6 +114,12 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
 
             }
         });
+
+
+
+
+
+
     }
 
 

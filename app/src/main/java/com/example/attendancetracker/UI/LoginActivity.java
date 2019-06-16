@@ -26,7 +26,7 @@ public class LoginActivity extends AppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_host);
-        mSignInButton = findViewById(R.id.signInButton);
+        mSignInButton = findViewById(R.id.addClassButton);
     }
 
     private void removeStatusBar() {

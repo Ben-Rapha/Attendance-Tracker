@@ -29,16 +29,16 @@ public class LoadingScreenActivity extends AppCompatActivity {
         constraintLayout = findViewById( R.id.backDrop_foreground);
         menuListContainer = findViewById(R.id.menuListLinearLayout);
 
-        if (toolbar != null){
-            toolbar.setTitle("");
-            setSupportActionBar(toolbar);
-
-            toolbar.setNavigationOnClickListener(new HandleMenuDropDownListener(
-                    this, constraintLayout,getDrawable(R.drawable.ic_openedmenusvg),
-                    getDrawable(R.drawable.ic_closed_menu),
-                    new AccelerateDecelerateInterpolator(),
-                    new OvershootInterpolator(), menuListContainer));
-        }
+//        if (toolbar != null){
+//            toolbar.setTitle("");
+//            setSupportActionBar(toolbar);
+//
+//            toolbar.setNavigationOnClickListener(new HandleMenuDropDownListener(
+//                    this, constraintLayout,getDrawable(R.drawable.ic_openedmenusvg),
+//                    getDrawable(R.drawable.ic_closed_menu),
+//                    new AccelerateDecelerateInterpolator(),
+//                    new OvershootInterpolator(), menuListContainer));
+//        }
     }
 
     private void removeStatusBar() {
