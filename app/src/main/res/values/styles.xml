@@ -7,6 +7,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
     <style name="Widget.AttendanceTracker.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -40,11 +41,26 @@
 
     </style>
 
+    <style name="ActiveDays" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:layout_marginStart">@dimen/eight_dp</item>
+        <item name="android:layout_marginEnd">@dimen/eight_dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/darkCopperGold</item>
+    </style>
+
     <style name="AppSearchView" parent="Widget.AppCompat.SearchView">
         <item name="android:textColor">@color/colorAccent</item>
         <item name="searchIcon">@drawable/ic_search</item>
         <item name="searchHintIcon">@drawable/ic_search</item>
         <item name="closeIcon">@drawable/ic_close</item>
+    </style>
+
+    <style name="AppDefaultTextViewStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_marginTop">@dimen/sixteen_dp</item>
+        <item name="android:layout_marginStart">@dimen/sixteen_dp</item>
+        <item name="android:layout_marginEnd">@dimen/sixteen_dp</item>
+        <item name="android:textColor">@color/copperGold</item>
     </style>
 
 </resources>

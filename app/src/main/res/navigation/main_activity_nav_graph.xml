@@ -6,7 +6,7 @@
     app:startDestination="@id/home2">
     <fragment
         android:id="@+id/home2"
-        android:name="com.example.attendancetracker.HomeFragment"
+        android:name="com.example.attendancetracker.UI.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -26,31 +26,37 @@
             app:destination="@id/registeredClasses"
              />
         <action
-            android:id="@+id/action_home2_to_history"
-            app:destination="@id/userHistory"
-             />
-        <action
             android:id="@+id/action_home2_to_addNewClass"
             app:destination="@id/addNewClass"
             />
         <action
             android:id="@+id/action_home2_to_addClassActivity"
             app:destination="@id/addClassActivity" />
+        <action
+            android:id="@+id/goTo_historyFragment"
+            app:destination="@id/historyFragment" />
+        <action
+            android:id="@+id/action_home2_to_settingActivity"
+            app:destination="@id/settingActivity" />
     </fragment>
 
     <fragment
         android:id="@+id/today"
-        android:name="com.example.attendancetracker.Today"
+        android:name="com.example.attendancetracker.UI.Today"
         android:label="fragment_today"
         tools:layout="@layout/fragment_today" />
     <fragment
         android:id="@+id/registeredClasses"
-        android:name="com.example.attendancetracker.RegisteredClasses"
+        android:name="com.example.attendancetracker.UI.RegisteredClasses"
         android:label="fragment_registered_classes"
-        tools:layout="@layout/fragment_registered_classes" />
+        tools:layout="@layout/fragment_registered_classes" >
+        <action
+            android:id="@+id/action_registeredClasses_to_detailClassFragment"
+            app:destination="@id/detailClassFragment" />
+    </fragment>
     <fragment
         android:id="@+id/userProfile"
-        android:name="com.example.attendancetracker.UserProfile"
+        android:name="com.example.attendancetracker.UI.UserProfile"
         android:label="fragment_user_profile"
         tools:layout="@layout/fragment_user_profile" />
     <fragment
@@ -58,20 +64,48 @@
         android:name="com.example.attendancetracker.UI.UserSettings"
         android:label="fragment_user_settings"
         tools:layout="@layout/fragment_user_settings" />
-    <fragment
-        android:id="@+id/userHistory"
-        android:name="com.example.attendancetracker.History"
-        android:label="fragment_history"
-        tools:layout="@layout/fragment_history" />
 
     <fragment
         android:id="@+id/addNewClass"
-        android:name="com.example.attendancetracker.AddNewClass"
+        android:name="com.example.attendancetracker.Model.AddNewClass"
         android:label="fragment_new_class"
         tools:layout="@layout/fragment_new_class" />
     <activity
         android:id="@+id/addClassActivity"
         android:name="com.example.attendancetracker.UI.AddClassActivity"
         android:label="AddClassActivity" />
+    <fragment
+        android:id="@+id/detailClassFragment"
+        android:name="com.example.attendancetracker.UI.DetailClassFragment"
+        android:label="fragment_detail_class"
+        tools:layout="@layout/fragment_detail_class" >
+        <action
+            android:id="@+id/action_detailClassFragment_to_checkAttendance"
+            app:destination="@id/checkAttendance" />
+    </fragment>
+    <fragment
+        android:id="@+id/checkAttendance"
+        android:name="com.example.attendancetracker.UI.CheckAttendanceFragment"
+        android:label="check_attendance_fragment"
+        tools:layout="@layout/check_attendance_fragment" />
+    <fragment
+        android:id="@+id/historyDetailFragment"
+        android:name="com.example.attendancetracker.UI.HistoryDetailFragment"
+        android:label="history_detail_fragment_layout"
+        tools:layout="@layout/history_detail_fragment_layout" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.attendancetracker.UI.HistoryFragment"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_history" >
+        <action
+            android:id="@+id/action_historyFragment_to_historyDetailFragment"
+            app:destination="@id/historyDetailFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/settingActivity"
+        android:name="com.example.attendancetracker.UI.SettingActivity"
+        android:label="settings_activity_host"
+        tools:layout="@layout/settings_activity_host" />
 
 </navigation>

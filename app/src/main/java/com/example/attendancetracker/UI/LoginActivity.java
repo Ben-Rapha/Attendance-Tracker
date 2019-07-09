@@ -6,10 +6,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.attendancetracker.LoginFragment;
 import com.example.attendancetracker.R;
-import com.example.attendancetracker.Reset_Fragment;
-import com.example.attendancetracker.SignUpFragment;
 import com.google.android.material.button.MaterialButton;
 
 import static androidx.navigation.Navigation.findNavController;

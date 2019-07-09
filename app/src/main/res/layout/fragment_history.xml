@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".History"
+    tools:context=".UI.HistoryFragment"
+    android:background="@color/colorPrimaryDark"
     >
 
     <RelativeLayout
@@ -13,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        android:elevation="80dp"
+        android:elevation="0dp"
         >
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/historyToolbar"
@@ -22,7 +23,7 @@
             android:background="?attr/colorPrimary"
             android:elevation="0dp"
             android:theme="@style/AppTheme"
-            app:navigationIcon="@drawable/ic_back_button"
+            app:navigationIcon="@drawable/openedmenusvgcoppergold"
             app:titleTextColor="@color/colorAccent" />
         <TextView
             android:layout_width="wrap_content"
@@ -46,8 +47,11 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/historyRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sixteen_dp"
+        android:layout_marginEnd="@dimen/sixteen_dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 

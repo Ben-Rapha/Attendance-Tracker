@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="330dp"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/sessionDetailToolbarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:collapsedTitleGravity="center_horizontal"
+            app:collapsedTitleTextAppearance="@color/copperGold"
+            app:contentScrim="@color/colorPrimary"
+            app:expandedTitleTextAppearance="@color/copperGold"
+            app:layout_collapseMode="parallax"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:navigationIcon="@drawable/ic_back_button"
+
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="60dp"
+                android:layout_marginBottom="0dp"
+                tools:context=".UI.DetailClassFragment">
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/sixteen_dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="@dimen/sixteen_dp"
+                    android:indeterminate="true"
+                    android:max="100"
+                    android:progress="0"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/className"
+                    style="@style/AppDefaultTextViewStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/sixteen_dp"
+                    android:hint="@string/classname"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/progressBar" />
+
+                <TextView
+                    android:id="@+id/location"
+                    style="@style/AppDefaultTextViewStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/sixteen_dp"
+                    android:hint="@string/location"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/className" />
+
+                <TextView
+                    android:id="@+id/time"
+                    style="@style/AppDefaultTextViewStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/sixteen_dp"
+                    android:hint="@string/time"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/location" />
+
+                <TextView
+                    android:id="@+id/date"
+                    style="@style/AppDefaultTextViewStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/sixteen_dp"
+                    android:layout_marginBottom="@dimen/sixteen_dp"
+                    android:hint="@string/startDate"
+                    app:layout_constraintBottom_toTopOf="@id/upperDivider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/time" />
+
+                <View
+                    android:id="@+id/upperDivider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="@dimen/sixteen_dp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/date" />
+
+                <HorizontalScrollView
+                    android:id="@+id/horizontalScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/sixteen_dp"
+                    android:layout_marginEnd="@dimen/sixteen_dp"
+                    android:layout_marginBottom="@dimen/thirty_dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/upperDivider"
+
+                    >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/eight_dp"
+                        android:layout_marginBottom="@dimen/eight_dp">
+
+                        <TextView
+                            android:id="@+id/sun"
+                            style="@style/ActiveDays"
+                            android:layout_width="@dimen/forty_two_dp_circle"
+                            android:layout_height="@dimen/forty_two_dp_circle"
+                            android:background="@drawable/ic_my_circle"
+                            android:gravity="center"
+                            android:text="SUN" />
+
+                        <TextView
+                            android:id="@+id/mon"
+                            style="@style/ActiveDays"
+                            android:layout_width="@dimen/forty_two_dp_circle"
+                            android:layout_height="@dimen/forty_two_dp_circle"
+                            android:gravity="center"
+                            android:text="MON" />
+
+                        <TextView
+                            android:id="@+id/tue"
+                            style="@style/ActiveDays"
+                            android:layout_width="@dimen/forty_two_dp_circle"
+                            android:layout_height="@dimen/forty_two_dp_circle"
+                            android:gravity="center"
+                            android:text="TUE" />
+
+                        <TextView
+                            android:id="@+id/wed"
+                            style="@style/ActiveDays"
+                            android:layout_width="@dimen/forty_two_dp_circle"
+                            android:layout_height="@dimen/forty_two_dp_circle"
+                            android:gravity="center"
+                            android:text="WED" />
+
+                        <TextView
+                            android:id="@+id/thu"
+                            style="@style/ActiveDays"
+                            android:layout_width="@dimen/forty_two_dp_circle"
+                            android:layout_height="@dimen/forty_two_dp_circle"
+                            android:gravity="center"
+                            android:text="THU" />
+
+                        <TextView
+                            android:id="@+id/fri"
+                            style="@style/ActiveDays"
+                            android:layout_width="@dimen/forty_two_dp_circle"
+                            android:layout_height="@dimen/forty_two_dp_circle"
+                            android:gravity="center"
+                            android:text="FRI" />
+
+                        <TextView
+                            android:id="@+id/sat"
+                            style="@style/ActiveDays"
+                            android:layout_width="@dimen/forty_two_dp_circle"
+                            android:layout_height="@dimen/forty_two_dp_circle"
+                            android:gravity="center"
+                            android:text="SAT" />
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/sessionToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_margin="@dimen/zero_dp"
+                android:padding="@dimen/zero_dp"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/openedmenusvgcoppergold"
+                app:title="@string/session_detail"/>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/studentRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="@dimen/fifty_dp"
+        android:background="@color/colorPrimaryDark"
+        android:paddingBottom="@dimen/eight_dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addNewStudent"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="@dimen/sixteen_dp"
+        android:backgroundTint="@color/colorAccent"
+        app:borderWidth="@dimen/zero_dp"
+        app:elevation="@dimen/eight_dp"
+        app:fabSize="normal"
+        app:rippleColor="@color/light_cyan"
+        app:srcCompat="@drawable/ic_add_new_class" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+

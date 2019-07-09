@@ -1,0 +1,34 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/setting_activity_root_layout_id">
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="80dp"
+        >
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/settingToolbarActivity"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="0dp"
+            app:title=" "
+            android:theme="@style/AppTheme"
+            app:navigationIcon="@drawable/ic_back_button"
+            app:titleTextColor="@color/colorAccent" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/settings"
+            android:textAppearance="@style/TextAppearance.AttendanceTracker.Title"
+            android:textColor="@color/colorAccent" />
+    </RelativeLayout>
+
+
+</LinearLayout>

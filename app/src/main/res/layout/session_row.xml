@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/class_background_detail_shape"
+    android:backgroundTint="@color/colorPrimaryDark"
+    android:layout_margin="@dimen/eight_dp">
+        <TextView
+            android:id="@+id/className"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/thirty_dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/math_150_01_geometry"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/copperGold"/>
+
+        <TextView
+            android:id="@+id/classRoomName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/thirty_dp"
+            android:text="@string/ball_hall_room_401"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/className"
+            android:textColor="@color/copperGold"
+            android:layout_marginTop="@dimen/eight_dp"/>
+
+    <TextView
+        android:id="@+id/classDuration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/time"
+        android:layout_marginStart="@dimen/thirty_dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/classRoomName"
+        android:textColor="@color/copperGold"
+        android:layout_marginTop="@dimen/eight_dp"
+      />
+
+    <HorizontalScrollView
+        android:id="@+id/chipsScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sixteen_dp"
+        android:layout_marginEnd="@dimen/eight_dp"
+        android:layout_marginStart="@dimen/eight_dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/classDuration"
+        android:visibility="gone"
+
+        >
+
+        <com.google.android.material.chip.ChipGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleLine="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/sunday"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sunday"
+                android:background="@drawable/ic_my_circle"
+                />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/monday"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/monday" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/tuesday"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tuesday" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/wednesday"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wednesday" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/thursday"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/thursday" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/friday"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/friday" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/saturday"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/saturday" />
+        </com.google.android.material.chip.ChipGroup>
+
+    </HorizontalScrollView>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/sixteen_dp"
+        android:layout_marginEnd="@dimen/sixteen_dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/classDuration">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/sixteen_dp"
+            android:layout_marginTop="@dimen/sixteen_dp"
+           >
+
+            <TextView
+                android:id="@+id/sun"
+                android:layout_width="@dimen/forty_two_dp_circle"
+                android:layout_height="@dimen/forty_two_dp_circle"
+                android:text="SUN"
+                style="@style/ActiveDays"
+                android:background="@drawable/ic_my_circle"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:id="@+id/mon"
+                android:layout_width="@dimen/forty_two_dp_circle"
+                android:layout_height="@dimen/forty_two_dp_circle"
+                android:text="MON"
+                style="@style/ActiveDays"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tue"
+                android:layout_width="@dimen/forty_two_dp_circle"
+                android:layout_height="@dimen/forty_two_dp_circle"
+                android:text="TUE"
+                style="@style/ActiveDays"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/wed"
+                android:layout_width="@dimen/forty_two_dp_circle"
+                android:layout_height="@dimen/forty_two_dp_circle"
+                android:text="WED"
+                style="@style/ActiveDays"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/thu"
+                android:layout_width="@dimen/forty_two_dp_circle"
+                android:layout_height="@dimen/forty_two_dp_circle"
+                android:text="THU"
+                style="@style/ActiveDays"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/fri"
+                android:layout_width="@dimen/forty_two_dp_circle"
+                android:layout_height="@dimen/forty_two_dp_circle"
+                android:text="FRI"
+                style="@style/ActiveDays"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/sat"
+                android:layout_width="@dimen/forty_two_dp_circle"
+                android:layout_height="@dimen/forty_two_dp_circle"
+                android:text="SAT"
+                style="@style/ActiveDays"
+                android:gravity="center"/>
+
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

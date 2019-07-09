@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".UI.CheckAttendanceFragment"
+    android:background="@color/colorPrimaryDark">
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="0dp"
+        >
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/checkAttendanceToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="0dp"
+            android:theme="@style/AppTheme"
+            app:navigationIcon="@drawable/openedmenusvgcoppergold"
+            app:titleTextColor="@color/colorAccent" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/check_attendance"
+            android:textAppearance="@style/TextAppearance.AttendanceTracker.Title"
+            android:textColor="@color/copperGold" />
+
+        <TextView
+            android:id="@+id/done_Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/checkAttendanceToolbar"
+            android:layout_marginEnd="@dimen/sixteen_dp"
+            android:text="@string/done"
+            android:textColor="@color/colorAccent"
+            android:layout_centerVertical="true"
+            />
+    </RelativeLayout>
+   <androidx.recyclerview.widget.RecyclerView
+       android:id="@+id/checkAttendanceRecyclerView"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       app:layout_constraintTop_toBottomOf="@id/relativeLayout"
+       android:layout_marginEnd="@dimen/sixteen_dp"
+       android:layout_marginStart="@dimen/sixteen_dp">
+   </androidx.recyclerview.widget.RecyclerView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

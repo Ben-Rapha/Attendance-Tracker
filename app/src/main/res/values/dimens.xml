@@ -15,5 +15,9 @@
     <dimen name="zero_dp">0dp</dimen>
     <dimen name="subtitle_14sp">14sp</dimen>
     <dimen name="animDuration">1000</dimen>
+    <dimen name="five_dp">5dp</dimen>
+    <dimen name="forty_two_dp_circle">35dp</dimen>
+    <dimen name="sixty_dp">60dp</dimen>
+    <dimen name="twenty_five_dp">27dp</dimen>
 
 </resources>

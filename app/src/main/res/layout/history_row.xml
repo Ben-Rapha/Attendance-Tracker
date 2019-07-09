@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/class_background_detail_shape"
+    android:backgroundTint="@color/colorPrimaryDark"
+    android:layout_margin="@dimen/eight_dp">
+    <TextView
+        android:id="@+id/className"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/thirty_dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/math_150_01_geometry"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/TextAppearance.AppCompat.Button"
+        android:textColor="@color/copperGold"/>
+
+    <TextView
+        android:id="@+id/classRoomName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/thirty_dp"
+        android:text="@string/ball_hall_room_401"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/className"
+        android:textColor="@color/copperGold"
+        android:layout_marginTop="@dimen/eight_dp"/>
+
+    <TextView
+        android:id="@+id/classDuration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/time"
+        android:layout_marginStart="@dimen/thirty_dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/classRoomName"
+        android:textColor="@color/copperGold"
+        android:layout_marginTop="@dimen/eight_dp"
+        />
+
+    <TextView
+        android:id="@+id/timeTaken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/time_taken"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/classDuration"
+        android:layout_marginStart="@dimen/thirty_dp"
+        android:layout_marginTop="@dimen/eight_dp"
+        android:layout_marginBottom="@dimen/sixteen_dp"
+        />
+
+    <TextView
+        android:id="@+id/timeTakenTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/time"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintStart_toEndOf="@id/timeTaken"
+        app:layout_constraintTop_toBottomOf="@id/classDuration"
+        android:layout_marginStart="@dimen/thirty_dp"
+        android:layout_marginTop="@dimen/eight_dp"
+        android:layout_marginBottom="@dimen/sixteen_dp"
+        />
+
+
+    <TextView
+        android:id="@+id/dateTaken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/date_taken"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timeTaken"
+        android:layout_marginStart="@dimen/thirty_dp"
+        android:layout_marginTop="@dimen/eight_dp"
+        android:layout_marginBottom="@dimen/sixteen_dp"
+        />
+
+    <TextView
+        android:id="@+id/dateTakenDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/start_date"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintStart_toEndOf="@id/timeTaken"
+        app:layout_constraintTop_toBottomOf="@id/timeTakenTime"
+        android:layout_marginStart="@dimen/thirty_dp"
+        android:layout_marginTop="@dimen/eight_dp"
+        android:layout_marginBottom="@dimen/sixteen_dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <ImageButton
+        android:id="@+id/deleteHistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_more"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/classDuration"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

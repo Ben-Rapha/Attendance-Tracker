@@ -8,13 +8,7 @@
         tools:context=".UI.UserSettings"
     android:background="@color/colorAccent">
 
-        <RelativeLayout
-            android:id="@+id/relativeLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            android:elevation="80dp"
-            >
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/settingToolbar"
                 android:layout_width="match_parent"
@@ -23,15 +17,9 @@
                 android:elevation="0dp"
                 android:theme="@style/AppTheme"
                 app:navigationIcon="@drawable/ic_back_button"
-                app:titleTextColor="@color/colorAccent" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/settings"
                 android:textAppearance="@style/TextAppearance.AttendanceTracker.Title"
                 android:textColor="@color/copperGold" />
-        </RelativeLayout>
+
     </LinearLayout>
 
 

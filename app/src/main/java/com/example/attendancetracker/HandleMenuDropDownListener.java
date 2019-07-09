@@ -115,11 +115,6 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
             }
         });
 
-
-
-
-
-
     }
 
 
