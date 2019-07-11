@@ -8,6 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +51,7 @@ public class UserProfile extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.
@@ -62,7 +65,9 @@ public class UserProfile extends Fragment {
             mProfileToolbar.setTitle(null);
 
             mProfileToolbar.setNavigationOnClickListener((View v)->{
-                mainMenuListeners.goToHome();
+
+                final NavController navController = Navigation.findNavController(view);
+                navController.popBackStack();
             });
         }
 

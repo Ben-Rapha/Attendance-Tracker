@@ -6,6 +6,8 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.attendancetracker.R;
 
@@ -31,9 +33,6 @@ public class SettingActivity extends AppCompatActivity
 
             mSettingToolbar.setNavigationIcon(R.drawable.openedmenusvgcoppergold);
             mSettingToolbar.setTitle(" ");
-            mSettingToolbar.setNavigationOnClickListener(v -> {
-                finish();
-            });
 
         }
         getSupportFragmentManager().

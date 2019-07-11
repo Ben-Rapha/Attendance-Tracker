@@ -15,6 +15,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class HandleMenuDropDownListener implements View.OnClickListener {
 
+    public static BackdropListener backdropListener;
+
     private int rotate = 180;
     private boolean droppedDown = false,isBackgroundLogoShowing = false;
     private Context context;
@@ -97,9 +99,14 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
 
             @Override
             public void onAnimationEnd(Animator animation) {
+
                 updateMenuIcon(v);
+
                 if (!droppedDown){
                     mAddNewClassFloatingActionButton.show();
+                    backdropListener.backDropDown(false);
+                } else{
+                    backdropListener.backDropDown(true);
                 }
 
             }
@@ -125,4 +132,15 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
             ((ImageView) view).setImageDrawable(closedMenu);
         }
     }
+
+
+    public interface BackdropListener{
+
+        void backDropDown(boolean isDown);
+    }
+
+    public static void setBackdropListener(BackdropListener backdrop) {
+        backdropListener = backdrop;
+    }
+
 }

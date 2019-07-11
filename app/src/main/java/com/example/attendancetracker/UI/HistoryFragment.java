@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.SavedStateVMFactory;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -101,7 +103,8 @@ public class HistoryFragment extends Fragment {
             mHistoryToolbar.setTitle(null);
 
             mHistoryToolbar.setNavigationOnClickListener((View v) -> {
-                mainMenuListeners.goToHome();
+                final NavController navController = Navigation.findNavController(view);
+                navController.popBackStack();
             });
         }
 

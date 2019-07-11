@@ -233,8 +233,7 @@ public class AddClassActivity extends AppCompatActivity implements
             finish();
         });
     }
-
-
+    
     private void checkFieldError() {
         if (!classnameBool) {
             mTextInputLayoutClassName.setError(getString(R.string.set_classname_error));

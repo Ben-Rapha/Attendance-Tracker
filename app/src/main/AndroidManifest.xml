@@ -28,6 +28,7 @@
         <activity android:name=".UI.LoginActivity" />
         <activity android:name=".UI.AddClassActivity" />
         <activity android:name=".UI.SettingActivity"
+            android:parentActivityName=".UI.MainActivity"
             />
     </application>
 

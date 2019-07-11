@@ -14,6 +14,7 @@ import androidx.lifecycle.SavedStateVMFactory;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -121,7 +122,10 @@ public class RegisteredClasses extends Fragment {
            registerClassesToolbar.setTitle("");
 
            registerClassesToolbar.setNavigationOnClickListener((View v) ->{
-               mMainMenuListeners.goToHome();
+
+               final NavController navController = Navigation.findNavController(view);
+               navController.popBackStack();
+
            });
        }
 

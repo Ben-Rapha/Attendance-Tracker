@@ -32,25 +32,49 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class HomeFragment extends Fragment {
 
-    ConstraintLayout constraintLayout;
-    LinearLayout menuListContainer;
+    @BindView(R.id.backDrop_foreground)
+    public ConstraintLayout constraintLayout;
 
-    private TextView mHomeTextView,mClassesTextView,
-            mProfileTextView,mHistoryTextVIew,
-            mSettingTextView;
+    @BindView(R.id.menuListLinearLayout)
+    public LinearLayout menuListContainer;
 
-    FloatingActionButton mAddNewClassFloatingActionButton;
+    @BindView(R.id.todayTextView)
+    public TextView mTodayTextView;
 
-    private  MainMenuListeners mMainMenuListeners;
+    @BindView(R.id.classesTextView)
+    public TextView mClassesTextView;
 
-    LiveData<AddClassSession> addClassSession;
+    @BindView(R.id.profileTextView)
+    public TextView mProfileTextView;
+
+    @BindView(R.id.historyTextView)
+    public TextView mHistoryTextVIew;
+
+    @BindView(R.id.settingTextView)
+    public TextView mSettingTextView;
+
+    @BindView(R.id.addNewClassFab)
+    public FloatingActionButton mAddNewClassFloatingActionButton;
+
+    private MainMenuListeners mMainMenuListeners;
+
+    @BindView(R.id.mainActivityToolbar)
+    Toolbar toolbar;
+
+
+    HandleMenuDropDownListener.BackdropListener backdropListener;
 
     public HomeFragment() {
         // Required empty public constructor
     }
+
+
 
 
     private LiveData<List<AddClassSession>> addClassSessionLiveData;
@@ -70,21 +94,12 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_home, container, false);
 
-        mHomeTextView = view.findViewById(R.id.todayTextView);
-        Toolbar toolbar = view.findViewById(R.id.mainActivityToolbar);
-        constraintLayout = view.findViewById( R.id.backDrop_foreground);
-        menuListContainer = view.findViewById(R.id.menuListLinearLayout);
-        mClassesTextView = view.findViewById(R.id.classesTextView);
-        mHistoryTextVIew = view.findViewById(R.id.historyTextView);
-        mSettingTextView = view.findViewById(R.id.settingTextView);
-        mProfileTextView = view.findViewById(R.id.profileTextView);
-        mAddNewClassFloatingActionButton = view.findViewById(R.id.addNewClassFab);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        ButterKnife.bind(this,view);
 
-        if (toolbar != null){
+        if (toolbar != null) {
             toolbar.setTitle("");
             ((AppCompatActivity) Objects.requireNonNull(getActivity())).
                     setSupportActionBar(toolbar);
@@ -94,39 +109,73 @@ public class HomeFragment extends Fragment {
                     Objects.requireNonNull(getContext()).getDrawable(R.drawable.ic_openedmenusvg),
                     getContext().getDrawable(R.drawable.ic_closed_menu),
                     new AccelerateDecelerateInterpolator(),
-                    new OvershootInterpolator(), menuListContainer,mAddNewClassFloatingActionButton));
+                    new OvershootInterpolator(), menuListContainer, mAddNewClassFloatingActionButton));
         }
 
         mClassesTextView.setOnClickListener((View v) -> {
-                mMainMenuListeners.goToClasses();
+            enableActiveButton(mClassesTextView);
+            mMainMenuListeners.goToClasses();
         });
 
-        mHistoryTextVIew.setOnClickListener((View v)->{
+        mHistoryTextVIew.setOnClickListener((View v) -> {
+            enableActiveButton(mHistoryTextVIew);
             mMainMenuListeners.goToHistory();
         });
 
-        mSettingTextView.setOnClickListener((View v)->{
+        mSettingTextView.setOnClickListener((View v) -> {
+            enableActiveButton(mSettingTextView);
             mMainMenuListeners.goToSetting();
         });
 
-        mProfileTextView.setOnClickListener((View v)->{
-                mMainMenuListeners.goToProfile();
+        mProfileTextView.setOnClickListener((View v) -> {
+            enableActiveButton(mProfileTextView);
+            mMainMenuListeners.goToProfile();
         });
 
-        mAddNewClassFloatingActionButton.setOnClickListener((View v) ->{
+        mAddNewClassFloatingActionButton.setOnClickListener((View v) -> {
             mMainMenuListeners.goToAddNewClass();
         });
+
+        HandleMenuDropDownListener.setBackdropListener(
+                new HandleMenuDropDownListener.BackdropListener() {
+            @Override
+            public void backDropDown(boolean isDown) {
+                if (isDown){
+
+                    mTodayTextView.setEnabled(true);
+                    mClassesTextView.setEnabled(true);
+                    mHistoryTextVIew.setEnabled(true);
+                    mSettingTextView.setEnabled(true);
+                    mProfileTextView.setEnabled(true);
+
+                } else{
+
+                    mTodayTextView.setEnabled(false);
+                    mClassesTextView.setEnabled(false);
+                    mHistoryTextVIew.setEnabled(false);
+                    mSettingTextView.setEnabled(false);
+                    mProfileTextView.setEnabled(false);
+                }
+            }
+        });
+
         return view;
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof MainMenuListeners ) {
+        if (context instanceof MainMenuListeners) {
             mMainMenuListeners = (MainMenuListeners) context;
         }
     }
 
+    private void enableActiveButton(TextView backgroundChange ){
+            backgroundChange.setBackground(getResources()
+                .getDrawable(R.drawable.menu_text_background_shape));
+            mTodayTextView.setBackground(null);
+
+    }
 
 
 }
