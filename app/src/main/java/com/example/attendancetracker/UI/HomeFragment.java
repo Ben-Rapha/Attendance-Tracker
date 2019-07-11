@@ -99,6 +99,12 @@ public class HomeFragment extends Fragment {
 
         ButterKnife.bind(this,view);
 
+        mTodayTextView.setVisibility(View.GONE);
+        mClassesTextView.setVisibility(View.GONE);
+        mHistoryTextVIew.setVisibility(View.GONE);
+        mSettingTextView.setVisibility(View.GONE);
+        mProfileTextView.setVisibility(View.GONE);
+
         if (toolbar != null) {
             toolbar.setTitle("");
             ((AppCompatActivity) Objects.requireNonNull(getActivity())).
@@ -142,19 +148,19 @@ public class HomeFragment extends Fragment {
             public void backDropDown(boolean isDown) {
                 if (isDown){
 
-                    mTodayTextView.setEnabled(true);
-                    mClassesTextView.setEnabled(true);
-                    mHistoryTextVIew.setEnabled(true);
-                    mSettingTextView.setEnabled(true);
-                    mProfileTextView.setEnabled(true);
+                    mTodayTextView.setVisibility(View.VISIBLE);
+                    mClassesTextView.setVisibility(View.VISIBLE);
+                    mHistoryTextVIew.setVisibility(View.VISIBLE);
+                    mSettingTextView.setVisibility(View.VISIBLE);
+                    mProfileTextView.setVisibility(View.VISIBLE);
 
                 } else{
 
-                    mTodayTextView.setEnabled(false);
-                    mClassesTextView.setEnabled(false);
-                    mHistoryTextVIew.setEnabled(false);
-                    mSettingTextView.setEnabled(false);
-                    mProfileTextView.setEnabled(false);
+                    mTodayTextView.setVisibility(View.GONE);
+                    mClassesTextView.setVisibility(View.GONE);
+                    mHistoryTextVIew.setVisibility(View.GONE);
+                    mSettingTextView.setVisibility(View.GONE);
+                    mProfileTextView.setVisibility(View.GONE);
                 }
             }
         });
