@@ -27,7 +27,7 @@
     <string name="today">TODAY</string>
     <string name="settings">SETTINGS</string>
     <string name="profile">PROFILE</string>
-    <string name="classes">CLASSES</string>
+    <string name="classes">REGISTERED CLASSES</string>
     <string name="attendance_tracker">Attendance Tracker</string>
     <string name="history">HISTORY</string>
     <string name="up_next">UP NEXT</string>
@@ -118,4 +118,5 @@
     <string name="email_colon">Email :</string>
     <string name="password_colon">Password :</string>
     <string name="hard_reset">Hard reset</string>
+    <string name="registered_classes">REGISTERED CLASSES</string>
 </resources>

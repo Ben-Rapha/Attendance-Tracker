@@ -27,7 +27,7 @@ public class TimePicker extends DialogFragment implements
 
     public Boolean startTimeSet = false, endTimeSet = false;
 
-    private TimePickerEndTimeListener timePickerEndTimeListener;
+    private static TimePickerEndTimeListener timePickerEndTimeListener;
 
     private int chosenHour, chosenMinute;
 
@@ -119,11 +119,11 @@ public class TimePicker extends DialogFragment implements
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof TimePickerEndTimeListener) {
-            timePickerEndTimeListener = (TimePickerEndTimeListener) context;
-        } else {
-            throw new RuntimeException("must implement TimePickerListener");
-        }
+//        if (context instanceof TimePickerEndTimeListener) {
+//            timePickerEndTimeListener = (TimePickerEndTimeListener) context;
+//        } else {
+//            throw new RuntimeException("must implement TimePickerListener");
+//        }
     }
 
     public interface TimePickerEndTimeListener {
@@ -150,12 +150,17 @@ public class TimePicker extends DialogFragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        timePickerEndTimeListener = null;
+//        timePickerEndTimeListener = null;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        timePickerEndTimeListener = null;
+//        timePickerEndTimeListener = null;
+    }
+
+
+    public static void setTimePickerEndListener(TimePickerEndTimeListener listener){
+        timePickerEndTimeListener = listener;
     }
 }

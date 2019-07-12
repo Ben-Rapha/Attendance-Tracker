@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.attendancetracker.AddClassSession;
 import com.example.attendancetracker.UI.AddClassActivity;
 import com.example.attendancetracker.UI.CheckClassnameListener;
+
 import androidx.lifecycle.SavedStateHandle;
 
 import java.util.List;
@@ -21,15 +22,17 @@ public class SessionViewModel extends AndroidViewModel {
     private MutableLiveData<AddClassSession> mAddClassSessionData =
             new MutableLiveData<AddClassSession>();
 
-    private  SessionViewModel sessionViewModel;
+    private LiveData<List<AddClassSession>> mondayList, tuesdayList, wedList, thursList, friList,
+            satList, sunList = new MutableLiveData<>();
 
-    private  SavedStateHandle savedStateHandle;
+    private SessionViewModel sessionViewModel;
 
-    private static final String NAME_KEY="classData";
+    private SavedStateHandle savedStateHandle;
+
+    private static final String NAME_KEY = "classData";
 
 
-
-    public SessionViewModel(@NonNull Application application,SavedStateHandle savedStateHandle) {
+    public SessionViewModel(@NonNull Application application, SavedStateHandle savedStateHandle) {
         super(application);
 
         mSessionModelRepository = new SessionModelRepository(application);
@@ -38,40 +41,68 @@ public class SessionViewModel extends AndroidViewModel {
 
     }
 
-    public void setAddClassSessionData(AddClassSession addClassSessionData){
+    public void setAddClassSessionData(AddClassSession addClassSessionData) {
 
         this.mAddClassSessionData.setValue(addClassSessionData);
 //        savedStateHandle.set(NAME_KEY,addClassSessionData);
     }
-    public LiveData<AddClassSession> getAddClassSessionData(){
+
+    public LiveData<AddClassSession> getAddClassSessionData() {
         return mAddClassSessionData;
     }
 
     public LiveData<List<AddClassSession>>
-    getAllClassSessionFromSessionRepository(){
+    getAllClassSessionFromSessionRepository() {
         return mSessionModelRepository.getClassSessionList();
     }
 
-    public void insertClassSessionIntoDatabase(AddClassSession addClassSession){
+    public void insertClassSessionIntoDatabase(AddClassSession addClassSession) {
         mSessionModelRepository.insertClassSession(addClassSession);
     }
 
-    public void deleteClassSessionFromDatabase(String sessionName){
+    public void deleteClassSessionFromDatabase(String sessionName) {
         mSessionModelRepository.deleteClassSessionFromDatabase(sessionName);
     }
 
-    public LiveData<List<AddClassSession>> getMondayScheduledClass(){
+    public LiveData<List<AddClassSession>> getMondayScheduledClass() {
         return mSessionModelRepository.getMondayClasses();
     }
-    public LiveData<AddClassSession> getSpecifiedClass(String classname){
+
+    public LiveData<List<AddClassSession>> getSundayScheduledClass() {
+        return mSessionModelRepository.getSundayClasses();
+    }
+
+    public LiveData<List<AddClassSession>> getTuesdayScheduledClass() {
+        return mSessionModelRepository.getTuesdayClasses();
+    }
+
+    public LiveData<List<AddClassSession>> getWednesdayScheduledClass() {
+        return mSessionModelRepository.getWednesdayClasses();
+    }
+
+    public LiveData<List<AddClassSession>> getThursdayScheduledClass() {
+        thursList = mSessionModelRepository.getThursdayClasses();
+
+        return thursList;
+    }
+
+    public LiveData<List<AddClassSession>> getFridayScheduledClass() {
+        return mSessionModelRepository.getFridayClasses();
+    }
+
+    public LiveData<List<AddClassSession>> getSaturdayScheduledClass() {
+        return mSessionModelRepository.getSaturdayClasses();
+    }
+
+    public LiveData<AddClassSession> getSpecifiedClass(String classname) {
         return mSessionModelRepository.getSpecifiedClass(classname);
     }
 
-    public void setViewModelObject(SessionViewModel sessionViewModel){
+    public void setViewModelObject(SessionViewModel sessionViewModel) {
         this.sessionViewModel = sessionViewModel;
     }
 
     public SessionViewModel getSessionViewModel() {
-            return sessionViewModel;
+        return sessionViewModel;
     }
 }

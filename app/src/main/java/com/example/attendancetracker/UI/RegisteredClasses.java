@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.attendancetracker.Adapters.HistoryAdapter;
 import com.example.attendancetracker.Adapters.SessionAdapter;
@@ -47,6 +49,12 @@ public class RegisteredClasses extends Fragment {
     @BindView(R.id.registeredClassesRecyclerView)
     RecyclerView mRecyclerViewClassesList;
 
+    @BindView(R.id.searchRegisteredClasses)
+    SearchView searchRegisteredClasses;
+
+    @BindView(R.id.titleToolbar)
+    TextView mTitleTextView;
+
     LinearLayoutManager mLinearLayoutManager;
 
     SessionAdapter mSessionAdapter;
@@ -58,6 +66,8 @@ public class RegisteredClasses extends Fragment {
     AddClassSession mAddClassSession;
 
     RegisterClassesListener mRegisterClassesListener;
+
+
 
 
 
@@ -128,6 +138,17 @@ public class RegisteredClasses extends Fragment {
 
            });
        }
+
+       searchRegisteredClasses.setOnFocusChangeListener((v, hasFocus) -> {
+
+           if (hasFocus){
+               mTitleTextView.setText("");
+           } else{
+
+               mTitleTextView.setText
+                       (getString(R.string.registered_classes));
+           }
+       });
 
        return view;
     }

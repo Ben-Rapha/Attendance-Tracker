@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity
                 of(this, new SavedStateVMFactory(this))
                 .get(SessionViewModel.class);
 
+        sessionViewModel.setViewModelObject(sessionViewModel);
+
         historyViewModel = ViewModelProviders
                 .of(this, new SavedStateVMFactory(this))
                 .get(HistoryViewModel.class);
@@ -95,7 +97,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void goToAddNewClass() {
-        navController.navigate(R.id.addClassActivity, null, navOptions);
+//        navController.navigate(R.id.addClassActivity, null, navOptions);
+        navController.navigate(R.id.addNewClassSessionFragment,
+                null, navOptions);
     }
 
     @Override

@@ -140,7 +140,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/className"
+                android:id="@+id/classNameUpNext"
                 style="@style/TextAppearance.AppCompat.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -152,32 +152,44 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/classRoomName"
+                android:id="@+id/locationUpNext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/thirty_dp"
                 android:text="@string/ball_hall_room_401"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/className" />
+                app:layout_constraintTop_toBottomOf="@id/classNameUpNext" />
 
             <TextView
-                android:id="@+id/classDuration"
+                android:id="@+id/classDurationUpNext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/thirty_dp"
                 android:text="@string/time"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/view"
-                app:layout_constraintTop_toBottomOf="@id/classRoomName" />
+                app:layout_constraintTop_toBottomOf="@id/locationUpNext" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_cyan"
+            app:layout_constraintTop_toBottomOf="@id/upNextConstraint"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/forty_two_dp_circle"
+            android:layout_marginStart="@dimen/eight_dp"
+            android:layout_marginEnd="@dimen/eight_dp"/>
 
         <TextView
             android:id="@+id/upComingClass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="@dimen/thirty_dp"
+            android:layout_marginTop="@dimen/twenty_five_dp"
             android:layout_marginEnd="8dp"
             android:paddingStart="@dimen/sixteen_dp"
             android:paddingEnd="0dp"
@@ -185,7 +197,7 @@
             android:textColor="@color/copperGold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/upNextConstraint" />
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/upComingConstraint"
@@ -314,7 +326,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:rippleColor="@color/light_cyan"
-            app:srcCompat="@drawable/ic_add_new_class" />
+            android:src="@drawable/ic_edit"
+            android:tint="@color/light_cyan"
+
+             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

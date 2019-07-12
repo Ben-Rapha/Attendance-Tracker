@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_home2_to_settingActivity"
             app:destination="@id/settingActivity" />
+        <action
+            android:id="@+id/ome_to_addNewClassSessionFragment"
+            app:destination="@id/addNewClassSessionFragment" />
     </fragment>
 
     <fragment
@@ -67,7 +70,7 @@
 
     <fragment
         android:id="@+id/addNewClass"
-        android:name="com.example.attendancetracker.Model.AddNewClass"
+        android:name="com.example.attendancetracker.UI.AddNewClassSessionFragment"
         android:label="fragment_new_class"
         tools:layout="@layout/fragment_new_class" />
     <activity
@@ -107,5 +110,10 @@
         android:name="com.example.attendancetracker.UI.SettingActivity"
         android:label="settings_activity_host"
         tools:layout="@layout/settings_activity_host" />
+    <fragment
+        android:id="@+id/addNewClassSessionFragment"
+        android:name="com.example.attendancetracker.UI.AddNewClassSessionFragment"
+        android:label="fragment_new_class"
+        tools:layout="@layout/fragment_new_class" />
 
 </navigation>

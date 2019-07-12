@@ -238,6 +238,10 @@ public class AddClassSession implements Parcelable {
         this.students = students;
     }
 
+    public String getRawTime(){
+        return getRawTime(mStartTime);
+    }
+
     private String getFormattedTime(Time time) {
         String timeFormat;
         String timeMode;
@@ -274,6 +278,20 @@ public class AddClassSession implements Parcelable {
             return timeFormat;
 
 
+    }
+
+    private  String getRawTime(Time time){
+
+        Calendar timeCalender = Calendar.getInstance();
+        timeCalender.setTime(time);
+
+
+
+        String rawTimeString =  timeCalender.get(Calendar.HOUR_OF_DAY) + ":" +
+                ((timeCalender.get(Calendar.MINUTE) / 10 < 1) ? "0" + timeCalender.get(Calendar.MINUTE) :
+                        String.valueOf(timeCalender.get(Calendar.MINUTE))) + ":"+"00";
+
+        return rawTimeString;
     }
 
     private String getFormattedDate(Date date){

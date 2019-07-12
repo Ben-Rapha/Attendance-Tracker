@@ -22,17 +22,19 @@
             android:background="?attr/colorPrimary"
             android:elevation="0dp"
             android:theme="@style/AppTheme"
-            app:navigationIcon="@drawable/ic_back_button"
+            app:navigationIcon="@drawable/ic_openedmenusvg"
             app:titleTextColor="@color/colorAccent" />
         <TextView
+            android:id="@+id/titleToolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/classes"
             android:textAppearance="@style/TextAppearance.AttendanceTracker.Title"
-            android:textColor="@color/copperGold" />
+            android:textColor="@color/colorAccent" />
 
         <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchRegisteredClasses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/registerClassesToolbar"
@@ -41,6 +43,8 @@
             app:iconifiedByDefault="true"
             style="@style/AppSearchView"
             android:paddingTop="5dp"
+            android:focusable="true"
+
             >
         </androidx.appcompat.widget.SearchView>
     </RelativeLayout>

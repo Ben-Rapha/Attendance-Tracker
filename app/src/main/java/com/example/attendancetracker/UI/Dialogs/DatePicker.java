@@ -19,7 +19,7 @@ public class DatePicker extends DialogFragment implements
 
     private Boolean startDateSet = false, endDateSet = false;
 
-    private DatePickerListener datePickerListener;
+    private static DatePickerListener datePickerListener;
 
     @NonNull
     @Override
@@ -56,11 +56,11 @@ public class DatePicker extends DialogFragment implements
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof DatePickerListener){
-            datePickerListener = (DatePickerListener) context;
-        } else{
-            throw new  RuntimeException("must implement DatePickerListener");
-        }
+//        if (context instanceof DatePickerListener){
+//            datePickerListener = (DatePickerListener) context;
+//        } else{
+//            throw new  RuntimeException("must implement DatePickerListener");
+//        }
     }
 
 
@@ -107,12 +107,17 @@ public class DatePicker extends DialogFragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        datePickerListener = null;
+//        datePickerListener = null;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        datePickerListener = null;
+//        datePickerListener = null;
+    }
+
+
+    public static void setDatePickerListener(DatePickerListener listener){
+        datePickerListener = listener;
     }
 }

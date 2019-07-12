@@ -6,11 +6,7 @@ import com.example.attendancetracker.AddClassSession;
 
 import java.util.List;
 
-public interface CheckClassnameListener {
+public interface  TodayClassSessionListener{
 
-    void checkClassname(LiveData<AddClassSession> addClassSessionLiveData);
-
-
+    void todayClassSession(LiveData<List<AddClassSession>> listLiveData);
 }
-
-

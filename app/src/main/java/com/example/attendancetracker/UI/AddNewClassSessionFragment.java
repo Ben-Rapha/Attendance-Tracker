@@ -1,19 +1,25 @@
 package com.example.attendancetracker.UI;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.SavedStateVMFactory;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
+import android.text.Editable;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.attendancetracker.AddClassSession;
 import com.example.attendancetracker.Model.Students;
@@ -22,6 +28,8 @@ import com.example.attendancetracker.R;
 import com.example.attendancetracker.Repository.SessionClassRepository.SessionModelRepository;
 import com.example.attendancetracker.Repository.SessionClassRepository.SessionViewModel;
 import com.example.attendancetracker.UI.Dialogs.DatePicker;
+import com.example.attendancetracker.UI.MainMenuListeners;
+import com.example.attendancetracker.UI.MytextWatcher;
 import com.example.attendancetracker.UI.Dialogs.TimePicker;
 import com.example.attendancetracker.Util.MyUtil;
 import com.google.android.material.button.MaterialButton;
@@ -32,21 +40,20 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddClassActivity extends AppCompatActivity implements
-        TimePicker.TimePickerEndTimeListener, DatePicker.DatePickerListener {
+
+public class AddNewClassSessionFragment extends Fragment {
 
     @BindView(R.id.chipGroup)
     ChipGroup chipGroup;
@@ -122,6 +129,12 @@ public class AddClassActivity extends AppCompatActivity implements
 
     DatePicker mStartDateDialog, mEndDateDialog;
 
+    View view;
+
+    TimePicker timePicker;
+
+    TimePicker.TimePickerEndTimeListener timePickerEndTimeListener;
+
     boolean classnameBool,
             locationBool, isEndDateSet = false, isStartDateSet
             = false, isEndTimeSet = false, isStartTimeSet = false,
@@ -147,12 +160,30 @@ public class AddClassActivity extends AppCompatActivity implements
 
     Time sqlStartTime, sqlEndTime;
 
+    public AddNewClassSessionFragment() {
+        // Required empty public constructor
+    }
+
+
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_new_class_layout_activity);
-        ButterKnife.bind(this);
+
+
+    }
+
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_new_class, container, false);
+        ButterKnife.bind(this,view);
+
+        Log.v("newSession","called");
+
+
         selectedDaysList = new ArrayList<>();
         loseOrGainFocus(mAppCompatTextViewStartDate, false);
         loseOrGainFocus(mAppCompatTextViewEndDate, false);
@@ -176,8 +207,72 @@ public class AddClassActivity extends AppCompatActivity implements
 
         cancelAddClass();
 
+        TimePicker.setTimePickerEndListener((endTime, rawTime) -> {
+
+            if (dialogFragmentStartTimePicker != null) {
+                if (dialogFragmentStartTimePicker.getStartTimeSet()) {
+                    actualStartTime.setText(endTime);
+                    actualStartTime.setTextColor(getResources().getColor(R.color.white));
+                    isStartTimeSet = true;
+                    sqlStartTime = getFormattedTime(rawTime);
+                    timeStart = rawTime;
+                    mAppCompatTextViewStartTime.setError(null);
+                }
+            }
+
+            if (dialogFragmentEndTimePicker != null) {
+                if (dialogFragmentEndTimePicker.getEndTimeSet()) {
+                    appCompatTextViewActualEndTime.setText(endTime);
+                    appCompatTextViewActualEndTime.setTextColor(getResources().getColor(R.color.white));
+                    isEndTimeSet = true;
+                    sqlEndTime = getFormattedTime(rawTime);
+                    timeEnd = rawTime;
+                    mAppCompatTextViewEndTime.setError(null);
+                }
+            }
+
+            if (isEndTimeSet & isStartTimeSet) {
+                checkIsTimeValid(timeStart, timeEnd);
+            }
+
+        });
+
+        DatePicker.setDatePickerListener((date, sqlFormatDate) -> {
+
+            if (mStartDateDialog != null) {
+                if (mStartDateDialog.getStartDateSet()) {
+                    startActualDate.setText(date);
+                    startActualDate.setTextColor(getResources().getColor(R.color.white));
+                    isStartDateSet = true;
+                    sqlStartDate = getFormattedSqlDate(sqlFormatDate);
+                    dateStart = sqlFormatDate;
+                    mAppCompatTextViewStartDate.setError(null);
+                }
+            }
+            if (mEndDateDialog != null) {
+                if (mEndDateDialog.getEndDateSet()) {
+                    endActualDate.setText(date);
+                    endActualDate.setTextColor(getResources().getColor(R.color.white));
+                    isEndDateSet = true;
+                    sqlEndDate = getFormattedSqlDate(sqlFormatDate);
+                    dateEnd = sqlFormatDate;
+                    mAppCompatTextViewEndDate.setError(null);
+                }
+            }
+            if ((!(dateStart.isEmpty()) & !(dateEnd.isEmpty()))) {
+                checkIsDateValid(dateStart, dateEnd);
+            }
+
+        });
 
 
+
+
+
+
+
+
+        return view;
     }
 
     /**
@@ -206,16 +301,17 @@ public class AddClassActivity extends AppCompatActivity implements
                     SessionModelRepository.setCheckClassnameListener((LiveData<AddClassSession> addClassSessionLiveData) ->
                     {
                         addClassSessionLiveData.
-                                observe(AddClassActivity.this, addClassSession -> {
+                                observe(getViewLifecycleOwner(), addClassSession -> {
                                     if (addClassSession == null) {
                                         sessionViewModel.insertClassSessionIntoDatabase(new AddClassSession(classname,
                                                 location, sqlStartDate, sqlEndDate, sqlStartTime, sqlEndTime, sunday ? "sunday" : null,
                                                 monday ? "monday" : null, tuesday ? "tuesday" : null, wednesday ? "wednesday" : null,
                                                 thursday ? "thursday" : null, friday ? "friday" : null, saturday ? "saturday" : null, new ArrayList<Students>()));
                                         progressBar.setVisibility(View.GONE);
-                                        AddClassActivity.this.finish();
+                                        final NavController navController = Navigation.findNavController(view);
+                                        navController.popBackStack();
                                     } else {
-                                        AddClassActivity.this.showConflictDialog(addClassSession).show();
+                                        showConflictDialog(addClassSession).show();
                                     }
                                 });
                     });
@@ -232,10 +328,11 @@ public class AddClassActivity extends AppCompatActivity implements
 
     private void cancelAddClass() {
         mMaterialCancelButton.setOnClickListener((View v) -> {
-            finish();
+            final NavController navController = Navigation.findNavController(view);
+            navController.popBackStack();
         });
     }
-    
+
     private void checkFieldError() {
         if (!classnameBool) {
             mTextInputLayoutClassName.setError(getString(R.string.set_classname_error));
@@ -370,7 +467,8 @@ public class AddClassActivity extends AppCompatActivity implements
         mAppCompatTextViewEndTime.setOnClickListener((View v) -> {
             dialogFragmentEndTimePicker = new TimePicker();
             dialogFragmentEndTimePicker.setEndTimeSet(true);
-            dialogFragmentEndTimePicker.show(getSupportFragmentManager(),
+            dialogFragmentEndTimePicker.show(Objects.
+                            requireNonNull(getFragmentManager()),
                     getString(R.string.endtimepicker));
 
         });
@@ -378,14 +476,16 @@ public class AddClassActivity extends AppCompatActivity implements
         mAppCompatTextViewStartTime.setOnClickListener((View v) -> {
             dialogFragmentStartTimePicker = new TimePicker();
             dialogFragmentStartTimePicker.setStartTimeSet(true);
-            dialogFragmentStartTimePicker.show(getSupportFragmentManager(),
+            dialogFragmentStartTimePicker.show(Objects.
+                            requireNonNull(getFragmentManager()),
                     getString(R.string.starttimepicker));
 
         });
 
         mAppCompatTextViewStartDate.setOnClickListener((View v) -> {
             mStartDateDialog = new DatePicker();
-            mStartDateDialog.show(getSupportFragmentManager(),
+            mStartDateDialog.show(Objects.
+                            requireNonNull(getFragmentManager()),
                     getString(R.string.startDate));
             mStartDateDialog.setStartDateSet(true);
 
@@ -393,14 +493,14 @@ public class AddClassActivity extends AppCompatActivity implements
 
         mAppCompatTextViewEndDate.setOnClickListener((View v) -> {
             mEndDateDialog = new DatePicker();
-            mEndDateDialog.show(getSupportFragmentManager(),
+            mEndDateDialog.show(Objects.
+                            requireNonNull(getFragmentManager()),
                     getString(R.string.enddate));
             mEndDateDialog.setEndDateSet(true);
 
 
         });
     }
-
     private void setChipDirection() {
         monChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
         tuesChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
@@ -428,69 +528,66 @@ public class AddClassActivity extends AppCompatActivity implements
 
     }
 
-
-
-
     //fires when the user chooses a time
-    @Override
-    public void updateTime(String endTime, String rawTime) {
-
-        if (dialogFragmentStartTimePicker != null) {
-            if (dialogFragmentStartTimePicker.getStartTimeSet()) {
-                actualStartTime.setText(endTime);
-                actualStartTime.setTextColor(getResources().getColor(R.color.white));
-                isStartTimeSet = true;
-                sqlStartTime = getFormattedTime(rawTime);
-                timeStart = rawTime;
-                mAppCompatTextViewStartTime.setError(null);
-            }
-        }
-
-        if (dialogFragmentEndTimePicker != null) {
-            if (dialogFragmentEndTimePicker.getEndTimeSet()) {
-                appCompatTextViewActualEndTime.setText(endTime);
-                appCompatTextViewActualEndTime.setTextColor(getResources().getColor(R.color.white));
-                isEndTimeSet = true;
-                sqlEndTime = getFormattedTime(rawTime);
-                timeEnd = rawTime;
-                mAppCompatTextViewEndTime.setError(null);
-            }
-        }
-
-        if (isEndTimeSet & isStartTimeSet) {
-            checkIsTimeValid(timeStart, timeEnd);
-        }
-
-    }
+//    @Override
+//    public void updateTime(String endTime, String rawTime) {
+//
+//        if (dialogFragmentStartTimePicker != null) {
+//            if (dialogFragmentStartTimePicker.getStartTimeSet()) {
+//                actualStartTime.setText(endTime);
+//                actualStartTime.setTextColor(getResources().getColor(R.color.white));
+//                isStartTimeSet = true;
+//                sqlStartTime = getFormattedTime(rawTime);
+//                timeStart = rawTime;
+//                mAppCompatTextViewStartTime.setError(null);
+//            }
+//        }
+//
+//        if (dialogFragmentEndTimePicker != null) {
+//            if (dialogFragmentEndTimePicker.getEndTimeSet()) {
+//                appCompatTextViewActualEndTime.setText(endTime);
+//                appCompatTextViewActualEndTime.setTextColor(getResources().getColor(R.color.white));
+//                isEndTimeSet = true;
+//                sqlEndTime = getFormattedTime(rawTime);
+//                timeEnd = rawTime;
+//                mAppCompatTextViewEndTime.setError(null);
+//            }
+//        }
+//
+//        if (isEndTimeSet & isStartTimeSet) {
+//            checkIsTimeValid(timeStart, timeEnd);
+//        }
+//
+//    }
 
 
     //fires when the user chooses a date
-    @Override
-    public void setDate(String date, String sqlFormatDate) {
-        if (mStartDateDialog != null) {
-            if (mStartDateDialog.getStartDateSet()) {
-                startActualDate.setText(date);
-                startActualDate.setTextColor(getResources().getColor(R.color.white));
-                isStartDateSet = true;
-                sqlStartDate = getFormattedSqlDate(sqlFormatDate);
-                dateStart = sqlFormatDate;
-                mAppCompatTextViewStartDate.setError(null);
-            }
-        }
-        if (mEndDateDialog != null) {
-            if (mEndDateDialog.getEndDateSet()) {
-                endActualDate.setText(date);
-                endActualDate.setTextColor(getResources().getColor(R.color.white));
-                isEndDateSet = true;
-                sqlEndDate = getFormattedSqlDate(sqlFormatDate);
-                dateEnd = sqlFormatDate;
-                mAppCompatTextViewEndDate.setError(null);
-            }
-        }
-        if ((!(dateStart.isEmpty()) & !(dateEnd.isEmpty()))) {
-            checkIsDateValid(dateStart, dateEnd);
-        }
-    }
+//    @Override
+//    public void setDate(String date, String sqlFormatDate) {
+//        if (mStartDateDialog != null) {
+//            if (mStartDateDialog.getStartDateSet()) {
+//                startActualDate.setText(date);
+//                startActualDate.setTextColor(getResources().getColor(R.color.white));
+//                isStartDateSet = true;
+//                sqlStartDate = getFormattedSqlDate(sqlFormatDate);
+//                dateStart = sqlFormatDate;
+//                mAppCompatTextViewStartDate.setError(null);
+//            }
+//        }
+//        if (mEndDateDialog != null) {
+//            if (mEndDateDialog.getEndDateSet()) {
+//                endActualDate.setText(date);
+//                endActualDate.setTextColor(getResources().getColor(R.color.white));
+//                isEndDateSet = true;
+//                sqlEndDate = getFormattedSqlDate(sqlFormatDate);
+//                dateEnd = sqlFormatDate;
+//                mAppCompatTextViewEndDate.setError(null);
+//            }
+//        }
+//        if ((!(dateStart.isEmpty()) & !(dateEnd.isEmpty()))) {
+//            checkIsDateValid(dateStart, dateEnd);
+//        }
+//    }
 
     private Time getFormattedTime(String time) {
         Time formattedTime;
@@ -501,10 +598,6 @@ public class AddClassActivity extends AppCompatActivity implements
             Date date = simpleDateFormat.parse(time);
             Calendar timeCalender = Calendar.getInstance();
             timeCalender.setTime(date);
-//            Log.v("timeFormatted", timeCalender.get(Calendar.HOUR)+" ");
-//            Log.v("timeFormatted", timeCalender.get(Calendar.MINUTE)+" ");
-//            Log.v("timeFormatted", timeCalender.get(Calendar.SECOND)+" ");
-
             formattedTime = Time.valueOf(time);
             Log.v("timeFormatted", formattedTime.toString());
             return formattedTime;
@@ -593,10 +686,12 @@ public class AddClassActivity extends AppCompatActivity implements
         view.setFocusableInTouchMode(gain);
 
     }
+
     private MaterialAlertDialogBuilder showConflictDialog(AddClassSession addClassSession) {
 
         materialAlertDialogBuilder =
-                new MaterialAlertDialogBuilder(AddClassActivity.this,
+                new MaterialAlertDialogBuilder(Objects
+                        .requireNonNull(getContext()),
                         R.style.ThemeOverlay_MaterialComponents_Dialog);
 
         materialAlertDialogBuilder.setTitle(getString(R.string.classname_conflict));
@@ -621,16 +716,33 @@ public class AddClassActivity extends AppCompatActivity implements
                         null,new ArrayList<Students>()));
             }
 
-            finish();
+            final NavController navController = Navigation.findNavController(view);
+            navController.popBackStack();
         });
         progressBar.setVisibility(View.GONE);
         return materialAlertDialogBuilder;
 
     }
 
+
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        SessionModelRepository.setCheckClassnameListener(null);
+    public void onDetach() {
+        super.onDetach();
+//        mainMenuListeners = null;
     }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof MainMenuListeners){
+//            mainMenuListeners = (MainMenuListeners) context;
+
+        } else{
+            throw new RuntimeException("must implement " +
+                    "MainMenuListener & ShowDialogListener");
+        }
+    }
+
+
 }

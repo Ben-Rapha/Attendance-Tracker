@@ -18,22 +18,24 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
     public static BackdropListener backdropListener;
 
     private int rotate = 180;
-    private boolean droppedDown = false,isBackgroundLogoShowing = false;
+    private boolean droppedDown = false, isBackgroundLogoShowing = false;
     private Context context;
     private AnimatorSet animatorSet = new AnimatorSet();
-    private View view,menuListContainer;
-    private Interpolator interpolator,menuInterpolator;
+    private View view, menuListContainer;
+    private Interpolator interpolator, menuInterpolator;
     private int deviceHeight;
     private Drawable openedMenu, closedMenu;
     private ImageView menuBackGroundImage;
     private FloatingActionButton mAddNewClassFloatingActionButton;
 
+    View clickView;
+
 
     public HandleMenuDropDownListener(
-            Context context, View animateView ,
-            Drawable openedMenu , Drawable closedMenu
-            ,Interpolator interpolator, Interpolator menuInterpolator,
-           View menuListContainer,FloatingActionButton mAddNewClassFloatingActionButton ){
+            Context context, View animateView,
+            Drawable openedMenu, Drawable closedMenu
+            , Interpolator interpolator, Interpolator menuInterpolator,
+            View menuListContainer, FloatingActionButton mAddNewClassFloatingActionButton) {
 
         this.context = context;
         this.view = animateView;
@@ -42,7 +44,7 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
         this.interpolator = interpolator;
         this.menuInterpolator = menuInterpolator;
         this.menuListContainer = menuListContainer;
-        deviceHeight =  getHeight() - 150;
+        deviceHeight = getHeight() - 150;
         this.mAddNewClassFloatingActionButton = mAddNewClassFloatingActionButton;
 
     }
@@ -55,28 +57,54 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        clickView = v;
+        performAnimation();
+
+    }
+
+
+    private void updateMenuIcon(View view) {
+        if (droppedDown) {
+            ((ImageView) view).setImageDrawable(openedMenu);
+        } else {
+            ((ImageView) view).setImageDrawable(closedMenu);
+        }
+    }
+
+
+    public interface BackdropListener {
+
+        void backDropDown(boolean isDown);
+    }
+
+    public static void setBackdropListener(BackdropListener backdrop) {
+        backdropListener = backdrop;
+    }
+
+    public void performAnimation() {
+
         droppedDown = !droppedDown;
         isBackgroundLogoShowing = true;
         animatorSet.removeAllListeners();
         animatorSet.end();
         animatorSet.cancel();
-        if (droppedDown){
+        if (droppedDown) {
             mAddNewClassFloatingActionButton.hide();
         }
         int translateY = deviceHeight - context.getResources().
                 getDimensionPixelSize(R.dimen.drop_down_foreground_marginTop);
         ObjectAnimator mObjectAnimator = ObjectAnimator.ofFloat(view,
-                "translationY",droppedDown ? 0 : translateY,
-                droppedDown ? translateY :0);
+                "translationY", droppedDown ? 0 : translateY,
+                droppedDown ? translateY : 0);
 
         ObjectAnimator mMenuAnimator = ObjectAnimator.
-                ofFloat(v,"rotation",
+                ofFloat(clickView, "rotation",
                         droppedDown ? 0 : rotate,
-                        droppedDown ? rotate :0);
+                        droppedDown ? rotate : 0);
 
         ObjectAnimator menuListAnimator = ObjectAnimator.
-                ofFloat(menuListContainer,"alpha",droppedDown ? 0 : 1,
-                droppedDown ? 1 :0 );
+                ofFloat(menuListContainer, "alpha", droppedDown ? 0 : 1,
+                        droppedDown ? 1 : 0);
 
         menuListAnimator.setDuration(0);
         menuListAnimator.setInterpolator(interpolator);
@@ -87,7 +115,7 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
         mObjectAnimator.setDuration(500);
         mObjectAnimator.setInterpolator(interpolator);
 
-        animatorSet.playSequentially(mObjectAnimator,mMenuAnimator);
+        animatorSet.playSequentially(mObjectAnimator, mMenuAnimator);
         animatorSet.start();
 
         mObjectAnimator.addListener(new Animator.AnimatorListener() {
@@ -100,12 +128,12 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
             @Override
             public void onAnimationEnd(Animator animation) {
 
-                updateMenuIcon(v);
+                updateMenuIcon(clickView);
 
-                if (!droppedDown){
+                if (!droppedDown) {
                     mAddNewClassFloatingActionButton.show();
                     backdropListener.backDropDown(false);
-                } else{
+                } else {
                     backdropListener.backDropDown(true);
                 }
 
@@ -122,25 +150,6 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
             }
         });
 
-    }
-
-
-    private void updateMenuIcon(View view){
-        if (droppedDown){
-            ((ImageView) view).setImageDrawable(openedMenu);
-        } else{
-            ((ImageView) view).setImageDrawable(closedMenu);
-        }
-    }
-
-
-    public interface BackdropListener{
-
-        void backDropDown(boolean isDown);
-    }
-
-    public static void setBackdropListener(BackdropListener backdrop) {
-        backdropListener = backdrop;
     }
 
 }
