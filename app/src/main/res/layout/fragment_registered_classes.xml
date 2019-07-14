@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
     android:orientation="vertical"
-    tools:context=".UI.RegisteredClasses"
-    android:background="?attr/colorPrimary">
+    tools:context=".UI.RegisteredClasses">
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         android:elevation="80dp"
-        >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/registerClassesToolbar"
             android:layout_width="match_parent"
@@ -24,6 +27,7 @@
             android:theme="@style/AppTheme"
             app:navigationIcon="@drawable/ic_openedmenusvg"
             app:titleTextColor="@color/colorAccent" />
+
         <TextView
             android:id="@+id/titleToolbar"
             android:layout_width="wrap_content"
@@ -35,25 +39,58 @@
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchRegisteredClasses"
+            style="@style/AppSearchView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/registerClassesToolbar"
-            android:queryHint="Search classes"
             android:layout_marginEnd="0dp"
-            app:iconifiedByDefault="true"
-            style="@style/AppSearchView"
-            android:paddingTop="5dp"
             android:focusable="true"
-
+            android:clickable="true"
+            android:paddingTop="5dp"
+            android:queryHint="Search classes"
+            app:iconifiedByDefault="true"
             >
+
         </androidx.appcompat.widget.SearchView>
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/registeredClassesRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/sixty_dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/relativeLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/twenty_five_dp"
+       >
 
     </androidx.recyclerview.widget.RecyclerView>
 
-</LinearLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/filterListLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/foreground_backdrop"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchRegisteredClassRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/sixteen_dp"
+            android:layout_marginTop="@dimen/twenty_five_dp"
+            android:layout_marginEnd="@dimen/sixteen_dp"
+            android:layout_marginBottom="@dimen/sixteen_dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

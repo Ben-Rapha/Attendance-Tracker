@@ -234,8 +234,6 @@ public class HomeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Log.v("resume","on activity created called");
-
         sessionViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()),
                 new SavedStateVMFactory(getActivity())).
                 get(SessionViewModel.class);
@@ -341,51 +339,55 @@ public class HomeFragment extends Fragment {
 
         switch (dayOfTheWeek) {
             case MyUtil.SUNDAY:
-                today = "sunday";
-                sessionViewModel.getSundayScheduledClass().observe(
-                        getViewLifecycleOwner(),
-                        addClassSessionList -> {
+                if (sessionViewModel.getSundayScheduledClass()!= null){
+                    sessionViewModel.getSundayScheduledClass().observe(
+                            getViewLifecycleOwner(),
+                            addClassSessionList -> {
 
-                            setUpClasses(calendar);
-                        });
+                                setUpClasses(calendar);
+                            });
+                }
                 return;
 
             case MyUtil.MONDAY:
-                today = "monday";
-                sessionViewModel.getMondayScheduledClass().
-                        observe(getViewLifecycleOwner(),
-                                addClassSessionList -> {
-                                    mTodaySessionClasses = addClassSessionList;
-                                    setUpClasses(calendar);
+                if (sessionViewModel.getMondayScheduledClass() != null){
+                    sessionViewModel.getMondayScheduledClass().
+                            observe(getViewLifecycleOwner(),
+                                    addClassSessionList -> {
+                                        mTodaySessionClasses = addClassSessionList;
+                                        setUpClasses(calendar);
 
-                                });
+                                    });
+                }
+
                 return;
 
             case MyUtil.TUESDAY:
-                today = "tuesday";
+                if (sessionViewModel.getTuesdayScheduledClass() != null){
+                    sessionViewModel.getTuesdayScheduledClass().observe(
+                            getViewLifecycleOwner(),
+                            addClassSessionList -> {
+                                setUpClasses(calendar);
 
-                sessionViewModel.getTuesdayScheduledClass().observe(
-                        getViewLifecycleOwner(),
-                        addClassSessionList -> {
-//                            mTodaySessionClasses = addClassSessionList;
-                            setUpClasses(calendar);
+                            });
+                }
 
-                        });
                 return;
 
             case MyUtil.WEDNESDAY:
-                today = "wednesday";
-                sessionViewModel.getWednesdayScheduledClass().observe(
-                        getViewLifecycleOwner(),
-                        addClassSessionList -> {
-                            mTodaySessionClasses = addClassSessionList;
-                            setUpClasses(calendar);
+                if (sessionViewModel.getWednesdayScheduledClass() != null){
+                    sessionViewModel.getWednesdayScheduledClass().observe(
+                            getViewLifecycleOwner(),
+                            addClassSessionList -> {
+                                mTodaySessionClasses = addClassSessionList;
+                                setUpClasses(calendar);
 
-                        });
+                            });
+                }
+
                 return;
 
             case MyUtil.THURSDAY:
-                today = "thursday";
                 if (sessionViewModel.getThursdayScheduledClass() != null){
                     sessionViewModel.getThursdayScheduledClass().observe(
                             getViewLifecycleOwner(),
@@ -397,7 +399,6 @@ public class HomeFragment extends Fragment {
                 return;
 
             case MyUtil.FRIDAY:
-                today = "friday";
                 if(sessionViewModel.getFridayScheduledClass() != null){
                     sessionViewModel.getFridayScheduledClass().observe(
                             getViewLifecycleOwner(),
@@ -411,14 +412,15 @@ public class HomeFragment extends Fragment {
                 return;
 
             case MyUtil.SATURDAY:
-                today = "saturday";
-                sessionViewModel.getSaturdayScheduledClass().
-                        observe(getViewLifecycleOwner(),
-                                addClassSessionList -> {
-                                    mTodaySessionClasses = addClassSessionList;
-                                    setUpClasses(calendar);
+                if (sessionViewModel.getSaturdayScheduledClass()!=null){
+                    sessionViewModel.getSaturdayScheduledClass().
+                            observe(getViewLifecycleOwner(),
+                                    addClassSessionList -> {
+                                        mTodaySessionClasses = addClassSessionList;
+                                        setUpClasses(calendar);
 
-                                });
+                                    });
+                }
         }
     }
 }

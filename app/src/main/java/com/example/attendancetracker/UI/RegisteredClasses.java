@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.SavedStateVMFactory;
@@ -20,12 +21,17 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.attendancetracker.Adapters.HistoryAdapter;
+import com.example.attendancetracker.Adapters.SearchClassAdapter;
 import com.example.attendancetracker.Adapters.SessionAdapter;
 import com.example.attendancetracker.AddClassSession;
 import com.example.attendancetracker.R;
@@ -44,7 +50,7 @@ public class RegisteredClasses extends Fragment {
 
     private Toolbar registerClassesToolbar;
 
-    MainMenuListeners mMainMenuListeners;
+    private MainMenuListeners mMainMenuListeners;
 
     @BindView(R.id.registeredClassesRecyclerView)
     RecyclerView mRecyclerViewClassesList;
@@ -52,20 +58,33 @@ public class RegisteredClasses extends Fragment {
     @BindView(R.id.searchRegisteredClasses)
     SearchView searchRegisteredClasses;
 
+    @BindView(R.id.searchRegisteredClassRecyclerView)
+    RecyclerView mSearchClassRecyclerView;
+
+    @BindView(R.id.filterListLayout)
+    ConstraintLayout filterListParentLayout;
+
+    SearchClassAdapter searchClassAdapter;
+
+
+
+
     @BindView(R.id.titleToolbar)
     TextView mTitleTextView;
 
-    LinearLayoutManager mLinearLayoutManager;
+    private LinearLayoutManager mLinearLayoutManager,searchClassLinearLayoutManager;
 
-    SessionAdapter mSessionAdapter;
+    private SessionAdapter mSessionAdapter;
 
-    List<AddClassSession> addClassSessionList;
+    private List<AddClassSession> addClassSessionList ,emptyList;
 
-    SessionViewModel sessionViewModel;
+    private SessionViewModel sessionViewModel;
 
     AddClassSession mAddClassSession;
 
-    RegisterClassesListener mRegisterClassesListener;
+    private RegisterClassesListener mRegisterClassesListener;
+
+    HandleFilterClassSessionDropdown handleFilterClassSessionDropdown;
 
 
 
@@ -101,18 +120,36 @@ public class RegisteredClasses extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        View view  = inflater.
                inflate(R.layout.fragment_registered_classes, container, false);
        ButterKnife.bind(this,view);
 
+       EditText editText = (EditText) searchRegisteredClasses.
+               findViewById(androidx.appcompat.R.id.search_src_text);
+
+       editText.setTextColor(getResources().getColor(R.color.colorAccent));
+
+       editText.setHintTextColor(getResources().getColor(R.color.colorAccent));
+
+       editText.setHint("Search class session");
+
        addClassSessionList = new ArrayList<>();
+       emptyList = new ArrayList<>();
 
        mLinearLayoutManager = new LinearLayoutManager(getContext());
 
+       searchClassLinearLayoutManager = new LinearLayoutManager(getContext());
+
        mRecyclerViewClassesList.setLayoutManager(mLinearLayoutManager);
+
+       mSearchClassRecyclerView.setLayoutManager(searchClassLinearLayoutManager);
+
+       mSearchClassRecyclerView.addItemDecoration
+                (new DividerItemDecoration(Objects.requireNonNull(getContext())
+                        ,DividerItemDecoration.VERTICAL));
 
        mRecyclerViewClassesList.addItemDecoration
                (new DividerItemDecoration(Objects.requireNonNull(getContext())
@@ -125,6 +162,16 @@ public class RegisteredClasses extends Fragment {
        registerClassesToolbar = view.findViewById(R.id.registerClassesToolbar);
 
        mRecyclerViewClassesList.setAdapter(mSessionAdapter);
+
+
+       filterListParentLayout.setTranslationY(getHeight());
+
+
+
+       handleFilterClassSessionDropdown = new HandleFilterClassSessionDropdown(getContext(),
+               filterListParentLayout,new AccelerateDecelerateInterpolator(),
+               mRecyclerViewClassesList);
+
 
        if (registerClassesToolbar != null){
            ((AppCompatActivity) (Objects.requireNonNull(getActivity()))).
@@ -139,18 +186,55 @@ public class RegisteredClasses extends Fragment {
            });
        }
 
-       searchRegisteredClasses.setOnFocusChangeListener((v, hasFocus) -> {
+     searchRegisteredClasses.setOnCloseListener(new SearchView.OnCloseListener() {
+         @Override
+         public boolean onClose() {
+             Toast.makeText(getContext(), "query closed", Toast.LENGTH_SHORT).show();
+             handleFilterClassSessionDropdown.performAnimation();
+             mTitleTextView.setText("REGISTERED CLASSES");
+             searchClassAdapter.UpdatedAdapter(emptyList);
 
-           if (hasFocus){
-               mTitleTextView.setText("");
-           } else{
+             return false;
+         }
+     });
 
-               mTitleTextView.setText
-                       (getString(R.string.registered_classes));
+       searchRegisteredClasses.setOnSearchClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               mRecyclerViewClassesList.setVisibility(View.GONE);
+               handleFilterClassSessionDropdown.performAnimation();
+               searchClassAdapter = new SearchClassAdapter(getContext(),
+                       addClassSessionList);
+               mSearchClassRecyclerView.setAdapter(searchClassAdapter);
+               mTitleTextView.setText(null);
+               searchClassAdapter.setOnClassnameListener(addClassSession -> {
+                   sessionViewModel.setAddClassSessionData(addClassSession);
+                   mRegisterClassesListener.goClassDetails(addClassSession);
+               });
+           }
+       });
+
+       searchRegisteredClasses.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+           @Override
+           public boolean onQueryTextSubmit(String query) {
+               Toast.makeText(getContext(), "query submit", Toast.LENGTH_SHORT).show();
+               return false;
+           }
+
+           @Override
+           public boolean onQueryTextChange(String newText) {
+               Toast.makeText(getContext(), "query on text change", Toast.LENGTH_SHORT).show();
+               searchClassAdapter.filter(newText);
+               return false;
            }
        });
 
        return view;
+    }
+
+    private int getHeight() {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        return displayMetrics.heightPixels;
     }
 
     @Override
@@ -180,6 +264,7 @@ public class RegisteredClasses extends Fragment {
         sessionViewModel.getAllClassSessionFromSessionRepository().
                 observe(this, addClassSessionList -> {
                     mSessionAdapter.updateSessionAdapter(addClassSessionList);
+                    this.addClassSessionList = addClassSessionList;
                 });
 
         mSessionAdapter.setClassSessionDataListener(addClassSession -> {
@@ -188,4 +273,6 @@ public class RegisteredClasses extends Fragment {
         });
 
     }
+
+    //TODO: fix back navigation
 }

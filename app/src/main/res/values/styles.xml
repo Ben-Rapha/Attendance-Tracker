@@ -8,6 +8,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="searchViewStyle">@style/AppSearchView</item>
     </style>
 
     <style name="Widget.AttendanceTracker.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -50,10 +51,14 @@
     </style>
 
     <style name="AppSearchView" parent="Widget.AppCompat.SearchView">
-        <item name="android:textColor">@color/colorAccent</item>
         <item name="searchIcon">@drawable/ic_search</item>
         <item name="searchHintIcon">@drawable/ic_search</item>
         <item name="closeIcon">@drawable/ic_close</item>
+        <item name="android:textColorHint">@android:color/white</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:editTextColor">@android:color/white</item>
+
+
     </style>
 
     <style name="AppDefaultTextViewStyle" parent="Widget.AppCompat.TextView">
