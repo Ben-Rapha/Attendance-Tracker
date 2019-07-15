@@ -83,15 +83,6 @@ public class HandleFilterClassSessionDropdown
             @Override
             public void onAnimationEnd(Animator animation) {
 
-//                if (!droppedDown) {
-//                    parentRecyclerView.
-//                            setVisibility(View.GONE);
-//
-//                } else{
-//
-//                    parentRecyclerView.
-//                            setVisibility(View.VISIBLE);
-//                }
             }
 
             @Override

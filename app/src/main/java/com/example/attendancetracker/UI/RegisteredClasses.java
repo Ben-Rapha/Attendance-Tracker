@@ -224,7 +224,11 @@ public class RegisteredClasses extends Fragment {
            @Override
            public boolean onQueryTextChange(String newText) {
                Toast.makeText(getContext(), "query on text change", Toast.LENGTH_SHORT).show();
-               searchClassAdapter.filter(newText);
+
+               if (!newText.isEmpty()){
+                   searchClassAdapter.filter(newText);
+               }
+
                return false;
            }
        });
@@ -274,5 +278,5 @@ public class RegisteredClasses extends Fragment {
 
     }
 
-    //TODO: fix back navigation
+  
 }

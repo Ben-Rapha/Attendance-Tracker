@@ -13,6 +13,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.SavedStateVMFactory;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -164,7 +166,8 @@ public class DetailClassFragment extends Fragment implements PopupMenu.OnMenuIte
             toolbar.setTitleTextColor(getResources().getColor(R.color.copperGold));
 
             toolbar.setNavigationOnClickListener((View v) ->{
-                mMainMenuListeners.goToHome();
+                final NavController navController = Navigation.findNavController(view);
+                navController.popBackStack();
             });
 
             collapsingToolbarLayout.setTitle("Session Detail");
