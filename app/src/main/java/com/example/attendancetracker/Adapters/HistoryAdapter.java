@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.attendancetracker.Model.History;
@@ -86,6 +87,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         @BindView(R.id.deleteHistory)
         ImageButton imageButtonDeleteHistory;
 
+
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -139,7 +142,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     }
 
     public void insertItemInList(int position,History history){
-        historyList.set(position,history);
+        historyList.add(position,history);
         notifyItemInserted(position);
     }
 }

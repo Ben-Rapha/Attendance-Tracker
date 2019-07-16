@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".UI.HistoryFragment"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/colorPrimary"
     >
 
     <RelativeLayout
@@ -14,6 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:elevation="0dp"
         >
         <androidx.appcompat.widget.Toolbar
@@ -23,17 +26,19 @@
             android:background="?attr/colorPrimary"
             android:elevation="0dp"
             android:theme="@style/AppTheme"
-            app:navigationIcon="@drawable/openedmenusvgcoppergold"
+            app:navigationIcon="@drawable/ic_openedmenusvg"
             app:titleTextColor="@color/colorAccent" />
         <TextView
+            android:id="@+id/historyTitleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/history"
             android:textAppearance="@style/TextAppearance.AttendanceTracker.Title"
-            android:textColor="@color/copperGold" />
+            android:textColor="@color/colorAccent" />
 
         <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchHistoryClasses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/historyToolbar"
@@ -42,6 +47,9 @@
             app:iconifiedByDefault="true"
             style="@style/AppSearchView"
             android:paddingTop="5dp"
+            android:focusableInTouchMode="false"
+            android:focusable="false"
+
             >
         </androidx.appcompat.widget.SearchView>
     </RelativeLayout>
@@ -49,10 +57,42 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/historyRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/sixty_dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/relativeLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/twenty_five_dp"
         android:layout_marginStart="@dimen/sixteen_dp"
         android:layout_marginEnd="@dimen/sixteen_dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 
-</LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/filterListHistoryLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/foreground_backdrop">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchHistoryClassRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/sixteen_dp"
+            android:layout_marginTop="@dimen/twenty_five_dp"
+            android:layout_marginEnd="@dimen/sixteen_dp"
+            android:layout_marginBottom="@dimen/sixteen_dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

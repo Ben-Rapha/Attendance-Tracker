@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/class_background_detail_shape"
     android:backgroundTint="@color/colorPrimaryDark"
     android:layout_margin="@dimen/eight_dp">

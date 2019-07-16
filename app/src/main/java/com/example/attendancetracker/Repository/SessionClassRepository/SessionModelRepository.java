@@ -127,14 +127,24 @@ public class SessionModelRepository {
             extends AsyncTask<String,Void,Void>{
         SessionDao sessionDao;
 
+        String classname;
+
         deleteClassSessionAsyncTask(SessionDao sessionDao){
             this.sessionDao = sessionDao;
         }
 
         @Override
         protected Void doInBackground(String... sessionName) {
+            classname = sessionName[0];
             sessionDao.deleteSpecifiedSessionClass(sessionName[0]);
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            todayClassSessionListener.deletedSession(classname);
         }
     }
 
@@ -319,4 +329,7 @@ public class SessionModelRepository {
     public  static void  setTodayClassSessionListener(TodayClassSessionListener listener){
         todayClassSessionListener = listener;
     }
+
+
+
 }

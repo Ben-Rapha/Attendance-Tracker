@@ -31,8 +31,9 @@ public class HandleFilterClassSessionDropdown
 
 
 
-   public HandleFilterClassSessionDropdown(Context context, View animateView,
-                                           Interpolator interpolator,RecyclerView parentRecyclerView ){
+   public HandleFilterClassSessionDropdown(
+           Context context, View animateView,
+           Interpolator interpolator,RecyclerView parentRecyclerView ){
 
        this.context = context;
        this.animatedView = animateView;
@@ -82,6 +83,13 @@ public class HandleFilterClassSessionDropdown
 
             @Override
             public void onAnimationEnd(Animator animation) {
+
+                if (!droppedDown){
+                    parentRecyclerView.setVisibility(View.GONE);
+                } else {
+                    parentRecyclerView.setVisibility(View.VISIBLE);
+                }
+
 
             }
 

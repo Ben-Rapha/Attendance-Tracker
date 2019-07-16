@@ -9,4 +9,6 @@ import java.util.List;
 public interface  TodayClassSessionListener{
 
     void todayClassSession(LiveData<List<AddClassSession>> listLiveData);
+
+    void deletedSession(String sessionDeleted);
 }

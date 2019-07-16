@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -439,7 +440,8 @@ public class AddNewClassSessionFragment extends Fragment {
                 classnameBool = MyUtil.checkInputValidity(classnameEditable.toString());
                 if (classnameBool) {
                     mTextInputLayoutClassName.setError(null);
-                    classname = classnameEditable.toString();
+                    classname = classnameEditable.toString().trim().
+                            toUpperCase(Locale.getDefault());
                 }
             }
         });
@@ -528,66 +530,6 @@ public class AddNewClassSessionFragment extends Fragment {
 
     }
 
-    //fires when the user chooses a time
-//    @Override
-//    public void updateTime(String endTime, String rawTime) {
-//
-//        if (dialogFragmentStartTimePicker != null) {
-//            if (dialogFragmentStartTimePicker.getStartTimeSet()) {
-//                actualStartTime.setText(endTime);
-//                actualStartTime.setTextColor(getResources().getColor(R.color.white));
-//                isStartTimeSet = true;
-//                sqlStartTime = getFormattedTime(rawTime);
-//                timeStart = rawTime;
-//                mAppCompatTextViewStartTime.setError(null);
-//            }
-//        }
-//
-//        if (dialogFragmentEndTimePicker != null) {
-//            if (dialogFragmentEndTimePicker.getEndTimeSet()) {
-//                appCompatTextViewActualEndTime.setText(endTime);
-//                appCompatTextViewActualEndTime.setTextColor(getResources().getColor(R.color.white));
-//                isEndTimeSet = true;
-//                sqlEndTime = getFormattedTime(rawTime);
-//                timeEnd = rawTime;
-//                mAppCompatTextViewEndTime.setError(null);
-//            }
-//        }
-//
-//        if (isEndTimeSet & isStartTimeSet) {
-//            checkIsTimeValid(timeStart, timeEnd);
-//        }
-//
-//    }
-
-
-    //fires when the user chooses a date
-//    @Override
-//    public void setDate(String date, String sqlFormatDate) {
-//        if (mStartDateDialog != null) {
-//            if (mStartDateDialog.getStartDateSet()) {
-//                startActualDate.setText(date);
-//                startActualDate.setTextColor(getResources().getColor(R.color.white));
-//                isStartDateSet = true;
-//                sqlStartDate = getFormattedSqlDate(sqlFormatDate);
-//                dateStart = sqlFormatDate;
-//                mAppCompatTextViewStartDate.setError(null);
-//            }
-//        }
-//        if (mEndDateDialog != null) {
-//            if (mEndDateDialog.getEndDateSet()) {
-//                endActualDate.setText(date);
-//                endActualDate.setTextColor(getResources().getColor(R.color.white));
-//                isEndDateSet = true;
-//                sqlEndDate = getFormattedSqlDate(sqlFormatDate);
-//                dateEnd = sqlFormatDate;
-//                mAppCompatTextViewEndDate.setError(null);
-//            }
-//        }
-//        if ((!(dateStart.isEmpty()) & !(dateEnd.isEmpty()))) {
-//            checkIsDateValid(dateStart, dateEnd);
-//        }
-//    }
 
     private Time getFormattedTime(String time) {
         Time formattedTime;

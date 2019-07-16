@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.attendancetracker.AddClassSession;
+import com.example.attendancetracker.Model.History;
 import com.example.attendancetracker.R;
 
 import java.util.List;
@@ -135,5 +136,19 @@ public class SessionAdapter extends
 
     public void setClassSessionDataListener(ClassSessionDataListener classSessionDataListener){
        mClassSessionDataListener = classSessionDataListener;
+    }
+
+
+    public void insertItemInList(int position, AddClassSession addClassSession){
+        addClassSessionList.add(position, addClassSession);
+        notifyItemInserted(position);
+    }
+
+    public void removeItemFromList(int position){
+
+        addClassSessionList.remove(position);
+
+        notifyItemRemoved(position);
+
     }
 }

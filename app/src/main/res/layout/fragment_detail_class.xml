@@ -112,7 +112,7 @@
                     android:id="@+id/horizontalScrollView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/sixteen_dp"
+                    android:layout_marginStart="@dimen/eight_dp"
                     android:layout_marginEnd="@dimen/sixteen_dp"
                     android:layout_marginBottom="@dimen/thirty_dp"
                     app:layout_constraintEnd_toEndOf="parent"

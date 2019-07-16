@@ -109,9 +109,6 @@ public class HomeFragment extends Fragment {
     Calendar calendar;
 
 
-
-
-
     HandleMenuDropDownListener handleMenuDropDownListener;
 
 
@@ -121,7 +118,7 @@ public class HomeFragment extends Fragment {
 
     List<AddClassSession> mTodaySessionClasses, sortedTodayClasses;
 
-    AddClassSession firstSession, secondSession,thirdSession;
+    AddClassSession firstSession, secondSession, thirdSession;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -133,9 +130,8 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v("resume","on  create called");
+        Log.v("resume", "on  create called");
     }
-
 
 
     @Override
@@ -246,9 +242,9 @@ public class HomeFragment extends Fragment {
 
         int minutesOfTheDay = calendar.get(Calendar.MINUTE);
 
-        String rawTimeString =  hourOfTheDay + ":" +
+        String rawTimeString = hourOfTheDay + ":" +
                 ((minutesOfTheDay / 10 < 1) ? "0" + minutesOfTheDay :
-                        String.valueOf(minutesOfTheDay)) + ":"+"00";
+                        String.valueOf(minutesOfTheDay)) + ":" + "00";
 
 
         @SuppressLint("SimpleDateFormat")
@@ -258,8 +254,8 @@ public class HomeFragment extends Fragment {
         SimpleDateFormat simpleDateClassStartTIme = new SimpleDateFormat("hh:mm:ss");
 
 
-        if (mTodaySessionClasses != null){
-            for (int i = 0 ; mTodaySessionClasses.size() > i; i++){
+        if (mTodaySessionClasses != null) {
+            for (int i = 0; mTodaySessionClasses.size() > i; i++) {
 
                 try {
                     Date nowTime = simpleDateNowTime.parse(rawTimeString);
@@ -283,19 +279,19 @@ public class HomeFragment extends Fragment {
 
         }
 
-        if (sortedTodayClasses.size() >  0){
-                String durationTime = sortedTodayClasses.get(0).getStartTimeString() + "- "
-                        +sortedTodayClasses.get(0).getEndTimeString();
+        if (sortedTodayClasses.size() > 0) {
+            String durationTime = sortedTodayClasses.get(0).getStartTimeString() + "- "
+                    + sortedTodayClasses.get(0).getEndTimeString();
 
-                mClassnameUpNext.setText(sortedTodayClasses.get(0).getClassname());
-                mLocationUpNext.setText(sortedTodayClasses.get(0).getLocation());
-                mDurationUpNext.setText(durationTime);
+            mClassnameUpNext.setText(sortedTodayClasses.get(0).getClassname());
+            mLocationUpNext.setText(sortedTodayClasses.get(0).getLocation());
+            mDurationUpNext.setText(durationTime);
         }
 
-        if (sortedTodayClasses.size() >  1){
+        if (sortedTodayClasses.size() > 1) {
 
             String durationTime = sortedTodayClasses.get(1).getStartTimeString() + "- "
-                    +sortedTodayClasses.get(1).getEndTimeString();
+                    + sortedTodayClasses.get(1).getEndTimeString();
 
             mUpComingClassName.setText(sortedTodayClasses.get(1).getClassname());
             mUpComingLocation.setText(sortedTodayClasses.get(1).getLocation());
@@ -303,10 +299,10 @@ public class HomeFragment extends Fragment {
 
         }
 
-        if (sortedTodayClasses.size() >  2){
+        if (sortedTodayClasses.size() > 2) {
 
             String durationTime = sortedTodayClasses.get(2).getStartTimeString() + "- "
-                    +sortedTodayClasses.get(2).getEndTimeString();
+                    + sortedTodayClasses.get(2).getEndTimeString();
             mUpComingClassname2.setText(sortedTodayClasses.get(2).getClassname());
             mUpcomingLocation2.setText(sortedTodayClasses.get(2).getLocation());
             mUpComingDuration2.setText(durationTime);
@@ -324,14 +320,38 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        String today;
-        Log.v("resume","on resume called");
-        SessionModelRepository.setTodayClassSessionListener(listLiveData ->
-                listLiveData.observe(getViewLifecycleOwner(), addClassSessionList -> {
-                    mTodaySessionClasses = addClassSessionList;
-                    setUpClasses(calendar);
-                    Log.v("resume","listener called");
-                }));
+
+        SessionModelRepository.setTodayClassSessionListener(new TodayClassSessionListener() {
+            @Override
+            public void todayClassSession(LiveData<List<AddClassSession>> listLiveData) {
+
+                listLiveData.observe(getViewLifecycleOwner(),
+                        new Observer<List<AddClassSession>>() {
+                            @Override
+                            public void onChanged(List<AddClassSession> addClassSessionList) {
+
+                                mTodaySessionClasses = addClassSessionList;
+                                setUpClasses(calendar);
+                            }
+                        });
+            }
+
+            @Override
+            public void deletedSession(String classname) {
+                int index = 0;
+
+                for (AddClassSession addClassSession : mTodaySessionClasses) {
+                    if (classname.equals(mTodaySessionClasses.get(index).getClassname())) {
+                        mTodaySessionClasses.remove(index);
+                        setUpClasses(calendar);
+                    } else {
+                        index = index + 1;
+                    }
+                }
+
+
+            }
+        });
 
         calendar = Calendar.getInstance();
 
@@ -339,7 +359,7 @@ public class HomeFragment extends Fragment {
 
         switch (dayOfTheWeek) {
             case MyUtil.SUNDAY:
-                if (sessionViewModel.getSundayScheduledClass()!= null){
+                if (sessionViewModel.getSundayScheduledClass() != null) {
                     sessionViewModel.getSundayScheduledClass().observe(
                             getViewLifecycleOwner(),
                             addClassSessionList -> {
@@ -350,7 +370,7 @@ public class HomeFragment extends Fragment {
                 return;
 
             case MyUtil.MONDAY:
-                if (sessionViewModel.getMondayScheduledClass() != null){
+                if (sessionViewModel.getMondayScheduledClass() != null) {
                     sessionViewModel.getMondayScheduledClass().
                             observe(getViewLifecycleOwner(),
                                     addClassSessionList -> {
@@ -363,7 +383,7 @@ public class HomeFragment extends Fragment {
                 return;
 
             case MyUtil.TUESDAY:
-                if (sessionViewModel.getTuesdayScheduledClass() != null){
+                if (sessionViewModel.getTuesdayScheduledClass() != null) {
                     sessionViewModel.getTuesdayScheduledClass().observe(
                             getViewLifecycleOwner(),
                             addClassSessionList -> {
@@ -375,7 +395,7 @@ public class HomeFragment extends Fragment {
                 return;
 
             case MyUtil.WEDNESDAY:
-                if (sessionViewModel.getWednesdayScheduledClass() != null){
+                if (sessionViewModel.getWednesdayScheduledClass() != null) {
                     sessionViewModel.getWednesdayScheduledClass().observe(
                             getViewLifecycleOwner(),
                             addClassSessionList -> {
@@ -388,22 +408,21 @@ public class HomeFragment extends Fragment {
                 return;
 
             case MyUtil.THURSDAY:
-                if (sessionViewModel.getThursdayScheduledClass() != null){
+                if (sessionViewModel.getThursdayScheduledClass() != null) {
                     sessionViewModel.getThursdayScheduledClass().observe(
                             getViewLifecycleOwner(),
                             addClassSessionList -> {
-//                                mTodaySessionClasses = addClassSessionList;
                                 setUpClasses(calendar);
                             });
                 }
                 return;
 
             case MyUtil.FRIDAY:
-                if(sessionViewModel.getFridayScheduledClass() != null){
+                if (sessionViewModel.getFridayScheduledClass() != null) {
                     sessionViewModel.getFridayScheduledClass().observe(
                             getViewLifecycleOwner(),
                             addClassSessionList -> {
-                            mTodaySessionClasses = addClassSessionList;
+                                mTodaySessionClasses = addClassSessionList;
                                 setUpClasses(calendar);
 
                             });
@@ -412,7 +431,7 @@ public class HomeFragment extends Fragment {
                 return;
 
             case MyUtil.SATURDAY:
-                if (sessionViewModel.getSaturdayScheduledClass()!=null){
+                if (sessionViewModel.getSaturdayScheduledClass() != null) {
                     sessionViewModel.getSaturdayScheduledClass().
                             observe(getViewLifecycleOwner(),
                                     addClassSessionList -> {

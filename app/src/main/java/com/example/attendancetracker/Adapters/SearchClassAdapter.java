@@ -78,7 +78,7 @@ public class SearchClassAdapter extends RecyclerView.Adapter<SearchClassAdapter.
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            classname.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
         @Override
@@ -127,9 +127,6 @@ public class SearchClassAdapter extends RecyclerView.Adapter<SearchClassAdapter.
         }
 
         notifyDataSetChanged();
-       for (AddClassSession addClassSession1 : filteredList){
-           Log.v("classList", addClassSession1.getClassname());
-       }
 
    }
 
