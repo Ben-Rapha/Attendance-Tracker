@@ -9,6 +9,17 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         <item name="searchViewStyle">@style/AppSearchView</item>
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
+
+        <item name="android:windowContentTransitions">true</item>
+
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/change_image_transform</item>
+        <item name="android:windowSharedElementExitTransition">
+            @transition/change_image_transform</item>
+
+
     </style>
 
     <style name="Widget.AttendanceTracker.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -67,5 +78,6 @@
         <item name="android:layout_marginEnd">@dimen/sixteen_dp</item>
         <item name="android:textColor">@color/copperGold</item>
     </style>
+
 
 </resources>

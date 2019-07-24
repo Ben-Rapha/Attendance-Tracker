@@ -3,9 +3,12 @@ package com.example.attendancetracker.UI;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -69,6 +72,8 @@ public class SignUpFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
     }
 
     @Override
@@ -81,7 +86,7 @@ public class SignUpFragment extends Fragment {
         ButterKnife.bind(this,view);
 
 
-        mUsernameEditText.addTextChangedListener(new MytextWatcher() {
+        mUsernameEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable username) {
 
@@ -102,7 +107,7 @@ public class SignUpFragment extends Fragment {
             usernameTest = false;
         });
 
-        mPasswordEditText.addTextChangedListener(new MytextWatcher() {
+        mPasswordEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable password) {
                 if (password != null){
@@ -120,7 +125,7 @@ public class SignUpFragment extends Fragment {
             }
         });
 
-        mEmailEditText.addTextChangedListener(new MytextWatcher() {
+        mEmailEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable email) {
                 if (email != null){
@@ -140,7 +145,7 @@ public class SignUpFragment extends Fragment {
             emailTest = false;
         });
 
-        mConfirmPasswordEditText.addTextChangedListener(new MytextWatcher() {
+        mConfirmPasswordEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable password) {
                 if (password != null){
@@ -177,6 +182,23 @@ public class SignUpFragment extends Fragment {
             }
         });
 
+//        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//
+//
+//                final NavController navController = Navigation.findNavController(view);
+//                navController.popBackStack();
+//
+//            }
+//        };
+//
+//        requireActivity().getOnBackPressedDispatcher().
+//                addCallback(getViewLifecycleOwner(),callback);
+
+
+
+
         return view;
 
 
@@ -210,4 +232,6 @@ public class SignUpFragment extends Fragment {
             throw new RuntimeException("must implement SignUpListener");
         }
     }
+
+
 }

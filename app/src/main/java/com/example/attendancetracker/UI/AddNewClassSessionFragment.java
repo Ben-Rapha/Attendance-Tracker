@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.SavedStateVMFactory;
@@ -28,8 +27,6 @@ import com.example.attendancetracker.R;
 import com.example.attendancetracker.Repository.SessionClassRepository.SessionModelRepository;
 import com.example.attendancetracker.Repository.SessionClassRepository.SessionViewModel;
 import com.example.attendancetracker.UI.Dialogs.DatePicker;
-import com.example.attendancetracker.UI.MainMenuListeners;
-import com.example.attendancetracker.UI.MytextWatcher;
 import com.example.attendancetracker.UI.Dialogs.TimePicker;
 import com.example.attendancetracker.Util.MyUtil;
 import com.google.android.material.button.MaterialButton;
@@ -159,7 +156,7 @@ public class AddNewClassSessionFragment extends Fragment {
 
     java.sql.Date sqlStartDate, sqlEndDate;
 
-    Time sqlStartTime, sqlEndTime;
+    private Time sqlStartTime, sqlEndTime;
 
     public AddNewClassSessionFragment() {
         // Required empty public constructor
@@ -430,7 +427,7 @@ public class AddNewClassSessionFragment extends Fragment {
      * input must be one or more
      */
     private void setTextChangeListener() {
-        mTextInputEditTextClassName.addTextChangedListener(new MytextWatcher() {
+        mTextInputEditTextClassName.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable classnameEditable) {
                 loseOrGainFocus(mAppCompatTextViewStartDate, false);
@@ -447,7 +444,7 @@ public class AddNewClassSessionFragment extends Fragment {
         });
 
 
-        mTextInputEditTextLocation.addTextChangedListener(new MytextWatcher() {
+        mTextInputEditTextLocation.addTextChangedListener(new MyTextWatcher() {
 
             @Override
             public void afterTextChanged(Editable locationEditable) {

@@ -114,7 +114,8 @@
             android:textColor="@color/copperGold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+           />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/upNextConstraint"
@@ -125,7 +126,8 @@
             android:background="@drawable/class_background_detail_shape"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/upNext">
+            app:layout_constraintTop_toBottomOf="@id/upNext"
+           >
 
             <View
                 android:id="@+id/view"
@@ -171,6 +173,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/view"
                 app:layout_constraintTop_toBottomOf="@id/locationUpNext" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/notifyMe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
@@ -183,7 +193,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="@dimen/forty_two_dp_circle"
             android:layout_marginStart="@dimen/eight_dp"
-            android:layout_marginEnd="@dimen/eight_dp"/>
+            android:layout_marginEnd="@dimen/eight_dp"
+            />
 
         <TextView
             android:id="@+id/upComingClass"
@@ -198,7 +209,8 @@
             android:textColor="@color/copperGold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider" />
+            app:layout_constraintTop_toBottomOf="@+id/divider"
+           />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/upComingConstraint"
@@ -209,7 +221,8 @@
             android:background="@drawable/class_background_detail_shape"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/upComingClass">
+            app:layout_constraintTop_toBottomOf="@id/upComingClass"
+            >
 
             <View
                 android:id="@+id/upComingView"
@@ -266,7 +279,8 @@
             android:background="@drawable/class_background_detail_shape"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/upComingConstraint">
+            app:layout_constraintTop_toBottomOf="@+id/upComingConstraint"
+            >
 
             <View
                 android:id="@+id/upComingView2"
@@ -331,6 +345,48 @@
             android:tint="@color/light_cyan"
 
              />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:contentDescription="@string/empty_session"
+                android:src="@drawable/ic_empty_session"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/empty_session_text"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/use_the"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/edit_icon"
+                    android:src="@drawable/ic_edit"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/to_add_new_class_session"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

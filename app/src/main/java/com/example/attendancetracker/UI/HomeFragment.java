@@ -2,8 +2,10 @@ package com.example.attendancetracker.UI;
 
 
 import android.annotation.SuppressLint;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,25 +18,27 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.SavedStateVMFactory;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
-import android.util.Log;
+import android.os.PersistableBundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.attendancetracker.AddClassSession;
 import com.example.attendancetracker.HandleMenuDropDownListener;
 import com.example.attendancetracker.R;
 import com.example.attendancetracker.Repository.SessionClassRepository.SessionModelRepository;
 import com.example.attendancetracker.Repository.SessionClassRepository.SessionViewModel;
+import com.example.attendancetracker.Services.AlertNotificationJobService;
 import com.example.attendancetracker.Util.MyUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -72,12 +76,12 @@ public class HomeFragment extends Fragment {
     public TextView mSettingTextView;
 
     @BindView(R.id.addNewClassFab)
-    public FloatingActionButton mAddNewClassFloatingActionButton;
+    public FloatingActionButton mAddNewClassSessionFloatingActionButton;
 
     private MainMenuListeners mMainMenuListeners;
 
     @BindView(R.id.mainActivityToolbar)
-    Toolbar toolbar;
+    Toolbar mHomeToolbar;
 
     @BindView(R.id.classNameUpNext)
     TextView mClassnameUpNext;
@@ -106,31 +110,28 @@ public class HomeFragment extends Fragment {
     @BindView(R.id.upComingClassDuration2)
     TextView mUpComingDuration2;
 
-    Calendar calendar;
+    @BindView(R.id.notifyMe)
+    SwitchMaterial notifyMeSwitchButton;
+
+    private Calendar calendar;
+
+    private JobScheduler schedulerNotification;
 
 
-    HandleMenuDropDownListener handleMenuDropDownListener;
+    private AddClassSession addClassSessionNotify;
+
+
+    private HandleMenuDropDownListener handleMenuDropDownListener;
 
 
     HandleMenuDropDownListener.BackdropListener backdropListener;
 
     SessionViewModel sessionViewModel;
 
-    List<AddClassSession> mTodaySessionClasses, sortedTodayClasses;
-
-    AddClassSession firstSession, secondSession, thirdSession;
+    private List<AddClassSession> mTodayClassSessionList,mSortedTodayClassSessionList;
 
     public HomeFragment() {
         // Required empty public constructor
-    }
-
-
-    private LiveData<List<AddClassSession>> addClassSessionLiveData;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.v("resume", "on  create called");
     }
 
 
@@ -138,34 +139,60 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.home_fragment, container, false);
 
         ButterKnife.bind(this, view);
 
-        mAddNewClassFloatingActionButton.setColorFilter(
+
+        setUpHomeToolbar();
+
+        //this makes menu buttons not responsive to clicks when not needed
+        clearMenuListVisibility();
+
+
+        //change FAB background color
+        mAddNewClassSessionFloatingActionButton.setColorFilter(
                 getResources().getColor(R.color.light_cyan));
 
+        mTodayClassSessionList = new ArrayList<>();
 
-        mTodayTextView.setVisibility(View.GONE);
-        mClassesTextView.setVisibility(View.GONE);
-        mHistoryTextVIew.setVisibility(View.GONE);
-        mSettingTextView.setVisibility(View.GONE);
-        mProfileTextView.setVisibility(View.GONE);
 
-        if (toolbar != null) {
-            toolbar.setTitle("");
-            ((AppCompatActivity) Objects.requireNonNull(getActivity())).
-                    setSupportActionBar(toolbar);
+        //set up menu buttons listeners to navigate to the right destination
+        setUpMenuListListeners();
 
-            handleMenuDropDownListener = new HandleMenuDropDownListener(getContext(), constraintLayout,
-                    Objects.requireNonNull(getContext()).getDrawable(R.drawable.ic_openedmenusvg),
-                    getContext().getDrawable(R.drawable.ic_closed_menu),
-                    new AccelerateDecelerateInterpolator(), new OvershootInterpolator(),
-                    menuListContainer, mAddNewClassFloatingActionButton);
+        // listener to control when menu buttons to be responsive to user clicks
+        setUpBackDropListener();
 
-            toolbar.setNavigationOnClickListener(handleMenuDropDownListener);
-        }
 
+        // button control by user to alert them when a session starts
+        setNotifyMeSwitchButton();
+
+        return view;
+    }
+
+    private void setUpBackDropListener() {
+        HandleMenuDropDownListener.setBackdropListener(
+                isDown -> {
+                    if (isDown) {
+
+                        mTodayTextView.setVisibility(View.VISIBLE);
+                        mClassesTextView.setVisibility(View.VISIBLE);
+                        mHistoryTextVIew.setVisibility(View.VISIBLE);
+                        mSettingTextView.setVisibility(View.VISIBLE);
+                        mProfileTextView.setVisibility(View.VISIBLE);
+
+                    } else {
+
+                        mTodayTextView.setVisibility(View.GONE);
+                        mClassesTextView.setVisibility(View.GONE);
+                        mHistoryTextVIew.setVisibility(View.GONE);
+                        mSettingTextView.setVisibility(View.GONE);
+                        mProfileTextView.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    private void setUpMenuListListeners() {
         mClassesTextView.setOnClickListener((View v) -> {
             enableActiveButton(mClassesTextView);
             mMainMenuListeners.goToClasses();
@@ -186,7 +213,7 @@ public class HomeFragment extends Fragment {
             mMainMenuListeners.goToProfile();
         });
 
-        mAddNewClassFloatingActionButton.setOnClickListener((View v) -> {
+        mAddNewClassSessionFloatingActionButton.setOnClickListener((View v) -> {
             mMainMenuListeners.goToAddNewClass();
         });
 
@@ -194,28 +221,30 @@ public class HomeFragment extends Fragment {
             handleMenuDropDownListener.performAnimation();
 
         });
+    }
 
-        HandleMenuDropDownListener.setBackdropListener(
-                isDown -> {
-                    if (isDown) {
+    private void setUpHomeToolbar() {
+        if (mHomeToolbar != null) {
+            mHomeToolbar.setTitle("");
+            ((AppCompatActivity) Objects.requireNonNull(getActivity())).
+                    setSupportActionBar(mHomeToolbar);
 
-                        mTodayTextView.setVisibility(View.VISIBLE);
-                        mClassesTextView.setVisibility(View.VISIBLE);
-                        mHistoryTextVIew.setVisibility(View.VISIBLE);
-                        mSettingTextView.setVisibility(View.VISIBLE);
-                        mProfileTextView.setVisibility(View.VISIBLE);
+            handleMenuDropDownListener = new HandleMenuDropDownListener(getContext(), constraintLayout,
+                    Objects.requireNonNull(getContext()).getDrawable(R.drawable.ic_openedmenusvg),
+                    getContext().getDrawable(R.drawable.ic_closed_menu),
+                    new AccelerateDecelerateInterpolator(), new OvershootInterpolator(),
+                    menuListContainer, mAddNewClassSessionFloatingActionButton);
 
-                    } else {
+            mHomeToolbar.setNavigationOnClickListener(handleMenuDropDownListener);
+        }
+    }
 
-                        mTodayTextView.setVisibility(View.GONE);
-                        mClassesTextView.setVisibility(View.GONE);
-                        mHistoryTextVIew.setVisibility(View.GONE);
-                        mSettingTextView.setVisibility(View.GONE);
-                        mProfileTextView.setVisibility(View.GONE);
-                    }
-                });
-
-        return view;
+    private void clearMenuListVisibility() {
+        mTodayTextView.setVisibility(View.GONE);
+        mClassesTextView.setVisibility(View.GONE);
+        mHistoryTextVIew.setVisibility(View.GONE);
+        mSettingTextView.setVisibility(View.GONE);
+        mProfileTextView.setVisibility(View.GONE);
     }
 
     @Override
@@ -225,6 +254,8 @@ public class HomeFragment extends Fragment {
             mMainMenuListeners = (MainMenuListeners) context;
         }
     }
+
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -236,40 +267,101 @@ public class HomeFragment extends Fragment {
     }
 
     private void setUpClasses(Calendar calendar) {
-        sortedTodayClasses = new ArrayList<>();
+
+         mSortedTodayClassSessionList = new ArrayList<>();
 
         int hourOfTheDay = calendar.get(Calendar.HOUR_OF_DAY);
 
         int minutesOfTheDay = calendar.get(Calendar.MINUTE);
 
-        String rawTimeString = hourOfTheDay + ":" +
+
+        String timeOfTheDay = hourOfTheDay + ":" +
                 ((minutesOfTheDay / 10 < 1) ? "0" + minutesOfTheDay :
                         String.valueOf(minutesOfTheDay)) + ":" + "00";
 
 
         @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat simpleDateNowTime = new SimpleDateFormat("hh:mm:ss");
-
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat simpleDateClassStartTIme = new SimpleDateFormat("hh:mm:ss");
+        SimpleDateFormat simpleDateNowTime = new SimpleDateFormat("HH:mm:ss");
 
 
-        if (mTodaySessionClasses != null) {
-            for (int i = 0; mTodaySessionClasses.size() > i; i++) {
+        //sort mTodayClassSessionList according to starting time
+        sortSessionAccordingToStartingTime(timeOfTheDay, simpleDateNowTime);
+
+        //shows available sessions
+        displayUpComingSessions();
+    }
+
+    private void displayUpComingSessions() {
+        if (mSortedTodayClassSessionList.size() > 0) {
+            addClassSessionNotify = mSortedTodayClassSessionList.get(0);
+            String durationTime = mSortedTodayClassSessionList.get(0).getStartTimeString() + "- "
+                    + mSortedTodayClassSessionList.get(0).getEndTimeString();
+
+            mClassnameUpNext.setText(mSortedTodayClassSessionList.get(0).getClassname());
+            mLocationUpNext.setText(mSortedTodayClassSessionList.get(0).getLocation());
+            mDurationUpNext.setText(durationTime);
+        }
+
+        if (mSortedTodayClassSessionList.size() > 1) {
+
+            String durationTime = mSortedTodayClassSessionList.get(1).getStartTimeString() + "- "
+                    + mSortedTodayClassSessionList.get(1).getEndTimeString();
+
+            mUpComingClassName.setText(mSortedTodayClassSessionList.get(1).getClassname());
+            mUpComingLocation.setText(mSortedTodayClassSessionList.get(1).getLocation());
+            mUpComingDuration.setText(durationTime);
+
+        }
+
+        if (mSortedTodayClassSessionList.size() > 2) {
+
+            String durationTime = mSortedTodayClassSessionList.get(2).getStartTimeString() + "- "
+                    + mSortedTodayClassSessionList.get(2).getEndTimeString();
+            mUpComingClassname2.setText(mSortedTodayClassSessionList.get(2).getClassname());
+            mUpcomingLocation2.setText(mSortedTodayClassSessionList.get(2).getLocation());
+            mUpComingDuration2.setText(durationTime);
+        }
+    }
+
+    private void sortSessionAccordingToStartingTime(String timeOfTheDay,
+                                                    SimpleDateFormat simpleDateNowTime) {
+        if (mTodayClassSessionList != null) {
+            for (int i = 0; mTodayClassSessionList.size() > i; i++) {
 
                 try {
-                    Date nowTime = simpleDateNowTime.parse(rawTimeString);
-                    Date sessionStartTime = simpleDateClassStartTIme.parse(
-                            mTodaySessionClasses.get(i).getRawTime());
+                    Date nowTime = simpleDateNowTime.parse(timeOfTheDay);
+                    Date sessionStartTime = simpleDateNowTime.parse(
+                            mTodayClassSessionList.get(i).getRawTime());
 
                     if (nowTime.before(sessionStartTime)) {
 
-                        sortedTodayClasses.add(mTodaySessionClasses.get(i));
+                        if (!(mSortedTodayClassSessionList.isEmpty())) {
+                            for (int j = 0; mSortedTodayClassSessionList.size() > j; j++) {
+                                if (!(mTodayClassSessionList.get(i).getClassname().
+                                        equals(mSortedTodayClassSessionList.get(j).getClassname()))) {
+                                    mSortedTodayClassSessionList.add(mTodayClassSessionList.get(i));
+                                }
+                            }
+                        }else{
+                            mSortedTodayClassSessionList.add(mTodayClassSessionList.get(i));
+                        }
 
                     }
                     if (nowTime.equals(sessionStartTime)) {
-                        sortedTodayClasses.add(mTodaySessionClasses.get(i));
+
+                        if (!(mSortedTodayClassSessionList.isEmpty())) {
+                            for (int s = 0; mSortedTodayClassSessionList.size() > s; s++) {
+                                if (!(mTodayClassSessionList.get(i).getClassname().
+                                        equals(mSortedTodayClassSessionList.get(s).getClassname()))) {
+                                    mSortedTodayClassSessionList.add(mTodayClassSessionList.get(i));
+                                }
+                            }
+                        }else{
+                            mSortedTodayClassSessionList.add(mTodayClassSessionList.get(i));
+                        }
+
                     }
+
 
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -278,37 +370,9 @@ public class HomeFragment extends Fragment {
             }
 
         }
-
-        if (sortedTodayClasses.size() > 0) {
-            String durationTime = sortedTodayClasses.get(0).getStartTimeString() + "- "
-                    + sortedTodayClasses.get(0).getEndTimeString();
-
-            mClassnameUpNext.setText(sortedTodayClasses.get(0).getClassname());
-            mLocationUpNext.setText(sortedTodayClasses.get(0).getLocation());
-            mDurationUpNext.setText(durationTime);
-        }
-
-        if (sortedTodayClasses.size() > 1) {
-
-            String durationTime = sortedTodayClasses.get(1).getStartTimeString() + "- "
-                    + sortedTodayClasses.get(1).getEndTimeString();
-
-            mUpComingClassName.setText(sortedTodayClasses.get(1).getClassname());
-            mUpComingLocation.setText(sortedTodayClasses.get(1).getLocation());
-            mUpComingDuration.setText(durationTime);
-
-        }
-
-        if (sortedTodayClasses.size() > 2) {
-
-            String durationTime = sortedTodayClasses.get(2).getStartTimeString() + "- "
-                    + sortedTodayClasses.get(2).getEndTimeString();
-            mUpComingClassname2.setText(sortedTodayClasses.get(2).getClassname());
-            mUpcomingLocation2.setText(sortedTodayClasses.get(2).getLocation());
-            mUpComingDuration2.setText(durationTime);
-        }
     }
 
+    //make today button background null in order for order menu buttons to give a responsive touch
     private void enableActiveButton(TextView backgroundChange) {
         backgroundChange.setBackground(getResources()
                 .getDrawable(R.drawable.menu_text_background_shape));
@@ -321,6 +385,10 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        calendar = Calendar.getInstance();
+        int dayOfTheWeek = calendar.get(Calendar.DAY_OF_WEEK);
+
+
         SessionModelRepository.setTodayClassSessionListener(new TodayClassSessionListener() {
             @Override
             public void todayClassSession(LiveData<List<AddClassSession>> listLiveData) {
@@ -330,7 +398,7 @@ public class HomeFragment extends Fragment {
                             @Override
                             public void onChanged(List<AddClassSession> addClassSessionList) {
 
-                                mTodaySessionClasses = addClassSessionList;
+                                mTodayClassSessionList = addClassSessionList;
                                 setUpClasses(calendar);
                             }
                         });
@@ -338,32 +406,28 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void deletedSession(String classname) {
-                int index = 0;
-
-                for (AddClassSession addClassSession : mTodaySessionClasses) {
-                    if (classname.equals(mTodaySessionClasses.get(index).getClassname())) {
-                        mTodaySessionClasses.remove(index);
-                        setUpClasses(calendar);
-                    } else {
-                        index = index + 1;
-                    }
-                }
-
-
+               if (mTodayClassSessionList!=null){
+                   for (int i = mTodayClassSessionList.size()-1; i >= 0; i--) {
+                       if (classname.equals(mTodayClassSessionList.get(i).getClassname())) {
+                           mTodayClassSessionList.remove(i);
+                           setUpClasses(calendar);
+                       }
+                   }
+               }
             }
         });
 
-        calendar = Calendar.getInstance();
+        //get the right session according to the day of the week
+        getTodaySessionFromDatabase(dayOfTheWeek);
+    }
 
-        int dayOfTheWeek = calendar.get(Calendar.DAY_OF_WEEK);
-
+    private void getTodaySessionFromDatabase(int dayOfTheWeek) {
         switch (dayOfTheWeek) {
             case MyUtil.SUNDAY:
                 if (sessionViewModel.getSundayScheduledClass() != null) {
                     sessionViewModel.getSundayScheduledClass().observe(
                             getViewLifecycleOwner(),
                             addClassSessionList -> {
-
                                 setUpClasses(calendar);
                             });
                 }
@@ -374,7 +438,7 @@ public class HomeFragment extends Fragment {
                     sessionViewModel.getMondayScheduledClass().
                             observe(getViewLifecycleOwner(),
                                     addClassSessionList -> {
-                                        mTodaySessionClasses = addClassSessionList;
+                                        mTodayClassSessionList = addClassSessionList;
                                         setUpClasses(calendar);
 
                                     });
@@ -399,7 +463,7 @@ public class HomeFragment extends Fragment {
                     sessionViewModel.getWednesdayScheduledClass().observe(
                             getViewLifecycleOwner(),
                             addClassSessionList -> {
-                                mTodaySessionClasses = addClassSessionList;
+                                mTodayClassSessionList = addClassSessionList;
                                 setUpClasses(calendar);
 
                             });
@@ -422,7 +486,7 @@ public class HomeFragment extends Fragment {
                     sessionViewModel.getFridayScheduledClass().observe(
                             getViewLifecycleOwner(),
                             addClassSessionList -> {
-                                mTodaySessionClasses = addClassSessionList;
+                                mTodayClassSessionList = addClassSessionList;
                                 setUpClasses(calendar);
 
                             });
@@ -435,11 +499,99 @@ public class HomeFragment extends Fragment {
                     sessionViewModel.getSaturdayScheduledClass().
                             observe(getViewLifecycleOwner(),
                                     addClassSessionList -> {
-                                        mTodaySessionClasses = addClassSessionList;
+                                        mTodayClassSessionList = addClassSessionList;
                                         setUpClasses(calendar);
 
                                     });
                 }
         }
+    }
+
+
+    private void setNotifyMeSwitchButton(){
+        notifyMeSwitchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                schedulerNotification = (JobScheduler) Objects.requireNonNull(getActivity()).
+                        getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                if(isChecked){
+                    if (addClassSessionNotify != null){
+                        String sessionName = addClassSessionNotify.getClassname();
+                        long sessionStartTime = getDeadLineTime(addClassSessionNotify);
+
+                        ComponentName componentName = new ComponentName
+                                (Objects.requireNonNull(getActivity()),
+                                        AlertNotificationJobService.class);
+
+                        PersistableBundle sessionNameExtra = new PersistableBundle();
+
+                        sessionNameExtra.putString("sessionName", sessionName);
+
+
+                        JobInfo jobInfo = new JobInfo.Builder(234,componentName)
+                                .setRequiresCharging(false)
+                                .setRequiresDeviceIdle(false)
+                                .setMinimumLatency(sessionStartTime - 20000)
+                                .setOverrideDeadline(sessionStartTime)
+                                .setExtras(sessionNameExtra)
+                                .build();
+
+                        int resultCode = schedulerNotification.schedule(jobInfo);
+
+                        if (resultCode == JobScheduler.RESULT_SUCCESS){
+
+                        }
+                    }
+
+                    Toast.makeText(getContext(), "switch is on", Toast.LENGTH_SHORT).show();
+                } else{
+
+                    schedulerNotification.cancel(234);
+
+                    Toast.makeText(getContext(), "switch is off", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
+    //gets the start time to notify user
+    private Long getDeadLineTime(AddClassSession addClassSession) {
+
+        long alarmTriggerTime = 0;
+
+        if (addClassSession!= null){
+
+            Calendar nowTimeCalender = Calendar.getInstance();
+
+            int hourOfTheDay = nowTimeCalender.get(Calendar.HOUR_OF_DAY);
+
+            int minutesOfTheDay = nowTimeCalender.get(Calendar.MINUTE);
+
+            String nowTimeString = hourOfTheDay + ":" +
+                    ((minutesOfTheDay / 10 < 1) ? "0" + minutesOfTheDay :
+                            String.valueOf(minutesOfTheDay)) + ":" + "00";
+
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat simpleDateClassStartTIme = new SimpleDateFormat("HH:mm:ss");
+
+            try {
+
+                Date startDateTime = simpleDateClassStartTIme.parse(Objects.
+                        requireNonNull(addClassSession).getRawTime());
+
+                Date nowTimeDate = simpleDateClassStartTIme.parse(nowTimeString);
+
+                alarmTriggerTime = startDateTime.getTime() - nowTimeDate.getTime();
+
+                return alarmTriggerTime;
+
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return  alarmTriggerTime;
+
     }
 }

@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.SavedStateVMFactory;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -151,7 +150,7 @@ public class AddClassActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_new_class_layout_activity);
+        setContentView(R.layout.add_new_class_session_layout_fragment);
         ButterKnife.bind(this);
         selectedDaysList = new ArrayList<>();
         loseOrGainFocus(mAppCompatTextViewStartDate, false);
@@ -332,7 +331,7 @@ public class AddClassActivity extends AppCompatActivity implements
      * input must be one or more
      */
     private void setTextChangeListener() {
-        mTextInputEditTextClassName.addTextChangedListener(new MytextWatcher() {
+        mTextInputEditTextClassName.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable classnameEditable) {
                 loseOrGainFocus(mAppCompatTextViewStartDate, false);
@@ -348,7 +347,7 @@ public class AddClassActivity extends AppCompatActivity implements
         });
 
 
-        mTextInputEditTextLocation.addTextChangedListener(new MytextWatcher() {
+        mTextInputEditTextLocation.addTextChangedListener(new MyTextWatcher() {
 
             @Override
             public void afterTextChanged(Editable locationEditable) {

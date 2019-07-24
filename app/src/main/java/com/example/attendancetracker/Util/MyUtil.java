@@ -1,5 +1,7 @@
 package com.example.attendancetracker.Util;
 
+import android.view.View;
+
 import java.sql.Date;
 import java.sql.Time;
 import java.util.Calendar;
@@ -13,6 +15,14 @@ public class MyUtil {
     public static final int THURSDAY = 5;
     public static final int FRIDAY = 6;
     public static final int SATURDAY = 7;
+
+
+    public static final  String NOTIFICATIONS_KEY ="notifications";
+
+    public static final  String FEEDBACK_KEY ="feedback";
+
+    public static final  String ABOUT_KEY ="about";
+
 
     public static boolean checkInputValidity(String text) {
         return text.length() > 1;
@@ -64,6 +74,20 @@ public class MyUtil {
                 +"/" + dateCalender.get(Calendar.YEAR);
         return dateFormat;
     }
+
+
+    public static void loseOrGainFocus(View view, boolean gain) {
+        view.setFocusable(gain);
+        view.setFocusableInTouchMode(gain);
+
+    }
+
+    public static boolean checkPasswordValidity(String password) {
+        return password.length() > 5;
+    }
+
+
+
 
 
 

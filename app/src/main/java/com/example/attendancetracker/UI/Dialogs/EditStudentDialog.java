@@ -15,9 +15,8 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.attendancetracker.AddClassSession;
 import com.example.attendancetracker.Model.Students;
 import com.example.attendancetracker.R;
-import com.example.attendancetracker.Repository.SessionClassRepository.SessionModelRepository;
 import com.example.attendancetracker.Repository.SessionClassRepository.SessionViewModel;
-import com.example.attendancetracker.UI.MytextWatcher;
+import com.example.attendancetracker.UI.MyTextWatcher;
 import com.example.attendancetracker.Util.MyUtil;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -124,7 +123,7 @@ public class EditStudentDialog extends DialogFragment {
         });
 
 
-        studentNameTextInputEditText.addTextChangedListener(new MytextWatcher() {
+        studentNameTextInputEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 isStudentNameValid = MyUtil.checkInputValidity(s.toString());
@@ -137,7 +136,7 @@ public class EditStudentDialog extends DialogFragment {
             }
         });
 
-        studentEmailTextInputEditText.addTextChangedListener(new MytextWatcher() {
+        studentEmailTextInputEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                isStudentEmailValid = MyUtil.checkInputValidity(s.toString());

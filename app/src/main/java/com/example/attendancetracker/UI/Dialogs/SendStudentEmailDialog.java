@@ -16,7 +16,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.attendancetracker.Model.Students;
 import com.example.attendancetracker.R;
-import com.example.attendancetracker.UI.MytextWatcher;
+import com.example.attendancetracker.UI.MyTextWatcher;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
@@ -82,7 +82,7 @@ public class SendStudentEmailDialog extends DialogFragment {
         }
 
 
-        subjectTextInputEditText.addTextChangedListener(new MytextWatcher() {
+        subjectTextInputEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 subject = s.toString();
@@ -92,7 +92,7 @@ public class SendStudentEmailDialog extends DialogFragment {
 
         sendStudentEmailDialog = materialAlertDialogBuilder.create();
 
-        emailMessageEditText.addTextChangedListener(new MytextWatcher() {
+        emailMessageEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 message = s.toString();

@@ -119,4 +119,9 @@
     <string name="password_colon">Password :</string>
     <string name="hard_reset">Hard reset</string>
     <string name="registered_classes">REGISTERED CLASSES</string>
+    <string name="empty_session">empty session</string>
+    <string name="empty_session_text">You don\'t have any class session now</string>
+    <string name="use_the">Tap the</string>
+    <string name="edit_icon">edit button</string>
+    <string name="to_add_new_class_session">to add new class session</string>
 </resources>

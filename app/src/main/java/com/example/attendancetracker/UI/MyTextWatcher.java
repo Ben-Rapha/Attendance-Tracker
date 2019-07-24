@@ -3,7 +3,7 @@ package com.example.attendancetracker.UI;
 import android.text.Editable;
 import android.text.TextWatcher;
 
-public abstract class MytextWatcher implements TextWatcher {
+public abstract class MyTextWatcher implements TextWatcher {
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
     }

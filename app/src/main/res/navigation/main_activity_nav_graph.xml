@@ -8,7 +8,7 @@
         android:id="@+id/home2"
         android:name="com.example.attendancetracker.UI.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/home_fragment" >
         <action
             android:id="@+id/action_home2_to_today"
             app:destination="@id/today"

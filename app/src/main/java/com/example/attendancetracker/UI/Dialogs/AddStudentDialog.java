@@ -2,12 +2,9 @@ package com.example.attendancetracker.UI.Dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,14 +16,13 @@ import com.example.attendancetracker.AddClassSession;
 import com.example.attendancetracker.Model.Students;
 import com.example.attendancetracker.R;
 import com.example.attendancetracker.Repository.SessionClassRepository.SessionViewModel;
-import com.example.attendancetracker.UI.MytextWatcher;
+import com.example.attendancetracker.UI.MyTextWatcher;
 import com.example.attendancetracker.Util.MyUtil;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -142,7 +138,7 @@ public class AddStudentDialog extends
 
 
    private void setUpStudentEditText() {
-        studentNameEditText.addTextChangedListener(new MytextWatcher() {
+        studentNameEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable student) {
                 isStudentNameValid = MyUtil.checkInputValidity(student.toString());
@@ -155,7 +151,7 @@ public class AddStudentDialog extends
         });
     }
     private void setUpStudentEmail(){
-        emailEditText.addTextChangedListener(new MytextWatcher() {
+        emailEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable email) {
                 isEmailValid = MyUtil.isEmailValid(email.toString());
