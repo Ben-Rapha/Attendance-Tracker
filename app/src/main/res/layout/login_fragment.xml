@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     tools:context=".UI.LoginActivity"
-
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusable="true">
+
+        >
 
         <ImageView
             android:id="@+id/imageViewLogo"
@@ -92,7 +92,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switchMaterial"
+            android:id="@+id/rememberMeSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
@@ -107,7 +107,7 @@
             android:layout_marginTop="@dimen/sixteen_dp"
             android:text="@string/remember_me"
             android:textColor="@color/colorAccent"
-            app:layout_constraintStart_toEndOf="@+id/switchMaterial"
+            app:layout_constraintStart_toEndOf="@+id/rememberMeSwitch"
             app:layout_constraintTop_toBottomOf="@+id/password" />
 
         <TextView
@@ -120,7 +120,7 @@
             android:textColor="@color/light_color_text"
             app:layout_constraintEnd_toEndOf="@+id/password"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/switchMaterial"
+            app:layout_constraintStart_toEndOf="@+id/rememberMeSwitch"
             app:layout_constraintTop_toBottomOf="@+id/password" />
 
         <com.google.android.material.button.MaterialButton
@@ -137,11 +137,11 @@
             android:textColor="?attr/colorPrimary"
             app:backgroundTint="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="@+id/forgot_password"
-            app:layout_constraintStart_toStartOf="@+id/switchMaterial"
+            app:layout_constraintStart_toStartOf="@+id/rememberMeSwitch"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/dont_have_account_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/don_t_have_an_account"
@@ -161,7 +161,7 @@
             android:layout_marginStart="8dp"
             android:text="@string/sign_up"
             android:textColor="@color/colorAccent"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintStart_toEndOf="@+id/dont_have_account_textView"
             app:layout_constraintTop_toBottomOf="@+id/addClassButton"
             android:layout_marginBottom="@dimen/margin_25dp"
             app:layout_constraintBottom_toBottomOf="parent"

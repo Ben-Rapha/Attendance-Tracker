@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.SavedStateVMFactory;
+import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -118,7 +118,7 @@ public class HistoryDetailFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.history_detail, container, false);
@@ -173,7 +173,7 @@ public class HistoryDetailFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         historyViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()),
-                new SavedStateVMFactory(getActivity())).
+                new SavedStateViewModelFactory(getActivity())).
                 get(HistoryViewModel.class);
 
         historyViewModel.getHistoryMutableLiveData().

@@ -2,6 +2,8 @@ package com.example.attendancetracker.UI;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,24 +17,44 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.attendancetracker.R;
+import com.example.attendancetracker.Util.MyUtil;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class UserProfile extends Fragment {
 
-    MainMenuListeners mainMenuListeners;
-    Toolbar mProfileToolbar;
+    private MainMenuListeners mainMenuListeners;
+    private Toolbar mProfileToolbar;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    @BindView(R.id.logout_button)
+    MaterialButton mLogOutButton;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+    @BindView(R.id.username_value)
+    TextView mUserNameValueTextView;
+
+    @BindView(R.id.email_value)
+    TextView mEmailValueTextView;
+
+
+    @BindView(R.id.password_value)
+    TextView mPasswordValueTextView;
+
+    @BindView(R.id.hard_reset_value)
+    TextView mHardResetValueTextView;
+
+
+    private SharedPreferences mPreferences;
+
+
+    String mUsernameValue,mEmailValue,mPasscodeValue;
 
 
     public UserProfile() {
@@ -44,10 +66,14 @@ public class UserProfile extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+
+        mPreferences = Objects.requireNonNull(getActivity())
+                .getSharedPreferences(MyUtil.LOGIN_SHARED_PREF_FILE,
+                        Context.MODE_PRIVATE);
+
+
+
     }
 
     @Override
@@ -56,6 +82,8 @@ public class UserProfile extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.
                 inflate(R.layout.fragment_user_profile, container, false);
+
+        ButterKnife.bind(this,view);
 
         mProfileToolbar = view.findViewById(R.id.profileToolbar);
 
@@ -70,6 +98,39 @@ public class UserProfile extends Fragment {
                 navController.popBackStack();
             });
         }
+
+
+        mLogOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SharedPreferences.Editor prefEditor = mPreferences.edit();
+//                SharedPreferences.Editor preEditorOnPause = mPreferencesOnPause.edit();
+//                preEditorOnPause.putBoolean()
+                prefEditor.putBoolean(MyUtil.LOGIN_REMEMBER_ME, false);
+                prefEditor.apply();
+
+                if (getActivity() != null){
+                    getActivity().finish();
+                }
+
+                mainMenuListeners.goToLoginActivity();
+
+            }
+        });
+
+
+
+        mUserNameValueTextView.setText(mPreferences.getString(MyUtil.LOGIN_USERNAME_KEY,
+                MyUtil.LOGIN_USERNAME_VALUE_DEFAULT));
+
+        mEmailValueTextView.setText(mPreferences.getString(MyUtil.LOGIN_EMAIL_KEY, "NO EMAIL"));
+
+        mPasswordValueTextView.setText("******");
+
+
+        mHardResetValueTextView.setText(mPreferences.getString(MyUtil.RESET_PASSCODE_KEY,
+                "NO PASSCODE"));
 
         return view;
     }

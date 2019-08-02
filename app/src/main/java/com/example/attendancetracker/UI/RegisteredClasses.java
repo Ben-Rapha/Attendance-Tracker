@@ -14,7 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.SavedStateVMFactory;
+import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -323,8 +323,8 @@ public class RegisteredClasses extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sessionViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()),
-                new SavedStateVMFactory(getActivity())).
+        sessionViewModel = ViewModelProviders.of(getActivity(),
+                new SavedStateViewModelFactory(Objects.requireNonNull(getActivity()))).
                 get(SessionViewModel.class);
         sessionViewModel.getAllClassSessionFromSessionRepository().
                 observe(this, addClassSessionList -> {

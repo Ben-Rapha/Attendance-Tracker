@@ -2,7 +2,7 @@
     <string name="app_name">Attendance Tracker</string>
     <string name="app_logo">app logo</string>
     <string name="username">Username</string>
-    <string name="password">Password</string>
+    <string name="password">New password</string>
     <string name="sing_in">Sign In</string>
     <string name="forgot_your_password">Forgot your password?</string>
     <string name="remember_me">Remember me</string>
@@ -18,7 +18,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="testing">Testing ...</string>
-    <string name="error_username">password must be more than 3</string>
+    <string name="error_username">password must be more than 2</string>
     <string name="password_error">password must be more than 5</string>
     <string name="same_password_error">password must be the same</string>
     <string name="password_not_set">Password is not set</string>
@@ -124,4 +124,7 @@
     <string name="use_the">Tap the</string>
     <string name="edit_icon">edit button</string>
     <string name="to_add_new_class_session">to add new class session</string>
+    <string name="sending_passcode">Sending passcode ...</string>
+    <string name="there_s_no_class_scheduled_for_today">There\'s no class\classes scheduled for today</string>
+    <string name="log_out">Log out</string>
 </resources>

@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.SavedStateVMFactory;
+import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -235,8 +235,8 @@ public class DetailClassFragment extends Fragment implements PopupMenu.OnMenuIte
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        sessionViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()),
-                new SavedStateVMFactory(getActivity())).
+        sessionViewModel = ViewModelProviders.of(getActivity(),
+                new SavedStateViewModelFactory(Objects.requireNonNull(getActivity()))).
                 get(SessionViewModel.class);
        sessionViewModel.getAddClassSessionData().observe(getViewLifecycleOwner(), this::setData);
 

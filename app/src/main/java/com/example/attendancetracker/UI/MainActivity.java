@@ -3,13 +3,16 @@ package com.example.attendancetracker.UI;
 import androidx.annotation.IdRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.SavedStateVMFactory;
+import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.os.Bundle;
+import android.transition.Fade;
 import android.widget.LinearLayout;
 
 import com.example.attendancetracker.AddClassSession;
@@ -43,24 +46,24 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_host);
 
+        getWindow().setEnterTransition(new Fade(Fade.IN));
+
         sessionViewModel = ViewModelProviders.
-                of(this, new SavedStateVMFactory(this))
+                of(this, new SavedStateViewModelFactory(this))
                 .get(SessionViewModel.class);
 
         sessionViewModel.setViewModelObject(sessionViewModel);
 
         historyViewModel = ViewModelProviders
-                .of(this, new SavedStateVMFactory(this))
+                .of(this, new SavedStateViewModelFactory(this))
                 .get(HistoryViewModel.class);
 
         navController = Navigation.
                 findNavController(this, R.id.mainActivityNavigationHost);
 
-
-        navOptions = new NavOptions.Builder().
-                setEnterAnim(android.R.anim.slide_in_left)
-                .setPopExitAnim(android.R.anim.slide_out_right)
-                .build();
+       navOptions = new NavOptions.Builder().
+                setEnterAnim(R.anim.fadein).
+                setPopEnterAnim(R.anim.fadein).build();
     }
 
     @Override
@@ -74,6 +77,9 @@ public class MainActivity extends AppCompatActivity
     public void goToSetting() {
         navController.
                 navigate(R.id.action_home2_to_settingActivity, null, navOptions);
+
+//        finish();
+//        MainActivity.this.overridePendingTransition(0,R.anim.fadeout);
     }
 
     @Override
@@ -90,7 +96,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void goToClasses() {
-
         navController.
                 navigate(R.id.registeredClasses, null, navOptions);
     }
@@ -106,6 +111,14 @@ public class MainActivity extends AppCompatActivity
     public void goClassDetails(AddClassSession addClassSession) {
         navController.navigate(R.id.action_registeredClasses_to_detailClassFragment,
                 null, navOptions);
+    }
+
+    @Override
+    public void goToLoginActivity() {
+        Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(
+                MainActivity.this).toBundle());
+
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.attendancetracker.UI;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -16,9 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.attendancetracker.R;
+import com.example.attendancetracker.Util.MyUtil;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,8 +30,10 @@ import butterknife.ButterKnife;
 
 public class SignUpFragment extends Fragment {
 
+    private SharedPreferences mPreferences, mPreferencesOnPause;
+
     @BindView(R.id.addClassButton)
-    MaterialButton  mSignInButton;
+    MaterialButton mSignInButton;
 
     @BindView(R.id.usernameEditText)
     TextInputEditText mUsernameEditText;
@@ -39,7 +45,7 @@ public class SignUpFragment extends Fragment {
     TextInputEditText mPasswordEditText;
 
     @BindView(R.id.password_confirm_inputEdit)
-    TextInputEditText  mConfirmPasswordEditText;
+    TextInputEditText mConfirmPasswordEditText;
 
     @BindView(R.id.username_InputLayout)
     TextInputLayout mUsernameTextLayout;
@@ -53,15 +59,22 @@ public class SignUpFragment extends Fragment {
     @BindView(R.id.signUp_confirmPassword)
     TextInputLayout mConfirmPasswordTextLayout;
 
+
+
     private SignUpListener mSignUpListener;
 
 
     private Boolean usernameTest = false,
             passwordTest = false,
             confirmPasswordTest = false,
-            emailTest = false;
+            emailTest = false,
+            confirmPasswordPass = false;
 
-    private  Editable checkPasswordEditable = null;
+    private Editable checkPasswordEditable = null;
+
+
+    private String usernameChosen,
+            passwordChosen,chosenEmail,confirmPassword;
 
 
 
@@ -74,34 +87,41 @@ public class SignUpFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
 
+        mPreferences = Objects.requireNonNull(getActivity())
+                .getSharedPreferences(MyUtil.LOGIN_SHARED_PREF_FILE,
+                        Context.MODE_PRIVATE);
+
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.sign_up_fragment,
                 container, false);
         // Inflate the layout for this fragment
-        ButterKnife.bind(this,view);
-
+        ButterKnife.bind(this, view);
 
         mUsernameEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable username) {
 
                 if (username.length() > 0) {
-                    usernameTest = checkUserNameValidity(username.toString());
+                    usernameTest = MyUtil.checkInputValidity(username.toString());
                     if (!usernameTest) {
                         mUsernameTextLayout.setError(
                                 getString(R.string.error_username));
+
                     } else {
                         mUsernameTextLayout.setError("");
+                        usernameChosen = username.toString().trim();
+
                     }
                 }
-
             }
         });
+
         mUsernameTextLayout.setEndIconOnClickListener(v -> {
             mUsernameEditText.setText("");
             usernameTest = false;
@@ -110,15 +130,16 @@ public class SignUpFragment extends Fragment {
         mPasswordEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable password) {
-                if (password != null){
-                    passwordTest = checkPasswordValidity(password.toString());
-                    if (passwordTest){
+                if (password != null) {
+                    passwordTest = MyUtil.checkPasswordValidity(password.toString());
+                    if (passwordTest) {
                         mPasswordLayout.setError("");
                         checkPasswordEditable = password;
-                    }
-                    else {
-                       mPasswordLayout.
+                        passwordChosen = checkPasswordEditable.toString();
+                    } else {
+                        mPasswordLayout.
                                 setError(getString(R.string.password_error));
+
                     }
                 }
 
@@ -128,10 +149,12 @@ public class SignUpFragment extends Fragment {
         mEmailEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable email) {
-                if (email != null){
+                if (email != null) {
                     emailTest = isEmailValid(email.toString());
-                    if (emailTest){
+                    if (emailTest) {
                         mEmailTextLayout.setError("");
+                        chosenEmail = email.toString();
+
                     } else {
                         mEmailTextLayout.setError("Please enter a valid email");
                     }
@@ -148,15 +171,17 @@ public class SignUpFragment extends Fragment {
         mConfirmPasswordEditText.addTextChangedListener(new MyTextWatcher() {
             @Override
             public void afterTextChanged(Editable password) {
-                if (password != null){
+                if (password != null) {
                     confirmPasswordTest = checkPasswordValidity(password.toString());
-                    if (confirmPasswordTest){
+                    if (confirmPasswordTest) {
                         mConfirmPasswordTextLayout.setError("");
-                        if (!(password.toString().equals(checkPasswordEditable.toString()))){
+                        if (!(password.toString().equals(passwordChosen))) {
                             mConfirmPasswordTextLayout.setError("Password is not the same");
+                        } else{
+                            confirmPasswordPass = true;
+                            confirmPassword = password.toString();
                         }
-                    }
-                    else {
+                    } else {
                         mConfirmPasswordTextLayout.
                                 setError(getString(R.string.password_error));
                     }
@@ -167,37 +192,50 @@ public class SignUpFragment extends Fragment {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (usernameTest && passwordTest && confirmPasswordTest && emailTest ){
-                    mSignUpListener.goToMainActivity();
-                } if (!(usernameTest )){
+
+                if (!(usernameTest)) {
                     mUsernameTextLayout.setError(getString(R.string.username_not_set));
 
-                }if (!(passwordTest)){
+                }
+                if (!(passwordTest)) {
                     mPasswordLayout.setError(getString(R.string.password_not_set));
-                } if (!(emailTest)){
+                }
+                if (!(emailTest)) {
                     mEmailTextLayout.setError(getString(R.string.email_not_set));
-                } if (!(confirmPasswordTest)){
+                }
+                if (!(confirmPasswordTest)) {
                     mConfirmPasswordTextLayout.setError(getString(R.string.password_not_set));
+                }
+
+                if (usernameTest && passwordTest && confirmPasswordTest && emailTest && confirmPasswordPass) {
+                    SharedPreferences.Editor prefEditor = mPreferences.edit();
+                    prefEditor.putString(MyUtil.LOGIN_USERNAME_KEY,
+                            usernameChosen);
+                    prefEditor.putString(MyUtil.LOGIN_PASSWORD_KEY,
+                            passwordChosen);
+
+                    prefEditor.putString(MyUtil.RESET_PASSCODE_KEY,
+                            String.valueOf(MyUtil.getPassCodeRandom()));
+                    prefEditor.putString(MyUtil.LOGIN_EMAIL_KEY,chosenEmail);
+                    prefEditor.putBoolean(MyUtil.ALREADY_SIGNED_UP_KEY, true);
+                    prefEditor.apply();
+                    final NavController navController = Navigation.findNavController(view);
+                    navController.popBackStack();
+
                 }
             }
         });
 
-//        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-//
-//
-//                final NavController navController = Navigation.findNavController(view);
-//                navController.popBackStack();
-//
-//            }
-//        };
-//
-//        requireActivity().getOnBackPressedDispatcher().
-//                addCallback(getViewLifecycleOwner(),callback);
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                final NavController navController = Navigation.findNavController(view);
+                navController.popBackStack();
+            }
+        };
 
-
-
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), callback);
 
         return view;
 
@@ -205,7 +243,7 @@ public class SignUpFragment extends Fragment {
     }
 
     private Boolean checkUserNameValidity(String username) {
-        return username.length()>3;
+        return username.length() > 3;
 
     }
 
@@ -213,22 +251,22 @@ public class SignUpFragment extends Fragment {
         return password.length() > 6;
     }
 
-     private boolean isEmailValid(String email){
-            return android.util.Patterns.EMAIL_ADDRESS.matcher(email)
-                    .matches();
+    private boolean isEmailValid(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email)
+                .matches();
     }
 
-    public interface SignUpListener{
+    public interface SignUpListener {
         void goToMainActivity();
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof SignUpListener){
+        if (context instanceof SignUpListener) {
             mSignUpListener = (SignUpListener) context;
 
-        } else{
+        } else {
             throw new RuntimeException("must implement SignUpListener");
         }
     }

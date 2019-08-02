@@ -36,11 +36,14 @@
         </activity>
         <activity android:name=".UI.LoginActivity"
             android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden"/>
+            android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="stateHidden"
+           />
         <activity android:name=".UI.AddClassActivity" />
+
         <activity
             android:name=".UI.SettingActivity"
-            android:parentActivityName=".UI.MainActivity" />
+             />
         <activity android:name=".UI.MainActivity" />
 
         <service android:name=".Services.AlertNotificationJobService"

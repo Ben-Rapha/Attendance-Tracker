@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.SavedStateVMFactory;
+import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.attendancetracker.AddClassSession;
@@ -78,7 +78,7 @@ public class ReaffirmDialog extends DialogFragment {
         super.onActivityCreated(savedInstanceState);
 
         sessionViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()),
-                new SavedStateVMFactory(getActivity())).
+                new SavedStateViewModelFactory(getActivity())).
                 get(SessionViewModel.class);
     }
 

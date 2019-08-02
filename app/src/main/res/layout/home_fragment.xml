@@ -101,6 +101,20 @@
         android:background="@drawable/foreground_backdrop"
         android:elevation="@dimen/eight_dp">
 
+
+        <TextView
+            android:id="@+id/empty_schedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/copperGold"
+            android:text="@string/there_s_no_class_scheduled_for_today"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
         <TextView
             android:id="@+id/upNext"
             android:layout_width="match_parent"

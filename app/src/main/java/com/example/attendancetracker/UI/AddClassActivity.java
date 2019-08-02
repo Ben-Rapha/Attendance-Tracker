@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.SavedStateVMFactory;
+import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.attendancetracker.AddClassSession;
@@ -158,7 +158,7 @@ public class AddClassActivity extends AppCompatActivity implements
         loseOrGainFocus(mAppCompatTextViewStartTime, false);
         loseOrGainFocus(mAppCompatTextViewEndTime, false);
 
-        sessionViewModel = ViewModelProviders.of(this,new SavedStateVMFactory(this))
+        sessionViewModel = ViewModelProviders.of(this,new SavedStateViewModelFactory(this))
                 .get(SessionViewModel.class);
 
         listLiveData = sessionViewModel.getAllClassSessionFromSessionRepository();

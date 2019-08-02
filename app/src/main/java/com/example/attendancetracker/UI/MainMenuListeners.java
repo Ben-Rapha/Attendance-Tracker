@@ -12,4 +12,6 @@ public interface MainMenuListeners {
     void goToClasses();
 
     void goToAddNewClass();
+
+    void goToLoginActivity();
 }

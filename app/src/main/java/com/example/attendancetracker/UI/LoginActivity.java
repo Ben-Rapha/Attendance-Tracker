@@ -60,21 +60,18 @@ public class LoginActivity extends AppCompatActivity implements
     public void goToMainActivity() {
         findNavController(this,R.id.login_nav_host)
                 .navigate(R.id.mainActivity,null,options);
-        canDestroyActivity = false;
     }
 
     @Override
     public void goToResetFragment() {
         findNavController(this,R.id.login_nav_host).
                 navigate(R.id.action_main_destination_to_reset_fragment,null,options);
-        canDestroyActivity = false;
     }
 
     @Override
     public void goToSignUpFragment() {
         findNavController(this,R.id.login_nav_host).
                 navigate(R.id.action_main_destination_to_signUpFragment,null,options);
-        canDestroyActivity = false;
 
     }
 
@@ -82,15 +79,12 @@ public class LoginActivity extends AppCompatActivity implements
     public void goToAuthenticatePassword() {
         findNavController(this,R.id.login_nav_host)
                 .navigate(R.id.action_reset_fragment_to_authenticatePasswordFragment,null,options);
-        canDestroyActivity = false;
 
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (canDestroyActivity){
-            finish();
-        }
+
     }
 }

@@ -28,7 +28,7 @@ public class HandleMenuDropDownListener implements View.OnClickListener {
     private ImageView menuBackGroundImage;
     private FloatingActionButton mAddNewClassFloatingActionButton;
 
-    View clickView;
+    private View clickView;
 
 
     public HandleMenuDropDownListener(

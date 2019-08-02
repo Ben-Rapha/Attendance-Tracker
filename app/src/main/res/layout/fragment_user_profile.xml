@@ -24,7 +24,7 @@
             android:background="?attr/colorPrimary"
             android:elevation="0dp"
             android:theme="@style/AppTheme"
-            app:navigationIcon="@drawable/openedmenusvgcoppergold"
+            app:navigationIcon="@drawable/ic_openedmenusvg"
             app:titleTextColor="@color/colorAccent" />
         <TextView
             android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
             android:layout_centerInParent="true"
             android:text="@string/account"
             android:textAppearance="@style/TextAppearance.AttendanceTracker.Title"
-            android:textColor="@color/copperGold" />
+            android:textColor="@color/colorAccent" />
     </RelativeLayout>
 
 
@@ -196,7 +196,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/thirty_dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/add_class"
+        android:text="@string/log_out"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
         android:textColor="?attr/colorPrimary"
         app:backgroundTint="@color/colorAccent"

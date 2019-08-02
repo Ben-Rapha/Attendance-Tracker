@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.SavedStateVMFactory;
+import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -147,7 +147,7 @@ public class AddNewClassSessionFragment extends Fragment {
 
     MaterialAlertDialogBuilder materialAlertDialogBuilder;
 
-    List<String> selectedDaysList;
+    private List<String> selectedDaysList;
     List<AddClassSession> addClassSessionsList;
     LiveData<List<AddClassSession>> listLiveData;
 
@@ -188,7 +188,7 @@ public class AddNewClassSessionFragment extends Fragment {
         loseOrGainFocus(mAppCompatTextViewStartTime, false);
         loseOrGainFocus(mAppCompatTextViewEndTime, false);
 
-        sessionViewModel = ViewModelProviders.of(this,new SavedStateVMFactory(this))
+        sessionViewModel = ViewModelProviders.of(this,new SavedStateViewModelFactory(this))
                 .get(SessionViewModel.class);
 
         listLiveData = sessionViewModel.getAllClassSessionFromSessionRepository();

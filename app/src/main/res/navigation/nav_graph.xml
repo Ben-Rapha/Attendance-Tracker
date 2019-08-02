@@ -18,7 +18,14 @@
         <action
             android:id="@+id/action_main_destination_to_mainActivity"
             app:destination="@id/mainActivity" />
+        <action
+            android:id="@+id/action_main_destination_to_authenticatePasswordFragment"
+            app:destination="@id/authenticatePasswordFragment" />
+        <action
+            android:id="@+id/action_main_destination_to_reset_fragment2"
+            app:destination="@id/reset_fragment" />
     </fragment>
+
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.example.attendancetracker.UI.SignUpFragment"
