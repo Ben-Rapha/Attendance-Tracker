@@ -14,14 +14,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:elevation="0dp"
+        android:elevation="@dimen/zero_dp"
         >
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/checkAttendanceToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            android:elevation="0dp"
+            android:elevation="@dimen/zero_dp"
             android:theme="@style/AppTheme"
             app:navigationIcon="@drawable/openedmenusvgcoppergold"
             app:titleTextColor="@color/colorAccent" />
@@ -50,7 +50,8 @@
        android:layout_height="wrap_content"
        app:layout_constraintTop_toBottomOf="@id/relativeLayout"
        android:layout_marginEnd="@dimen/sixteen_dp"
-       android:layout_marginStart="@dimen/sixteen_dp">
+       android:layout_marginStart="@dimen/sixteen_dp"
+       android:background="@color/colorPrimaryDark">
    </androidx.recyclerview.widget.RecyclerView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

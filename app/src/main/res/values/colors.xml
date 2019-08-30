@@ -15,4 +15,6 @@
     <color name="red">#FF0000</color>
     <color name="green">#3BD843</color>
     <color name="light_yellow">#ffc669</color>
+    <color name="plain_black">#000000</color>
+    <color name="copperGoldDarker">#1A1818</color>
 </resources>

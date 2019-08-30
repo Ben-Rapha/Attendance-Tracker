@@ -47,7 +47,7 @@ public class AddStudentDialog extends
 
     private AlertDialog addStudentDialog;
 
-    AddStudentClickListener mAddStudentClickListener;
+    private AddStudentClickListener mAddStudentClickListener;
 
     private View view;
     @BindView(R.id.studentNameTextInputEditText)
@@ -67,7 +67,7 @@ public class AddStudentDialog extends
 
     private AddClassSession addClassSession;
 
-    String studentName,studentEmail;
+    private String studentName,studentEmail;
 
 
     @NonNull

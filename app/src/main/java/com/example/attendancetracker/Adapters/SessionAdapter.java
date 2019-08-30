@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,8 @@ public class SessionAdapter extends
    public interface ClassSessionDataListener{
 
        void getClassSession(AddClassSession addClassSession);
+
+       void editClassSession(AddClassSession addClassSession);
    }
 
 
@@ -62,9 +65,6 @@ public class SessionAdapter extends
         holder.mClassname.setText(addClassSession.getClassname());
         holder.mLocation.setText(addClassSession.getLocation());
         holder.mTime.setText(mSpaceTime);
-
-//        Log.v("timeReach", addClassSession.getClassname()+" : " +addClassSession.getStartTimeString() +"-"+addClassSession.getEndTimeString());
-
         holder.sun.setBackground(addClassSession.getSunday()!=null?background:colorTransparent);
         holder.mon.setBackground(addClassSession.getMonday()!=null?background:colorTransparent);
         holder.tue.setBackground(addClassSession.getTuesday()!=null?background:colorTransparent);
@@ -82,7 +82,7 @@ public class SessionAdapter extends
         return addClassSessionList.size();
     }
 
-    public class  ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class  ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         @BindView(R.id.className)
         TextView mClassname;
@@ -105,6 +105,9 @@ public class SessionAdapter extends
         @BindView(R.id.sat)
         TextView sat;
 
+        @BindView(R.id.editClassSession)
+        ImageButton mEditClassSession;
+
 
 
 
@@ -114,13 +117,25 @@ public class SessionAdapter extends
             background = dataView.getResources().getDrawable(R.drawable.ic_my_circle);
             colorTransparent = dataView.getResources().getDrawable(R.drawable.ic_mycircle_white);
             dataView.setOnClickListener(this);
+            mEditClassSession.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
            mClassSessionDataListener.
                    getClassSession(addClassSessionList.get(getAdapterPosition()));
-
+        }
+        /**
+         * Called when a view has been clicked and held.
+         *
+         * @param v The view that was clicked and held.
+         * @return true if the callback consumed the long click, false otherwise.
+         */
+        @Override
+        public boolean onLongClick(View v) {
+            mClassSessionDataListener.
+                    editClassSession(addClassSessionList.get(getAdapterPosition()));
+            return false;
         }
     }
 

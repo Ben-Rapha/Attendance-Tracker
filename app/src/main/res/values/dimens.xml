@@ -20,5 +20,8 @@
     <dimen name="sixty_dp">60dp</dimen>
     <dimen name="twenty_five_dp">27dp</dimen>
     <dimen name="eighteen_sp">18sp</dimen>
+    <dimen name="hundred_ten_dp">110dp</dimen>
+    <dimen name="hundred_fifthy_dp">150dp</dimen>
+    <dimen name="three_hundred_thrity_dp">330dp</dimen>
 
 </resources>

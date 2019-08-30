@@ -2,22 +2,23 @@ package com.example.attendancetracker.UI;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.SavedStateViewModelFactory;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.SavedStateViewModelFactory;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.attendancetracker.AddClassSession;
 import com.example.attendancetracker.Model.Students;
@@ -49,8 +50,7 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
-public class AddNewClassSessionFragment extends Fragment {
+public class EditClassSession extends Fragment {
 
     @BindView(R.id.chipGroup)
     ChipGroup chipGroup;
@@ -126,6 +126,8 @@ public class AddNewClassSessionFragment extends Fragment {
 
     private DatePicker mStartDateDialog, mEndDateDialog;
 
+    private AddClassSession mAddClassSession;
+
     View view;
 
     private boolean classnameBool,
@@ -141,29 +143,32 @@ public class AddNewClassSessionFragment extends Fragment {
     private List<String> selectedDaysList;
 
     private String classname, location, dateStart = "",
-            dateEnd = "", timeStart = "", timeEnd = "";
+            dateEnd = "", timeStart = "", timeEnd = "",previousSessionName;
 
     private java.sql.Date sqlStartDate, sqlEndDate;
 
     private Time sqlStartTime, sqlEndTime;
 
-    public AddNewClassSessionFragment() {
-        // Required empty public constructor
+
+
+    public EditClassSession(){
+
     }
 
-
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-
+    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_new_class, container, false);
-        ButterKnife.bind(this,view);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        view = inflater.
+                inflate(R.layout.edit_class_session_fragment, container, false);
+        ButterKnife.bind(this, view);
+
 
         selectedDaysList = new ArrayList<>();
 
@@ -175,6 +180,7 @@ public class AddNewClassSessionFragment extends Fragment {
         loseOrGainFocus(mAppCompatTextViewEndDate, false);
         loseOrGainFocus(mAppCompatTextViewStartTime, false);
         loseOrGainFocus(mAppCompatTextViewEndTime, false);
+
 
         setChipDirection();
 
@@ -192,82 +198,125 @@ public class AddNewClassSessionFragment extends Fragment {
 
         setupDatePickerListener();
 
+
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        sessionViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).
+                get(SessionViewModel.class);
 
-    /***
-     * sets up end date picker listener to handle user pick end date and
-     * handles the logic of natural follow of dates
+        sessionViewModel.getAddClassSessionData().observe(getViewLifecycleOwner(),
+                new Observer<AddClassSession>() {
+            @Override
+            public void onChanged(AddClassSession addClassSession) {
+
+                mAddClassSession = addClassSession;
+
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mTextInputEditTextClassName.setText(mAddClassSession.getClassname());
+
+        mTextInputEditTextLocation.setText(mAddClassSession.getLocation());
+        previousSessionName = mAddClassSession.getClassname();
+
+    }
+    /**
+     * set up time & date  picker listener to handle user  time & date  picker appropriately
      */
+    private void setTimeDateListener() {
+        mAppCompatTextViewEndTime.setOnClickListener((View v) -> {
+            dialogFragmentEndTimePicker = new TimePicker();
+            dialogFragmentEndTimePicker.setEndTimeSet(true);
+            dialogFragmentEndTimePicker.show(Objects.
+                            requireNonNull(getFragmentManager()),
+                    getString(R.string.endtimepicker));
 
-    private void setupDatePickerListener() {
-        DatePicker.setDatePickerListener((date, sqlFormatDate) -> {
+        });
 
-            if (mStartDateDialog != null) {
-                if (mStartDateDialog.getStartDateSet()) {
-                    startActualDate.setText(date);
-                    startActualDate.setTextColor(getResources().getColor(R.color.white));
-                    isStartDateSet = true;
-                    sqlStartDate = getFormattedSqlDate(sqlFormatDate);
-                    dateStart = sqlFormatDate;
-                    mAppCompatTextViewStartDate.setError(null);
-                }
-            }
-            if (mEndDateDialog != null) {
-                if (mEndDateDialog.getEndDateSet()) {
-                    endActualDate.setText(date);
-                    endActualDate.setTextColor(getResources().getColor(R.color.white));
-                    isEndDateSet = true;
-                    sqlEndDate = getFormattedSqlDate(sqlFormatDate);
-                    dateEnd = sqlFormatDate;
-                    mAppCompatTextViewEndDate.setError(null);
-                }
-            }
-            if ((!(dateStart.isEmpty()) & !(dateEnd.isEmpty()))) {
-                checkIsDateValid(dateStart, dateEnd);
-            }
+        mAppCompatTextViewStartTime.setOnClickListener((View v) -> {
+            dialogFragmentStartTimePicker = new TimePicker();
+            dialogFragmentStartTimePicker.setStartTimeSet(true);
+            dialogFragmentStartTimePicker.show(Objects.
+                            requireNonNull(getFragmentManager()),
+                    getString(R.string.starttimepicker));
+
+        });
+
+        mAppCompatTextViewStartDate.setOnClickListener((View v) -> {
+            mStartDateDialog = new DatePicker();
+            mStartDateDialog.show(Objects.
+                            requireNonNull(getFragmentManager()),
+                    getString(R.string.startDate));
+            mStartDateDialog.setStartDateSet(true);
+
+        });
+
+        mAppCompatTextViewEndDate.setOnClickListener((View v) -> {
+            mEndDateDialog = new DatePicker();
+            mEndDateDialog.show(Objects.
+                            requireNonNull(getFragmentManager()),
+                    getString(R.string.enddate));
+            mEndDateDialog.setEndDateSet(true);
+
 
         });
     }
+
 
 
     /**
-     * time picker listener that handles user pick end time
-     * and compares if it follows natural flow of time
+     * classname and location text change listener
+     * checks that text field is not empty
+     * input must be one or more
      */
-
-    private void setUpTimePickerEndListener() {
-        TimePicker.setTimePickerEndListener((endTime, rawTime) -> {
-
-            if (dialogFragmentStartTimePicker != null) {
-                if (dialogFragmentStartTimePicker.getStartTimeSet()) {
-                    actualStartTime.setText(endTime);
-                    actualStartTime.setTextColor(getResources().getColor(R.color.white));
-                    isStartTimeSet = true;
-                    sqlStartTime = getFormattedTime(rawTime);
-                    timeStart = rawTime;
-                    mAppCompatTextViewStartTime.setError(null);
+    private void setTextChangeListener() {
+        mTextInputEditTextClassName.addTextChangedListener(new MyTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable classnameEditable) {
+                loseOrGainFocus(mAppCompatTextViewStartDate, false);
+                loseOrGainFocus(mAppCompatTextViewEndDate, false);
+                loseOrGainFocus(mAppCompatTextViewStartTime, false);
+                loseOrGainFocus(mAppCompatTextViewEndTime, false);
+                classnameBool = MyUtil.checkInputValidity(classnameEditable.toString());
+                if (classnameBool) {
+                    mTextInputLayoutClassName.setError(null);
+                    classname = classnameEditable.toString().trim().
+                            toUpperCase(Locale.getDefault());
                 }
             }
+        });
 
-            if (dialogFragmentEndTimePicker != null) {
-                if (dialogFragmentEndTimePicker.getEndTimeSet()) {
-                    appCompatTextViewActualEndTime.setText(endTime);
-                    appCompatTextViewActualEndTime.setTextColor(getResources().getColor(R.color.white));
-                    isEndTimeSet = true;
-                    sqlEndTime = getFormattedTime(rawTime);
-                    timeEnd = rawTime;
-                    mAppCompatTextViewEndTime.setError(null);
+
+        mTextInputEditTextLocation.addTextChangedListener(new MyTextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable locationEditable) {
+                loseOrGainFocus(mAppCompatTextViewStartDate, false);
+                loseOrGainFocus(mAppCompatTextViewEndDate, false);
+                loseOrGainFocus(mAppCompatTextViewStartTime, false);
+                loseOrGainFocus(mAppCompatTextViewEndTime, false);
+
+                locationBool = MyUtil.checkInputValidity(locationEditable.toString());
+                if (locationBool) {
+                    mTextInputLayoutLocation.setError(null);
+                    location = locationEditable.toString();
                 }
             }
-
-            if (isEndTimeSet & isStartTimeSet) {
-                checkIsTimeValid(timeStart, timeEnd);
-            }
-
         });
     }
+
+
+
+
 
     /**
      * Add button
@@ -287,33 +336,7 @@ public class AddNewClassSessionFragment extends Fragment {
 
                 } else if ((isDateSetValid & isSetTimeValid)) {
                     progressBar.setVisibility(View.VISIBLE);
-
-                    sessionViewModel.getSpecifiedClass(classname).observe(this, session -> {
-
-                    });
-
-                    SessionModelRepository.setCheckClassnameListener
-                            ((LiveData<AddClassSession> addClassSessionLiveData) ->
-                                    addClassSessionLiveData.
-                                    observe(getViewLifecycleOwner(), addClassSession -> {
-                                        if (addClassSession == null) {
-                                            sessionViewModel.insertClassSessionIntoDatabase(
-                                                    new AddClassSession(classname, location,
-                                                            sqlStartDate, sqlEndDate, sqlStartTime,
-                                                            sqlEndTime, sunday ? "sunday" : null,
-                                                    monday ? "monday" : null, tuesday ? "tuesday" : null,
-                                                            wednesday ? "wednesday" : null,
-                                                    thursday ? "thursday" : null, friday ? "friday":null,
-                                                            saturday ? "saturday" : null,
-                                                            new ArrayList<>()));
-                                            progressBar.setVisibility(View.GONE);
-                                            final NavController navController =
-                                                    Navigation.findNavController(view);
-                                            navController.popBackStack();
-                                        } else {
-                                            showConflictDialog(addClassSession).show();
-                                        }
-                                    }));
+                    confirmUpdateDialog(mAddClassSession).show();
                 }
 
             } else {
@@ -325,15 +348,6 @@ public class AddNewClassSessionFragment extends Fragment {
         });
     }
 
-    /**
-     * cancel adding new class session
-     */
-    private void cancelAddClass() {
-        mMaterialCancelButton.setOnClickListener((View v) -> {
-            final NavController navController = Navigation.findNavController(view);
-            navController.popBackStack();
-        });
-    }
 
     /**
      * checks if all fields are filled correctly
@@ -363,10 +377,6 @@ public class AddNewClassSessionFragment extends Fragment {
 
     }
 
-
-    /**
-     * handles days chosen by the user for the class session
-     */
 
     private void setListenerOnChips() {
         monChip.setOnClickListener((View v) -> {
@@ -433,103 +443,6 @@ public class AddNewClassSessionFragment extends Fragment {
 
 
     /**
-     * classname and location text change listener
-     * checks that text field is not empty
-     * input must be one or more
-     */
-    private void setTextChangeListener() {
-        mTextInputEditTextClassName.addTextChangedListener(new MyTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable classnameEditable) {
-                loseOrGainFocus(mAppCompatTextViewStartDate, false);
-                loseOrGainFocus(mAppCompatTextViewEndDate, false);
-                loseOrGainFocus(mAppCompatTextViewStartTime, false);
-                loseOrGainFocus(mAppCompatTextViewEndTime, false);
-                classnameBool = MyUtil.checkInputValidity(classnameEditable.toString());
-                if (classnameBool) {
-                    mTextInputLayoutClassName.setError(null);
-                    classname = classnameEditable.toString().trim().
-                            toUpperCase(Locale.getDefault());
-                }
-            }
-        });
-
-
-        mTextInputEditTextLocation.addTextChangedListener(new MyTextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable locationEditable) {
-                loseOrGainFocus(mAppCompatTextViewStartDate, false);
-                loseOrGainFocus(mAppCompatTextViewEndDate, false);
-                loseOrGainFocus(mAppCompatTextViewStartTime, false);
-                loseOrGainFocus(mAppCompatTextViewEndTime, false);
-
-                locationBool = MyUtil.checkInputValidity(locationEditable.toString());
-                if (locationBool) {
-                    mTextInputLayoutLocation.setError(null);
-                    location = locationEditable.toString();
-                }
-            }
-        });
-    }
-
-    /**
-     * set up time & date  picker listener to handle user  time & date  picker appropriately
-     */
-    private void setTimeDateListener() {
-        mAppCompatTextViewEndTime.setOnClickListener((View v) -> {
-            dialogFragmentEndTimePicker = new TimePicker();
-            dialogFragmentEndTimePicker.setEndTimeSet(true);
-            dialogFragmentEndTimePicker.show(Objects.
-                            requireNonNull(getFragmentManager()),
-                    getString(R.string.endtimepicker));
-
-        });
-
-        mAppCompatTextViewStartTime.setOnClickListener((View v) -> {
-            dialogFragmentStartTimePicker = new TimePicker();
-            dialogFragmentStartTimePicker.setStartTimeSet(true);
-            dialogFragmentStartTimePicker.show(Objects.
-                            requireNonNull(getFragmentManager()),
-                    getString(R.string.starttimepicker));
-
-        });
-
-        mAppCompatTextViewStartDate.setOnClickListener((View v) -> {
-            mStartDateDialog = new DatePicker();
-            mStartDateDialog.show(Objects.
-                            requireNonNull(getFragmentManager()),
-                    getString(R.string.startDate));
-            mStartDateDialog.setStartDateSet(true);
-
-        });
-
-        mAppCompatTextViewEndDate.setOnClickListener((View v) -> {
-            mEndDateDialog = new DatePicker();
-            mEndDateDialog.show(Objects.
-                            requireNonNull(getFragmentManager()),
-                    getString(R.string.enddate));
-            mEndDateDialog.setEndDateSet(true);
-
-
-        });
-    }
-
-    /**
-     * direction of layout is taken from local language direction
-     */
-    private void setChipDirection() {
-        monChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
-        tuesChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
-        wedsChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
-        thurChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
-        fridChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
-        satChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
-        sunChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
-    }
-
-
-    /**
      * verify days chosen by user to prevent duplicates
      *
      * @param dayChosen form the days of the week
@@ -554,23 +467,81 @@ public class AddNewClassSessionFragment extends Fragment {
 
     }
 
+    /**
+     * cancel adding new class session
+     */
+    private void cancelAddClass() {
+        mMaterialCancelButton.setOnClickListener((View v) -> {
+            final NavController navController = Navigation.findNavController(view);
+            navController.popBackStack();
+        });
+    }
 
-    private Time getFormattedTime(String time) {
-        Time formattedTime;
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss");
+
+    /***
+     * sets up end date picker listener to handle user pick end date and
+     * handles the logic of natural follow of dates
+     */
+
+    private void setupDatePickerListener() {
+        DatePicker.setDatePickerListener((date, sqlFormatDate) -> {
+
+            if (mStartDateDialog != null) {
+                if (mStartDateDialog.getStartDateSet()) {
+                    startActualDate.setText(date);
+                    startActualDate.setTextColor(getResources().getColor(R.color.white));
+                    isStartDateSet = true;
+                    sqlStartDate = getFormattedSqlDate(sqlFormatDate);
+                    dateStart = sqlFormatDate;
+                    mAppCompatTextViewStartDate.setError(null);
+                }
+            }
+            if (mEndDateDialog != null) {
+                if (mEndDateDialog.getEndDateSet()) {
+                    endActualDate.setText(date);
+                    endActualDate.setTextColor(getResources().getColor(R.color.white));
+                    isEndDateSet = true;
+                    sqlEndDate = getFormattedSqlDate(sqlFormatDate);
+                    dateEnd = sqlFormatDate;
+                    mAppCompatTextViewEndDate.setError(null);
+                }
+            }
+            if ((!(dateStart.isEmpty()) & !(dateEnd.isEmpty()))) {
+                checkIsDateValid(dateStart, dateEnd);
+            }
+
+        });
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private void checkIsDateValid(String startDate, String endDate) {
+
+        SimpleDateFormat dateFormatStart = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormatEnd = new SimpleDateFormat("yyyy-MM-dd");
 
         try {
-            Date date = simpleDateFormat.parse(time);
-            Calendar timeCalender = Calendar.getInstance();
-            timeCalender.setTime(date);
-            formattedTime = Time.valueOf(time);
-            Log.v("timeFormatted", formattedTime.toString());
-            return formattedTime;
+            Date startDateFormat = dateFormatStart.parse(startDate);
+            Date endDateFormat = dateFormatEnd.parse(endDate);
+
+            if (startDateFormat.after(endDateFormat)) {
+                loseOrGainFocus(mAppCompatTextViewStartDate, true);
+                mAppCompatTextViewStartDate.setError(
+                        getString(R.string.error_start_date_cant_be_ahead));
+                isDateSetValid = false;
+
+            }
+            if (startDateFormat.before(endDateFormat)) {
+                isDateSetValid = true;
+                mAppCompatTextViewStartDate.setError(null);
+            }
+
+            if (startDateFormat.equals(endDateFormat)) {
+                isDateSetValid = true;
+                loseOrGainFocus(mAppCompatTextViewEndDate, true);
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return null;
     }
 
     private java.sql.Date getFormattedSqlDate(String date) {
@@ -581,6 +552,44 @@ public class AddNewClassSessionFragment extends Fragment {
 
         Log.v("dateFormatted", sqlFormattedDate.toString());
         return sqlFormattedDate;
+    }
+
+
+    /**
+     * time picker listener that handles user pick end time
+     * and compares if it follows natural flow of time
+     */
+
+    private void setUpTimePickerEndListener() {
+        TimePicker.setTimePickerEndListener((endTime, rawTime) -> {
+
+            if (dialogFragmentStartTimePicker != null) {
+                if (dialogFragmentStartTimePicker.getStartTimeSet()) {
+                    actualStartTime.setText(endTime);
+                    actualStartTime.setTextColor(getResources().getColor(R.color.white));
+                    isStartTimeSet = true;
+                    sqlStartTime = getFormattedTime(rawTime);
+                    timeStart = rawTime;
+                    mAppCompatTextViewStartTime.setError(null);
+                }
+            }
+
+            if (dialogFragmentEndTimePicker != null) {
+                if (dialogFragmentEndTimePicker.getEndTimeSet()) {
+                    appCompatTextViewActualEndTime.setText(endTime);
+                    appCompatTextViewActualEndTime.setTextColor(getResources().getColor(R.color.white));
+                    isEndTimeSet = true;
+                    sqlEndTime = getFormattedTime(rawTime);
+                    timeEnd = rawTime;
+                    mAppCompatTextViewEndTime.setError(null);
+                }
+            }
+
+            if (isEndTimeSet & isStartTimeSet) {
+                checkIsTimeValid(timeStart, timeEnd);
+            }
+
+        });
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -616,36 +625,25 @@ public class AddNewClassSessionFragment extends Fragment {
 
     }
 
-    @SuppressLint("SimpleDateFormat")
-    private void checkIsDateValid(String startDate, String endDate) {
 
-        SimpleDateFormat dateFormatStart = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat dateFormatEnd = new SimpleDateFormat("yyyy-MM-dd");
+    private Time getFormattedTime(String time) {
+        Time formattedTime;
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss");
 
         try {
-            Date startDateFormat = dateFormatStart.parse(startDate);
-            Date endDateFormat = dateFormatEnd.parse(endDate);
-
-            if (startDateFormat.after(endDateFormat)) {
-                loseOrGainFocus(mAppCompatTextViewStartDate, true);
-                mAppCompatTextViewStartDate.setError(
-                        getString(R.string.error_start_date_cant_be_ahead));
-                isDateSetValid = false;
-
-            }
-            if (startDateFormat.before(endDateFormat)) {
-                isDateSetValid = true;
-                mAppCompatTextViewStartDate.setError(null);
-            }
-
-            if (startDateFormat.equals(endDateFormat)) {
-                isDateSetValid = true;
-                loseOrGainFocus(mAppCompatTextViewEndDate, true);
-            }
+            Date date = simpleDateFormat.parse(time);
+            Calendar timeCalender = Calendar.getInstance();
+            timeCalender.setTime(date);
+            formattedTime = Time.valueOf(time);
+            Log.v("timeFormatted", formattedTime.toString());
+            return formattedTime;
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        return null;
     }
+
 
     /**
      * let a view lose or gain focus
@@ -658,26 +656,35 @@ public class AddNewClassSessionFragment extends Fragment {
         view.setFocusableInTouchMode(gain);
     }
 
+
     /**
-     * show dialog if there's is a new session
-     * clashing with a session already in database
-     *
-     * @param addClassSession object containing class session info
-     * @return MaterialAlertDialogBuilder
+     * direction of layout is taken from local language direction
      */
+    private void setChipDirection() {
+        monChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
+        tuesChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
+        wedsChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
+        thurChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
+        fridChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
+        satChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
+        sunChip.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
+    }
+
     private MaterialAlertDialogBuilder
-    showConflictDialog(AddClassSession addClassSession) {
+    confirmUpdateDialog(AddClassSession addClassSession) {
         MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(Objects
                 .requireNonNull(getContext()),
                 R.style.ThemeOverlay_MaterialComponents_Dialog);
 
-        materialAlertDialogBuilder.setTitle(getString(R.string.classname_conflict));
-        materialAlertDialogBuilder.setMessage(getString(R.string.updateMessage));
+        materialAlertDialogBuilder.setTitle(getString(R.string.update_session));
+        materialAlertDialogBuilder.setMessage(getString(R.string.modify_session));
         materialAlertDialogBuilder.setNegativeButton(getString(R.string.cancel),
                 (dialog, which) -> dialog.dismiss());
 
 
         materialAlertDialogBuilder.setPositiveButton(getString(R.string.update), (dialog, which) -> {
+
+            sessionViewModel.deleteClassSessionFromDatabase(previousSessionName);
 
             if (addClassSession.getStudents()!= null){
                 List<Students> students = addClassSession.getStudents();
@@ -688,7 +695,7 @@ public class AddNewClassSessionFragment extends Fragment {
                         wednesday ? "wednesday" : null,
                         thursday ? "thursday" : null, friday ?
                         "friday" : null, saturday ? "saturday" : null,students));
-            } else{
+            } else {
 
                 sessionViewModel.insertClassSessionIntoDatabase(new AddClassSession(classname,
                         location, sqlStartDate, sqlEndDate, sqlStartTime, sqlEndTime,

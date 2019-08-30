@@ -33,18 +33,18 @@ public class EditStudentDialog extends DialogFragment {
 
     private MaterialAlertDialogBuilder materialAlertDialogBuilder;
 
-    AlertDialog editStudentDialog;
+    private AlertDialog editStudentDialog;
 
 
     View view;
 
-    Students student;
+    private Students student;
 
-    int studentPosition;
+    private int studentPosition;
 
-    AddClassSession session;
+    private AddClassSession session;
 
-    SessionViewModel sessionViewModel;
+    private SessionViewModel sessionViewModel;
 
 
     @BindView(R.id.studentNameTextInputEditText)
@@ -70,11 +70,11 @@ public class EditStudentDialog extends DialogFragment {
     MaterialButton deleteMaterialButton;
 
 
-    String studentNameChange, studentEmailChange;
+    private String studentNameChange, studentEmailChange;
 
-    boolean isStudentNameValid,isStudentEmailValid;
+    private boolean isStudentNameValid,isStudentEmailValid;
 
-    List<Students>studentsList;
+    private List<Students>studentsList;
 
     @NonNull
     @Override
@@ -164,8 +164,7 @@ public class EditStudentDialog extends DialogFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sessionViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()),
-                new SavedStateViewModelFactory(getActivity())).
+        sessionViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).
                 get(SessionViewModel.class);
     }
 

@@ -39,6 +39,7 @@ import com.example.attendancetracker.UI.Dialogs.SendStudentEmailDialog;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +55,7 @@ import static androidx.navigation.Navigation.findNavController;
  */
 public class DetailClassFragment extends Fragment implements PopupMenu.OnMenuItemClickListener {
 
-    MainMenuListeners mMainMenuListeners;
+    private MainMenuListeners mMainMenuListeners;
 
     StudentsAdapter.EditStudentListener editStudentListener;
 
@@ -103,24 +104,19 @@ public class DetailClassFragment extends Fragment implements PopupMenu.OnMenuIte
 
     private AddClassSession addClassSession;
 
-    private LinearLayoutManager mLinearLayoutManager;
-
 
     private View view;
 
 
-    MaterialAlertDialogBuilder materialAlertDialogBuilder;
 
     @BindView(R.id.addNewStudent)
     FloatingActionButton mFab;
 
 
-    StudentsAdapter studentsAdapter;
+    private StudentsAdapter studentsAdapter;
 
     @BindView(R.id.studentRecyclerView)
     RecyclerView studentRecyclerView;
-
-    List<Students>studentsList;
 
 
     public DetailClassFragment() {
@@ -139,13 +135,12 @@ public class DetailClassFragment extends Fragment implements PopupMenu.OnMenuIte
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-         view =inflater.inflate(R.layout.fragment_detail_class, container, false);
+         view = inflater.inflate(R.layout.fragment_detail_class, container, false);
         ButterKnife.bind(this,view);
 
-        studentsList = new ArrayList<>();
+        List<Students> studentsList = new ArrayList<>();
 
-        mLinearLayoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext());
         studentRecyclerView.setLayoutManager(mLinearLayoutManager);
         studentRecyclerView.setHasFixedSize(true);
 
@@ -153,7 +148,7 @@ public class DetailClassFragment extends Fragment implements PopupMenu.OnMenuIte
                 (new DividerItemDecoration(Objects.requireNonNull(getContext())
                         ,DividerItemDecoration.VERTICAL));
 
-        studentsAdapter = new StudentsAdapter(getContext(),studentsList);
+        studentsAdapter = new StudentsAdapter(getContext(), studentsList);
 
         studentRecyclerView.setAdapter(studentsAdapter);
 
@@ -235,8 +230,7 @@ public class DetailClassFragment extends Fragment implements PopupMenu.OnMenuIte
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        sessionViewModel = ViewModelProviders.of(getActivity(),
-                new SavedStateViewModelFactory(Objects.requireNonNull(getActivity()))).
+        sessionViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).
                 get(SessionViewModel.class);
        sessionViewModel.getAddClassSessionData().observe(getViewLifecycleOwner(), this::setData);
 
@@ -290,6 +284,7 @@ public class DetailClassFragment extends Fragment implements PopupMenu.OnMenuIte
             @Override
             public void EditStudent(AddClassSession sessionClass, Students student, int studentIndexInArray) {
                 EditStudentDialog editStudentDialog = new EditStudentDialog();
+                editStudentDialog.setCancelable(false);
                     editStudentDialog.setStudent(sessionClass,student,studentIndexInArray);
                     editStudentDialog.show(Objects.requireNonNull(getFragmentManager()),
                             "editStudentDialog");
@@ -300,6 +295,7 @@ public class DetailClassFragment extends Fragment implements PopupMenu.OnMenuIte
     private void setSendStudentEmailListener(){
         studentsAdapter.setSendStudentEmailListener(student -> {
             SendStudentEmailDialog sendStudentEmailDialog = new SendStudentEmailDialog();
+            sendStudentEmailDialog.setCancelable(false);
             sendStudentEmailDialog.setStudent(student);
             sendStudentEmailDialog.show(Objects.requireNonNull(getFragmentManager()),
                     "studentEmailDialog");
@@ -332,18 +328,27 @@ public class DetailClassFragment extends Fragment implements PopupMenu.OnMenuIte
                 return true;
 
             case R.id.checkAttendance:
-                findNavController(Objects.
-                        requireNonNull(getActivity()),R.id.mainActivityNavigationHost)
-                        .navigate(R.id.action_detailClassFragment_to_checkAttendance);
+                if (addClassSession.getStudents()!= null){
+                    if (addClassSession.getStudents().size() > 0){
+                        findNavController(Objects.
+                                requireNonNull(getActivity()),R.id.mainActivityNavigationHost)
+                                .navigate(R.id.action_detailClassFragment_to_checkAttendance);
+                    } else{
+                        Snackbar.make(view,getString(R.string.at_least_one_student),
+                                Snackbar.LENGTH_LONG).show();
+                        return false;
+                    }
+                }
+
                 return true;
                 default:
                     return false;
-
         }
     }
 
     private void addStudentDialog(){
         AddStudentDialog addStudentDialog = new AddStudentDialog();
+        addStudentDialog.setCancelable(false);
         addStudentDialog.setAddClassSession(addClassSession);
         addStudentDialog.show(Objects.requireNonNull(getFragmentManager()),
                 "addStudentDialog");

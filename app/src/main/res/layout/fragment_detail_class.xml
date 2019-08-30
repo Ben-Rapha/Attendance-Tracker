@@ -9,7 +9,7 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="330dp"
+        android:layout_height="@dimen/three_hundred_thrity_dp"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -29,7 +29,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="@dimen/sixty_dp"
                 android:layout_marginBottom="0dp"
                 tools:context=".UI.DetailClassFragment">
 
@@ -39,7 +39,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/sixteen_dp"
-                    android:layout_marginTop="0dp"
+                    android:layout_marginTop="@dimen/zero_dp"
                     android:layout_marginEnd="@dimen/sixteen_dp"
                     android:indeterminate="true"
                     android:max="100"
@@ -99,8 +99,8 @@
                     android:id="@+id/upperDivider"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="@dimen/eight_dp"
+                    android:layout_marginEnd="@dimen/eight_dp"
                     android:layout_marginBottom="@dimen/sixteen_dp"
                     android:background="?android:attr/listDivider"
                     app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
@@ -134,7 +134,7 @@
                             android:layout_height="@dimen/forty_two_dp_circle"
                             android:background="@drawable/ic_my_circle"
                             android:gravity="center"
-                            android:text="SUN" />
+                            android:text="@string/sun" />
 
                         <TextView
                             android:id="@+id/mon"
@@ -142,7 +142,7 @@
                             android:layout_width="@dimen/forty_two_dp_circle"
                             android:layout_height="@dimen/forty_two_dp_circle"
                             android:gravity="center"
-                            android:text="MON" />
+                            android:text="@string/mon" />
 
                         <TextView
                             android:id="@+id/tue"
@@ -150,7 +150,7 @@
                             android:layout_width="@dimen/forty_two_dp_circle"
                             android:layout_height="@dimen/forty_two_dp_circle"
                             android:gravity="center"
-                            android:text="TUE" />
+                            android:text="@string/tue" />
 
                         <TextView
                             android:id="@+id/wed"
@@ -158,7 +158,7 @@
                             android:layout_width="@dimen/forty_two_dp_circle"
                             android:layout_height="@dimen/forty_two_dp_circle"
                             android:gravity="center"
-                            android:text="WED" />
+                            android:text="@string/wed" />
 
                         <TextView
                             android:id="@+id/thu"
@@ -166,7 +166,7 @@
                             android:layout_width="@dimen/forty_two_dp_circle"
                             android:layout_height="@dimen/forty_two_dp_circle"
                             android:gravity="center"
-                            android:text="THU" />
+                            android:text="@string/thu" />
 
                         <TextView
                             android:id="@+id/fri"
@@ -174,7 +174,7 @@
                             android:layout_width="@dimen/forty_two_dp_circle"
                             android:layout_height="@dimen/forty_two_dp_circle"
                             android:gravity="center"
-                            android:text="FRI" />
+                            android:text="@string/fri" />
 
                         <TextView
                             android:id="@+id/sat"
@@ -182,7 +182,7 @@
                             android:layout_width="@dimen/forty_two_dp_circle"
                             android:layout_height="@dimen/forty_two_dp_circle"
                             android:gravity="center"
-                            android:text="SAT" />
+                            android:text="@string/sat" />
                     </LinearLayout>
                 </HorizontalScrollView>
 
@@ -190,8 +190,8 @@
                     android:id="@+id/divider2"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="@dimen/eight_dp"
+                    android:layout_marginEnd="@dimen/eight_dp"
                     android:background="?android:attr/listDivider"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -215,9 +215,9 @@
         android:id="@+id/studentRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/eight_dp"
+        android:layout_marginTop="@dimen/eight_dp"
+        android:layout_marginEnd="@dimen/eight_dp"
         android:layout_marginBottom="@dimen/fifty_dp"
         android:background="@color/colorPrimaryDark"
         android:paddingBottom="@dimen/eight_dp"

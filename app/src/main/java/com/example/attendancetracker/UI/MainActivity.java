@@ -49,13 +49,13 @@ public class MainActivity extends AppCompatActivity
         getWindow().setEnterTransition(new Fade(Fade.IN));
 
         sessionViewModel = ViewModelProviders.
-                of(this, new SavedStateViewModelFactory(this))
+                of(this)
                 .get(SessionViewModel.class);
 
         sessionViewModel.setViewModelObject(sessionViewModel);
 
         historyViewModel = ViewModelProviders
-                .of(this, new SavedStateViewModelFactory(this))
+                .of(this)
                 .get(HistoryViewModel.class);
 
         navController = Navigation.
@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void goToHome() {
-
         navController.
                 navigate(R.id.home2, null, navOptions);
     }
@@ -77,9 +76,6 @@ public class MainActivity extends AppCompatActivity
     public void goToSetting() {
         navController.
                 navigate(R.id.action_home2_to_settingActivity, null, navOptions);
-
-//        finish();
-//        MainActivity.this.overridePendingTransition(0,R.anim.fadeout);
     }
 
     @Override
@@ -102,7 +98,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void goToAddNewClass() {
-//        navController.navigate(R.id.addClassActivity, null, navOptions);
         navController.navigate(R.id.addNewClassSessionFragment,
                 null, navOptions);
     }

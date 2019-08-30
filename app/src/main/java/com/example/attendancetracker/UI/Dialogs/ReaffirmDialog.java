@@ -77,8 +77,7 @@ public class ReaffirmDialog extends DialogFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sessionViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()),
-                new SavedStateViewModelFactory(getActivity())).
+        sessionViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).
                 get(SessionViewModel.class);
     }
 

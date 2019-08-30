@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.attendancetracker.AddClassSession;
 import com.example.attendancetracker.R;
+import com.example.attendancetracker.Util.MyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +28,7 @@ public class SearchClassAdapter extends RecyclerView.Adapter<SearchClassAdapter.
 
     private Context context;
 
-    private AddClassSession addClassSession;
-
     private List<AddClassSession> addClassSessionList, filteredList;
-
 
     private OnClassnameClickListener onClassnameListener;
 
@@ -63,7 +61,7 @@ public class SearchClassAdapter extends RecyclerView.Adapter<SearchClassAdapter.
     public void onBindViewHolder(
             @NonNull SearchClassAdapter.ViewHolder holder, int position) {
 
-        addClassSession = filteredList.get(holder.getAdapterPosition());
+        AddClassSession addClassSession = filteredList.get(holder.getAdapterPosition());
         holder.classname.setText(addClassSession.getClassname());
 
     }
@@ -94,9 +92,12 @@ public class SearchClassAdapter extends RecyclerView.Adapter<SearchClassAdapter.
     }
 
     public void UpdatedAdapter(List<AddClassSession> addClassSessionList) {
-        this.filteredList = addClassSessionList;
+        filteredList = new ArrayList<>();
+        if (this.addClassSessionList.size() == 0){
+            MyUtil.loopDataIntoNewArray(addClassSessionList,this.addClassSessionList);
+        }
+        MyUtil.loopDataIntoNewArray(addClassSessionList,filteredList);
         notifyDataSetChanged();
-
     }
 
    public interface OnClassnameClickListener {
@@ -110,7 +111,6 @@ public class SearchClassAdapter extends RecyclerView.Adapter<SearchClassAdapter.
 
    public void filter(String userInput){
         userInput = userInput.toLowerCase(Locale.getDefault());
-
         filteredList.clear();
 
         if (userInput.length() == 0) {
@@ -123,7 +123,6 @@ public class SearchClassAdapter extends RecyclerView.Adapter<SearchClassAdapter.
                     filteredList.add(addClassSession);
                 }
             }
-
         }
 
         notifyDataSetChanged();

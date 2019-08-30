@@ -2,7 +2,6 @@ package com.example.attendancetracker.UI;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -45,8 +44,6 @@ public class AuthenticatePasswordFragment extends Fragment {
 
     private String passwordChosen;
 
-    private boolean confirmPasswordPass;
-
     private String confirmPassword;
 
 
@@ -76,77 +73,13 @@ public class AuthenticatePasswordFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.authenticate_password_fragment,
                 container, false);
-
         ButterKnife.bind(this, view);
 
-        mPasswordEditText.addTextChangedListener(new MyTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
+        setPasswordListener();
 
-                if (s != null) {
-                    boolean passwordTest = MyUtil.checkPasswordValidity(s.toString());
-                    if (passwordTest) {
-                        mPasswordInputLayout.setError("");
-                        passwordChosen = s.toString();
+        setConfirmPasswordListener();
 
-                        if (passwordChosen.equals(confirmPassword)){
-                            mConfirmPasswordInputLayout.setError(null);
-                        }else{
-                            mConfirmPasswordInputLayout.setError("Password is not the same");
-                        }
-                    }
-                    else {
-                        mPasswordInputLayout.
-                                setError(getString(R.string.password_error));
-
-                    }
-                }
-            }
-        });
-
-        mConfirmPasswordEditText.addTextChangedListener(new MyTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s != null) {
-                    boolean confirmPasswordTest = MyUtil.checkPasswordValidity(s.toString());
-                    if (confirmPasswordTest) {
-                        mConfirmPasswordInputLayout.setError("");
-                        if (!(s.toString().equals(passwordChosen))) {
-                            mConfirmPasswordInputLayout.setError("Password is not the same");
-                        } else {
-                            confirmPasswordPass = true;
-                            confirmPassword = s.toString();
-                        }
-                    } else {
-                        mConfirmPasswordInputLayout.
-                                setError(getString(R.string.password_error));
-                    }
-                }
-
-            }
-        });
-
-
-        mDoneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (confirmPasswordPass && (confirmPassword.equals(passwordChosen)) ) {
-
-                    SharedPreferences.Editor editor = mPreference.edit();
-                    editor.putString(MyUtil.LOGIN_PASSWORD_KEY,
-                            passwordChosen);
-                    editor.apply();
-
-                    final NavController navController = Navigation.findNavController(view);
-                    navController.navigate(R.id.main_destination);
-
-
-                } else{
-                    mConfirmPasswordInputLayout.setError("Password is not the same");
-                }
-            }
-        });
+        setDoneButtonListener(view);
 
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
@@ -164,6 +97,124 @@ public class AuthenticatePasswordFragment extends Fragment {
         return view;
 
 
+    }
+
+    private void setDoneButtonListener(View view) {
+        mDoneButton.setOnClickListener(v -> {
+
+            String passwordField, confirmPasswordField;
+
+            boolean isPassword, isConfirmPassword;
+
+            passwordField = Objects.
+                    requireNonNull(mPasswordEditText.getText()).toString().trim();
+            mPasswordEditText.setText(passwordField);
+
+            confirmPasswordField = Objects.
+                    requireNonNull(mConfirmPasswordEditText.getText()).toString().trim();
+
+            mConfirmPasswordEditText.setText(confirmPasswordField);
+
+            if (passwordField.length() < 1) {
+                mPasswordInputLayout.setError(getString(R.string.password_not_set));
+                return;
+            }
+
+            if (confirmPasswordField.length() < 1) {
+                mConfirmPasswordInputLayout.setError(getString(R.string.password_not_set));
+                return;
+            }
+
+            isPassword = MyUtil.checkPasswordValidity(passwordField);
+
+            isConfirmPassword = MyUtil.checkPasswordValidity(confirmPasswordField);
+
+            if (!isPassword) {
+                mPasswordInputLayout.
+                        setError(getString(R.string.password_error));
+                return;
+            }
+
+            if (!isConfirmPassword) {
+                mConfirmPasswordInputLayout.
+                        setError(getString(R.string.password_error));
+                return;
+            }
+
+            if (passwordField.equals(confirmPasswordField)) {
+                SharedPreferences.Editor editor = mPreference.edit();
+                editor.putString(MyUtil.LOGIN_PASSWORD_KEY,
+                        passwordChosen);
+                editor.apply();
+
+                final NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.main_destination);
+
+            } else {
+                mConfirmPasswordInputLayout.setError(getString(R.string.password_not_same));
+            }
+        });
+    }
+
+    private void setConfirmPasswordListener() {
+        mConfirmPasswordEditText.addTextChangedListener(new MyTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s != null) {
+                    if (s.length() < 1) {
+                        mConfirmPasswordInputLayout.setError(getString(R.string.password_not_set));
+                    } else {
+                        mConfirmPasswordInputLayout.setError(null);
+                        boolean confirmPasswordTest = MyUtil.checkPasswordValidity(s.toString());
+                        if (confirmPasswordTest) {
+                            mConfirmPasswordInputLayout.setError(null);
+                            confirmPassword = s.toString().trim();
+                            if (!(s.toString().equals(passwordChosen))) {
+                                mConfirmPasswordInputLayout.
+                                        setError(getString(R.string.password_not_the_same));
+                            }
+                        } else {
+                            mConfirmPasswordInputLayout.
+                                    setError(getString(R.string.password_error));
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void setPasswordListener() {
+        mPasswordEditText.addTextChangedListener(new MyTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s != null) {
+                    if (s.length() < 1){
+                        mPasswordInputLayout.setError(getString(R.string.password_not_set));
+                    } else{
+                        mPasswordInputLayout.setError(null);
+                        boolean passwordTest = MyUtil.checkPasswordValidity(s.toString());
+                        if (passwordTest) {
+                            mPasswordInputLayout.setError(null);
+                            passwordChosen = s.toString().trim();
+                            if ((s.toString().trim().equals(confirmPassword))){
+                                mConfirmPasswordInputLayout.setError(null);
+                                passwordChosen = s.toString().trim();
+
+
+                            }else{
+                                mConfirmPasswordInputLayout.
+                                        setError(getString(R.string.password_not_same));
+                            }
+                        }
+                        else {
+                            mPasswordInputLayout.
+                                    setError(getString(R.string.password_error));
+                        }
+                    }
+
+                }
+            }
+        });
     }
 
 }

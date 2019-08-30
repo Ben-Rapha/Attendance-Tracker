@@ -30,8 +30,6 @@ import butterknife.ButterKnife;
 
 public class SignUpFragment extends Fragment {
 
-    private SharedPreferences mPreferences, mPreferencesOnPause;
-
     @BindView(R.id.addClassButton)
     MaterialButton mSignInButton;
 
@@ -59,10 +57,7 @@ public class SignUpFragment extends Fragment {
     @BindView(R.id.signUp_confirmPassword)
     TextInputLayout mConfirmPasswordTextLayout;
 
-
-
-    private SignUpListener mSignUpListener;
-
+    private SharedPreferences mPreferences;
 
     private Boolean usernameTest = false,
             passwordTest = false,
@@ -74,7 +69,9 @@ public class SignUpFragment extends Fragment {
 
 
     private String usernameChosen,
-            passwordChosen,chosenEmail,confirmPassword;
+            passwordChosen,
+            chosenEmail,
+            confirmPassword;
 
 
 
@@ -86,145 +83,40 @@ public class SignUpFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         mPreferences = Objects.requireNonNull(getActivity())
                 .getSharedPreferences(MyUtil.LOGIN_SHARED_PREF_FILE,
                         Context.MODE_PRIVATE);
-
-
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.sign_up_fragment,
                 container, false);
-        // Inflate the layout for this fragment
         ButterKnife.bind(this, view);
 
-        mUsernameEditText.addTextChangedListener(new MyTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable username) {
+        setUpUsernameAddTextListener();
 
-                if (username.length() > 0) {
-                    usernameTest = MyUtil.checkInputValidity(username.toString());
-                    if (!usernameTest) {
-                        mUsernameTextLayout.setError(
-                                getString(R.string.error_username));
+        setUpPasswordListener();
 
-                    } else {
-                        mUsernameTextLayout.setError("");
-                        usernameChosen = username.toString().trim();
+        setUpConfirmPasswordListener();
 
-                    }
-                }
-            }
-        });
+        setUpEmailListener();
+
+        setUpSignInButtonListener(view);
 
         mUsernameTextLayout.setEndIconOnClickListener(v -> {
-            mUsernameEditText.setText("");
+            mUsernameEditText.setText(null);
+            mUsernameTextLayout.setError(null);
             usernameTest = false;
         });
 
-        mPasswordEditText.addTextChangedListener(new MyTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable password) {
-                if (password != null) {
-                    passwordTest = MyUtil.checkPasswordValidity(password.toString());
-                    if (passwordTest) {
-                        mPasswordLayout.setError("");
-                        checkPasswordEditable = password;
-                        passwordChosen = checkPasswordEditable.toString();
-                    } else {
-                        mPasswordLayout.
-                                setError(getString(R.string.password_error));
-
-                    }
-                }
-
-            }
-        });
-
-        mEmailEditText.addTextChangedListener(new MyTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable email) {
-                if (email != null) {
-                    emailTest = isEmailValid(email.toString());
-                    if (emailTest) {
-                        mEmailTextLayout.setError("");
-                        chosenEmail = email.toString();
-
-                    } else {
-                        mEmailTextLayout.setError("Please enter a valid email");
-                    }
-                }
-            }
-        });
-
         mEmailTextLayout.setEndIconOnClickListener(v -> {
-            mEmailEditText.setText("");
-            mEmailTextLayout.setError("");
+            mEmailEditText.setText(null);
+            mEmailTextLayout.setError(null);
             emailTest = false;
         });
 
-        mConfirmPasswordEditText.addTextChangedListener(new MyTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable password) {
-                if (password != null) {
-                    confirmPasswordTest = checkPasswordValidity(password.toString());
-                    if (confirmPasswordTest) {
-                        mConfirmPasswordTextLayout.setError("");
-                        if (!(password.toString().equals(passwordChosen))) {
-                            mConfirmPasswordTextLayout.setError("Password is not the same");
-                        } else{
-                            confirmPasswordPass = true;
-                            confirmPassword = password.toString();
-                        }
-                    } else {
-                        mConfirmPasswordTextLayout.
-                                setError(getString(R.string.password_error));
-                    }
-                }
-            }
-        });
-
-        mSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (!(usernameTest)) {
-                    mUsernameTextLayout.setError(getString(R.string.username_not_set));
-
-                }
-                if (!(passwordTest)) {
-                    mPasswordLayout.setError(getString(R.string.password_not_set));
-                }
-                if (!(emailTest)) {
-                    mEmailTextLayout.setError(getString(R.string.email_not_set));
-                }
-                if (!(confirmPasswordTest)) {
-                    mConfirmPasswordTextLayout.setError(getString(R.string.password_not_set));
-                }
-
-                if (usernameTest && passwordTest && confirmPasswordTest && emailTest && confirmPasswordPass) {
-                    SharedPreferences.Editor prefEditor = mPreferences.edit();
-                    prefEditor.putString(MyUtil.LOGIN_USERNAME_KEY,
-                            usernameChosen);
-                    prefEditor.putString(MyUtil.LOGIN_PASSWORD_KEY,
-                            passwordChosen);
-
-                    prefEditor.putString(MyUtil.RESET_PASSCODE_KEY,
-                            String.valueOf(MyUtil.getPassCodeRandom()));
-                    prefEditor.putString(MyUtil.LOGIN_EMAIL_KEY,chosenEmail);
-                    prefEditor.putBoolean(MyUtil.ALREADY_SIGNED_UP_KEY, true);
-                    prefEditor.apply();
-                    final NavController navController = Navigation.findNavController(view);
-                    navController.popBackStack();
-
-                }
-            }
-        });
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
@@ -233,7 +125,6 @@ public class SignUpFragment extends Fragment {
                 navController.popBackStack();
             }
         };
-
         requireActivity().getOnBackPressedDispatcher().
                 addCallback(getViewLifecycleOwner(), callback);
 
@@ -242,34 +133,206 @@ public class SignUpFragment extends Fragment {
 
     }
 
-    private Boolean checkUserNameValidity(String username) {
-        return username.length() > 3;
+    private void setUpSignInButtonListener(View view) {
+        mSignInButton.setOnClickListener(v -> {
 
+            String username,password,email,confirmPassword2;
+
+            boolean usernameFieldValid = false,passwordFieldValid = false,
+                    emailFieldValid = false;
+
+            username = Objects.
+                    requireNonNull(mUsernameEditText.getText()).
+                    toString().trim();
+
+            password = Objects.
+                    requireNonNull(mPasswordEditText.getText()).
+                    toString().trim();
+
+            email = Objects.
+                    requireNonNull(mEmailEditText.getText()).
+                    toString().trim();
+
+
+            confirmPassword2 = Objects.
+                    requireNonNull(mConfirmPasswordEditText.getText()).
+                    toString().trim();
+
+
+            if (username.length() < 1){
+                mUsernameTextLayout.setError(getString(R.string.username_not_set));
+            } else{
+                usernameFieldValid = MyUtil.checkInputValidity(username);
+                if (!usernameFieldValid){
+                    mUsernameTextLayout.setError(
+                            getString(R.string.error_username));
+                } else{
+                    mUsernameTextLayout.setError(null);
+                    mUsernameEditText.setText(username);
+                }
+            }
+
+            if (password.length() < 1){
+                mPasswordLayout.setError(getString(R.string.password_not_set));
+            } else{
+                passwordFieldValid = MyUtil.checkPasswordValidity(password);
+                if (!(passwordFieldValid)){
+                    mPasswordLayout.
+                            setError(getString(R.string.password_error));
+                } else{
+                    mPasswordLayout.setError(null);
+                    mPasswordEditText.setText(passwordChosen);
+                }
+            }
+
+            if (email.length() < 1){
+                mEmailTextLayout.setError(getString(R.string.email_not_set));
+            } else{
+                emailFieldValid = isEmailValid(email);
+                if (!emailFieldValid){
+                    mEmailTextLayout.
+                            setError(getString(R.string.enter_valid_email));
+                } else{
+                    mEmailTextLayout.setError(null);
+                    mEmailEditText.setText(email);
+                }
+            }
+
+            if (confirmPassword2.length() < 1){
+                mConfirmPasswordTextLayout.setError(getString(R.string.password_not_set));
+                return;
+            } else{
+                if (confirmPasswordTest){
+                    if (confirmPassword2.equals(password)){
+                        mConfirmPasswordEditText.setText(confirmPassword2);
+                        mConfirmPasswordTextLayout.setError(null);
+                    } else{
+                        mConfirmPasswordTextLayout.
+                                setError(getString(R.string.password_not_the_same));
+                        return;
+                    }
+                }
+            }
+
+            if (passwordFieldValid && usernameFieldValid && confirmPasswordTest && emailFieldValid) {
+                SharedPreferences.Editor prefEditor = mPreferences.edit();
+                prefEditor.putString(MyUtil.LOGIN_USERNAME_KEY,
+                        usernameChosen);
+                prefEditor.putString(MyUtil.LOGIN_PASSWORD_KEY,
+                        passwordChosen);
+                prefEditor.putString(MyUtil.RESET_PASSCODE_KEY,
+                        String.valueOf(MyUtil.getPassCodeRandom()));
+                prefEditor.putString(MyUtil.LOGIN_EMAIL_KEY,chosenEmail);
+                prefEditor.putBoolean(MyUtil.ALREADY_SIGNED_UP_KEY, true);
+                prefEditor.apply();
+                final NavController navController = Navigation.findNavController(view);
+                navController.popBackStack();
+
+            }
+        });
+    }
+
+    private void setUpEmailListener() {
+        mEmailEditText.addTextChangedListener(new MyTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable email) {
+                if (email != null) {
+                    emailTest = isEmailValid(email.toString().trim());
+                    if (emailTest) {
+                        mEmailTextLayout.setError(null);
+                        chosenEmail = email.toString().trim();
+
+                    } else {
+                        mEmailTextLayout.setError(getString(R.string.enter_valid_email));
+                    }
+                }
+            }
+        });
+    }
+
+    private void setUpConfirmPasswordListener() {
+        mConfirmPasswordEditText.addTextChangedListener(new MyTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable password) {
+                if (password != null) {
+                    confirmPasswordTest = MyUtil.checkPasswordValidity(password.toString());
+                    if (confirmPasswordTest) {
+                        mConfirmPasswordTextLayout.setError(null);
+                        confirmPassword = password.toString().trim();
+                        if (!(password.toString().equals(passwordChosen))) {
+                            mConfirmPasswordTextLayout.setError(getString(R.string.password_not_the_same));
+                            confirmPasswordPass = false;
+                        } else{
+                            confirmPasswordPass = true;
+                        }
+                    } else {
+                        mConfirmPasswordTextLayout.
+                                setError(getString(R.string.password_error));
+                    }
+                }
+            }
+        });
+    }
+
+    private void setUpPasswordListener() {
+        mPasswordEditText.addTextChangedListener(new MyTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable password) {
+                if (password != null) {
+                    passwordTest = MyUtil.checkPasswordValidity(password.toString());
+                    if (passwordTest) {
+                        mPasswordLayout.setError(null);
+                        passwordChosen = password.toString().trim();
+
+                        if ((password.toString().equals(confirmPassword))) {
+                            mConfirmPasswordTextLayout.setError(null);
+                            passwordChosen = password.toString().trim();
+                            confirmPasswordPass = true;
+
+                        } else {
+                            mConfirmPasswordTextLayout.
+                                    setError(getString(R.string.password_not_same));
+                        }
+
+                    } else {
+                        mPasswordLayout.
+                                setError(getString(R.string.password_error));
+                    }
+                }
+            }
+        });
+    }
+
+    private void setUpUsernameAddTextListener() {
+        mUsernameEditText.addTextChangedListener(new MyTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable username) {
+                if (username != null) {
+                    if (username.length() > 0) {
+                        usernameTest = MyUtil.checkInputValidity(username.toString());
+                        if (!usernameTest) {
+                            mUsernameTextLayout.setError(
+                                    getString(R.string.error_username));
+
+                        } else {
+                            mUsernameTextLayout.setError(null);
+                            usernameChosen = username.toString().trim();
+
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private boolean checkPasswordValidity(String password) {
-        return password.length() > 6;
+        return password.length() > 5;
     }
 
     private boolean isEmailValid(String email) {
+
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email)
                 .matches();
     }
-
-    public interface SignUpListener {
-        void goToMainActivity();
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof SignUpListener) {
-            mSignUpListener = (SignUpListener) context;
-
-        } else {
-            throw new RuntimeException("must implement SignUpListener");
-        }
-    }
-
 
 }

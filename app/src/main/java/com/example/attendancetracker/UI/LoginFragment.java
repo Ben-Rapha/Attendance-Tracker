@@ -24,6 +24,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.attendancetracker.LifeCycleObservers.LoginFragmentLifeCycleObserver;
 import com.example.attendancetracker.R;
 import com.example.attendancetracker.UI.Dialogs.QuitAppDialog;
 import com.example.attendancetracker.Util.MyUtil;
@@ -75,16 +76,17 @@ public class LoginFragment extends Fragment {
             mUsernameIsSet = false,
             mPasswordIsSet = false,
             rememberMe = false,
-            alreadySignedUp = false,
-            onPauseCalled = false;
+            alreadySignedUp = false;
 
 
     private String usernameChosen,
             passwordChosen, prefUsername,
-            prefPassword;
+            prefPassword, onPauseUsername, onPausePassword;
 
 
     private SharedPreferences mPreferences, mPreferencesOnPause;
+
+    private LoginFragmentLifeCycleObserver lifeCycleObserver;
 
     @BindView(R.id.forgot_password)
     TextView mForgotPassword;
@@ -101,16 +103,10 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPreferences = Objects.requireNonNull(getActivity())
-                .getSharedPreferences(MyUtil.LOGIN_SHARED_PREF_FILE,
-                        Context.MODE_PRIVATE);
-
-        mPreferencesOnPause = getActivity().getSharedPreferences(
-                MyUtil.LOGIN_SHARED_PREF_ON_PAUSE_FILE
-                , Context.MODE_PRIVATE);
-
-
+        setUpSharedPreference();
     }
+
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -119,8 +115,168 @@ public class LoginFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
+        setUpUsernameEditTextListener();
+
+        setUpPasswordEditTextListener();
+
+        setUpSignInButtonListener();
+
+        setUpForgotPasswordListener();
+
+        setUpSignUpListener();
+
+        setUpUsernameEndIconListener();
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                QuitAppDialog appDialog = new QuitAppDialog();
+                appDialog.setQuitAppListener(() ->
+                        Objects.requireNonNull(getActivity()).finish());
+
+                appDialog.show(Objects.
+                                requireNonNull(getFragmentManager()),
+                        getString(R.string.quit_app));
+
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), callback);
 
 
+        rememberMeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            rememberMe = isChecked;
+            SharedPreferences.Editor prefEditor = mPreferences.edit();
+            prefEditor.putBoolean(MyUtil.LOGIN_REMEMBER_ME, rememberMe);
+            prefEditor.apply();
+
+        });
+
+        return view;
+    }
+
+    private void setUpUsernameEndIconListener() {
+        if (mTextInputLayoutUserName != null) {
+            mTextInputLayoutUserName.setEndIconOnClickListener(v -> {
+                mTextInputEditTextUserName.setText(null);
+                isUsernameValid = false;
+            });
+        }
+    }
+
+    private void setUpForgotPasswordListener() {
+        if (mForgotPassword != null) {
+            mForgotPassword.setOnClickListener(v ->
+                    mLoginListener.goToResetFragment());
+        }
+    }
+
+    private void setUpSignUpListener() {
+        if (mSignUp != null) {
+            mSignUp.setOnClickListener(v ->
+                    mLoginListener.goToSignUpFragment());
+        }
+    }
+
+    private void setUpSignInButtonListener() {
+
+        if (mSignInButton != null) {
+            mSignInButton.setOnClickListener(v -> {
+                String usernameField = "",passwordField ="",usernameTrimed = "",passwordTrimed = "";
+                boolean usernameFieldValid = false,passwordFieldValid = false;
+
+                usernameTrimed = Objects.requireNonNull(mTextInputEditTextUserName.
+                        getText()).toString().trim();
+
+                mTextInputEditTextUserName.setText(usernameTrimed);
+
+                passwordTrimed = Objects.requireNonNull(mTextInputEditTextPassword.
+                        getText()).toString().trim();
+
+                mTextInputEditTextPassword.setText(passwordTrimed);
+
+
+                if (Objects.requireNonNull(usernameTrimed).length() < 1){
+                    mTextInputLayoutUserName.setError(getString(R.string.username_not_set));
+                } else{
+                    usernameField = usernameTrimed;
+                    usernameFieldValid = MyUtil.checkInputValidity(usernameField);
+                    if (!usernameFieldValid){
+                        mTextInputLayoutUserName.setError("username must be 2 or more");
+                    } else{
+                        mTextInputLayoutUserName.setError(null);
+                        usernameField = usernameField.trim();
+                    }
+                }
+
+                if (Objects.requireNonNull(passwordTrimed).length() < 1){
+                    mTextInputLayoutPassword.setError(getString(R.string.password_not_set));
+                    return;
+                } else{
+                    passwordField = passwordTrimed;
+                    passwordFieldValid = MyUtil.checkPasswordValidity(passwordField);
+                    if (!passwordFieldValid){
+                        mTextInputLayoutPassword.setError("password must be more than 5");
+                        return;
+                    } else{
+                        mTextInputLayoutPassword.setError(null);
+                    }
+                }
+                if (usernameFieldValid && passwordFieldValid) {
+
+                    String checkUsernameValidity = mPreferences.
+                            getString(MyUtil.LOGIN_USERNAME_KEY, MyUtil.LOGIN_USERNAME_VALUE_DEFAULT);
+                    String checkPasswordValidity = mPreferences.
+                            getString(MyUtil.LOGIN_PASSWORD_KEY, MyUtil.LOGIN_PASSWORD_VALUE_DEFAULT);
+
+                    if (Objects.equals(checkUsernameValidity, usernameField) &&
+                            Objects.equals(checkPasswordValidity, passwordField)) {
+                        mLoginListener.goToMainActivity();
+                        Objects.requireNonNull(getActivity()).finish();
+
+                    } else {
+                        if (alreadySignedUp){
+                            Snackbar.make(mSignInButton,
+                                    getString(R.string.invalid_username_and_password),
+                                    Snackbar.LENGTH_SHORT).show();
+                            mForgotPassword.setTextColor(getResources().
+                                    getColor(R.color.light_cyan));
+                            mForgotPassword.setEnabled(true);
+                        } else{
+                            Snackbar.make(mSignInButton,
+                                    getString((R.string.no_account)),
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    private void setUpPasswordEditTextListener() {
+        if (mTextInputEditTextPassword != null) {
+            mTextInputEditTextPassword.addTextChangedListener(new MyTextWatcher() {
+                @Override
+                public void afterTextChanged(Editable password) {
+                    mPasswordIsSet = true;
+                    mPasswordIsSet = password.toString().length() > 0;
+                    isPasswordValid = MyUtil.checkPasswordValidity(password.toString());
+                    passwordChosen = password.toString();
+                    if (isPasswordValid) {
+                        mTextInputLayoutPassword.setError(null);
+                        passwordChosen = password.toString().trim();
+
+                    } else {
+                        isPasswordValid = false;
+                    }
+
+                }
+            });
+
+        }
+    }
+
+    private void setUpUsernameEditTextListener() {
         if (mTextInputEditTextUserName != null) {
             mTextInputEditTextUserName.addTextChangedListener(new MyTextWatcher() {
                 @Override
@@ -137,192 +293,7 @@ public class LoginFragment extends Fragment {
                     }
                 }
             });
-
-
         }
-
-        if (mTextInputEditTextPassword != null) {
-            mTextInputEditTextPassword.addTextChangedListener(new MyTextWatcher() {
-                @Override
-                public void afterTextChanged(Editable password) {
-                    mPasswordIsSet = true;
-                    mPasswordIsSet = password.toString().length() > 0;
-                    isPasswordValid = MyUtil.checkPasswordValidity(password.toString());
-                    passwordChosen = password.toString();
-                    if (isPasswordValid) {
-                        mTextInputLayoutPassword.setError("");
-                        passwordChosen = password.toString();
-
-                    } else {
-                        isPasswordValid = false;
-                    }
-
-                }
-            });
-
-        }
-
-
-        if (mSignInButton != null) {
-
-            mSignInButton.setOnClickListener(new View.OnClickListener() {
-
-
-                String userGivenUsername,userGivenPassword;
-                boolean isUsernameSet = false, isPasswordSet = false;
-
-                @Override
-                public void onClick(View v) {
-
-
-
-                    Editable usernameEditable = mTextInputEditTextUserName.getText();
-
-                    Editable passwordEditable = mTextInputEditTextPassword.getText();
-
-                    if (usernameEditable != null) {
-                        usernameChosen = usernameEditable.toString();
-                        isUsernameValid = MyUtil.checkInputValidity(usernameChosen);
-
-                        if (isUsernameValid){
-                            mTextInputLayoutUserName.setError(null);
-                            usernameChosen = usernameChosen.trim();
-                            userGivenUsername = usernameChosen;
-                        } else{
-                            checkFields();
-                        }
-                    }
-                    if (passwordEditable != null) {
-                      passwordChosen = passwordEditable.toString();
-                      isPasswordValid = MyUtil.checkPasswordValidity(passwordChosen);
-                      if (isPasswordValid){
-                          mTextInputLayoutPassword.setError("");
-
-                          userGivenPassword = passwordChosen;
-
-                      } else{
-                          checkFields();
-                      }
-                    }
-
-                    checkFields();
-
-
-                    if (isUsernameValid && isPasswordValid && isPasswordSet && isUsernameSet){
-
-                        String checkUsernameValidity = mPreferences.getString(MyUtil.LOGIN_USERNAME_KEY, MyUtil.LOGIN_USERNAME_VALUE_DEFAULT);
-                        String checkPasswordValidity = mPreferences.getString(MyUtil.LOGIN_PASSWORD_KEY, MyUtil.LOGIN_PASSWORD_VALUE_DEFAULT);
-
-                        if (Objects.equals(checkUsernameValidity, userGivenUsername) &&
-                                Objects.equals(checkPasswordValidity, userGivenPassword)) {
-                            mLoginListener.goToMainActivity();
-                            Objects.requireNonNull(getActivity()).finish();
-
-                        } else {
-                            Snackbar.make(mSignInButton,
-                                    "Invalid username & password", Snackbar.LENGTH_SHORT).show();
-
-                            mForgotPassword.setTextColor(getResources().getColor(R.color.red));
-                        }
-
-                    } else{
-                        checkFields();
-                    }
-
-                }
-
-                private void checkFields() {
-                    if (!mUsernameIsSet) {
-                        mTextInputLayoutUserName.setError(getString(R.string.username_not_set));
-                    } else {
-                        isUsernameSet = true;
-                    }
-                    if (!mPasswordIsSet) {
-                        mTextInputLayoutPassword.setError(getString(R.string.password_not_set));
-                    } else {
-                        isPasswordSet = true;
-                    }
-
-                    if (isUsernameSet) {
-                        if (!isUsernameValid) {
-                            mTextInputLayoutUserName.setError("username must be more than 2");
-                        }
-                    }
-
-                    if (isPasswordSet) {
-                        if (!isPasswordValid) {
-                            mTextInputLayoutPassword.setError("password must be more than 5");
-                        }
-                    }
-                }
-            });
-        }
-
-
-        if (mForgotPassword != null) {
-            mForgotPassword.setOnClickListener(v ->
-
-                    mLoginListener.goToResetFragment());
-
-        }
-
-
-        if (mSignUp != null) {
-            mSignUp.setOnClickListener(v ->
-                    mLoginListener.goToSignUpFragment());
-        }
-
-
-        if (mTextInputLayoutUserName != null) {
-            mTextInputLayoutUserName.setEndIconOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mTextInputEditTextUserName.setText("");
-                    isUsernameValid = false;
-                }
-            });
-        }
-
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                QuitAppDialog appDialog = new QuitAppDialog();
-                appDialog.setQuitAppListener(new QuitAppDialog.QuitAppListener() {
-                    @Override
-                    public void quitAttendanceTracker() {
-                        Objects.requireNonNull(getActivity()).finish();
-                    }
-                });
-
-                appDialog.show(Objects.requireNonNull(getFragmentManager()), "quit_app");
-            }
-        };
-
-        requireActivity().getOnBackPressedDispatcher().
-                addCallback(getViewLifecycleOwner(), callback);
-
-
-
-        rememberMeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                rememberMe = isChecked;
-                SharedPreferences.Editor prefEditor = mPreferences.edit();
-//                SharedPreferences.Editor preEditorOnPause = mPreferencesOnPause.edit();
-//                preEditorOnPause.putBoolean()
-                prefEditor.putBoolean(MyUtil.LOGIN_REMEMBER_ME, rememberMe);
-                prefEditor.apply();
-
-            }
-        });
-
-        return view;
-    }
-
-
-    private boolean checkUserNameValidity(String username) {
-
-        return username.length() > 3;
     }
 
     @Override
@@ -333,14 +304,6 @@ public class LoginFragment extends Fragment {
         } else {
             throw new RuntimeException("must implement onButtonClickListener");
         }
-    }
-
-    public interface loginListeners {
-        void goToMainActivity();
-
-        void goToResetFragment();
-
-        void goToSignUpFragment();
     }
 
 
@@ -354,63 +317,107 @@ public class LoginFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        rememberMe = mPreferences.getBoolean(MyUtil.LOGIN_REMEMBER_ME, false);
-
-        alreadySignedUp = mPreferences.getBoolean(MyUtil.ALREADY_SIGNED_UP_KEY, false);
-
+        setUpSharedPreference();
+        animateLogo();
+        setUpSwitchButton();
         if (alreadySignedUp) {
             mDontHaveAnAccountTextView.setEnabled(false);
             mSignUp.setEnabled(false);
             mSignUp.setTextColor(getResources().getColor(R.color.light_color_text));
             mDontHaveAnAccountTextView.setVisibility(View.GONE);
             mSignUp.setVisibility(View.GONE);
-            mForgotPassword.setTextColor(getResources().getColor(R.color.light_cyan));
-            if (rememberMe){
+            if (rememberMe && isSharedPreferencePasswordsEqual()
+                    && isSharedPreferencesUsernameEqual()) {
                 mLoginListener.goToMainActivity();
                 Objects.requireNonNull(getActivity()).finish();
 
-            } else{
-
-                rememberMeSwitch.setChecked(false);
-                prefUsername = mPreferences.getString(MyUtil.LOGIN_USERNAME_KEY,
-                        MyUtil.LOGIN_USERNAME_VALUE_DEFAULT);
-
-                prefPassword = mPreferences.getString(MyUtil.LOGIN_PASSWORD_KEY,
-                        MyUtil.LOGIN_PASSWORD_VALUE_DEFAULT);
+            } else {
+                setUpLoginFields();
             }
-
         } else {
-
             mForgotPassword.setEnabled(false);
-            if (rememberMe){
-                prefUsername = mPreferencesOnPause.getString(MyUtil.LOGIN_USERNAME_ON_PAUSE_KEY,
-                        MyUtil.LOGIN_USERNAME_VALUE_DEFAULT);
-
-                prefPassword = mPreferencesOnPause.getString(MyUtil.LOGIN_PASSWORD_ON_PAUSE_KEY,
-                        MyUtil.LOGIN_PASSWORD_VALUE_DEFAULT);
-                rememberMeSwitch.setChecked(true);
-            } else{
-                rememberMeSwitch.setChecked(false);
-            }
+            setUpLoginFields();
         }
+    }
 
-        if (prefUsername != null){
-            if (!prefUsername.equals(MyUtil.LOGIN_USERNAME_VALUE_DEFAULT)) {
-                mTextInputEditTextUserName.setText(prefUsername);
-            }
-        }
-
-        if (prefPassword != null){
-            if (!prefPassword.equals(MyUtil.LOGIN_PASSWORD_VALUE_DEFAULT)) {
-                mTextInputEditTextPassword.setText(prefPassword);
-            }
-        }
-
+    private void animateLogo() {
         ObjectAnimator animatorBlink = ObjectAnimator.
                 ofFloat(logoImageView, "translationY", 100f, 0.0f);
         animatorBlink.setDuration(500);
         animatorBlink.setInterpolator(new AccelerateInterpolator());
         animatorBlink.start();
+    }
+
+    private void setUpLoginFields() {
+        if (alreadySignedUp){
+            if (!(Objects.equals(onPauseUsername,
+                    MyUtil.LOGIN_USERNAME_VALUE_DEFAULT_ON_PAUSE))) {
+                mTextInputEditTextUserName.setText(onPauseUsername);
+                mTextInputEditTextPassword.setText(onPausePassword);
+
+            } else {
+                mTextInputEditTextUserName.setText(prefUsername);
+                mTextInputEditTextPassword.setText(prefPassword);
+            }
+        }else if (!(Objects.equals(onPauseUsername,
+                MyUtil.LOGIN_USERNAME_VALUE_DEFAULT_ON_PAUSE)) && rememberMe){
+            mTextInputEditTextUserName.setText(onPauseUsername);
+            mTextInputEditTextPassword.setText(onPausePassword);
+        }
+
+    }
+
+    private void setUpSwitchButton() {
+        if (rememberMe) {
+            rememberMeSwitch.setChecked(true);
+        } else {
+            rememberMeSwitch.setChecked(false);
+        }
+    }
+
+    private boolean isSharedPreferencePasswordsEqual() {
+        String onPausePassword = mPreferencesOnPause.getString(MyUtil.LOGIN_PASSWORD_ON_PAUSE_KEY,
+                MyUtil.LOGIN_PASSWORD_VALUE_DEFAULT_ON_PAUSE);
+        String password = mPreferences.getString(MyUtil.LOGIN_PASSWORD_KEY,
+                MyUtil.LOGIN_PASSWORD_VALUE_DEFAULT);
+        return Objects.equals(password, onPausePassword);
+    }
+
+    private boolean isSharedPreferencesUsernameEqual() {
+        String username = mPreferences.getString(MyUtil.LOGIN_USERNAME_KEY,
+                MyUtil.LOGIN_USERNAME_VALUE_DEFAULT);
+
+        String onPauseUsername = mPreferencesOnPause.getString(MyUtil.LOGIN_USERNAME_ON_PAUSE_KEY,
+                MyUtil.LOGIN_USERNAME_VALUE_DEFAULT_ON_PAUSE);
+
+        return Objects.requireNonNull(username).equals(onPauseUsername);
+    }
+
+    private void setUpSharedPreference() {
+        mPreferences = Objects.requireNonNull(getActivity())
+                .getSharedPreferences(MyUtil.LOGIN_SHARED_PREF_FILE,
+                        Context.MODE_PRIVATE);
+
+        mPreferencesOnPause = getActivity().getSharedPreferences(
+                MyUtil.LOGIN_SHARED_PREF_ON_PAUSE_FILE
+                , Context.MODE_PRIVATE);
+
+        prefUsername = mPreferences.getString(MyUtil.LOGIN_USERNAME_KEY,
+                MyUtil.LOGIN_USERNAME_VALUE_DEFAULT);
+
+        prefPassword = mPreferences.getString(MyUtil.LOGIN_PASSWORD_KEY,
+                MyUtil.LOGIN_PASSWORD_VALUE_DEFAULT);
+
+        rememberMe = mPreferences.getBoolean(MyUtil.LOGIN_REMEMBER_ME, false);
+
+        onPauseUsername = mPreferencesOnPause.getString(MyUtil.LOGIN_USERNAME_ON_PAUSE_KEY,
+                MyUtil.LOGIN_USERNAME_VALUE_DEFAULT_ON_PAUSE);
+
+        onPausePassword = mPreferencesOnPause
+                .getString(MyUtil.LOGIN_PASSWORD_ON_PAUSE_KEY,
+                        MyUtil.LOGIN_PASSWORD_VALUE_DEFAULT_ON_PAUSE);
+
+        alreadySignedUp = mPreferences.getBoolean(MyUtil.ALREADY_SIGNED_UP_KEY, false);
     }
 
     @Override
@@ -440,12 +447,19 @@ public class LoginFragment extends Fragment {
     }
 
 
-    void gainOrLoose(View view ,boolean setEnable){
-       view.setFocusable(setEnable);
-       view.setFocusableInTouchMode(setEnable);
+    void gainOrLoose(View view, boolean setEnable) {
+        view.setFocusable(setEnable);
+        view.setFocusableInTouchMode(setEnable);
     }
 
 
+    public interface loginListeners {
+        void goToMainActivity();
+
+        void goToResetFragment();
+
+        void goToSignUpFragment();
+    }
 
 
 }

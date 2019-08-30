@@ -19,7 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.attendancetracker.LifeCycleObservers.UserProfileLifeCycleObserver;
 import com.example.attendancetracker.R;
+import com.example.attendancetracker.UI.Dialogs.AccountUtilDialog;
 import com.example.attendancetracker.Util.MyUtil;
 import com.google.android.material.button.MaterialButton;
 
@@ -31,6 +33,7 @@ import butterknife.ButterKnife;
 public class UserProfile extends Fragment {
 
     private MainMenuListeners mainMenuListeners;
+
     private Toolbar mProfileToolbar;
 
     @BindView(R.id.logout_button)
@@ -56,6 +59,8 @@ public class UserProfile extends Fragment {
 
     String mUsernameValue,mEmailValue,mPasscodeValue;
 
+    private AccountUtilDialog accountUtilDialog;
+
 
     public UserProfile() {
         // Required empty public constructor
@@ -67,10 +72,10 @@ public class UserProfile extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         mPreferences = Objects.requireNonNull(getActivity())
                 .getSharedPreferences(MyUtil.LOGIN_SHARED_PREF_FILE,
                         Context.MODE_PRIVATE);
+        getLifecycle().addObserver(new UserProfileLifeCycleObserver());
 
 
 
@@ -84,6 +89,9 @@ public class UserProfile extends Fragment {
                 inflate(R.layout.fragment_user_profile, container, false);
 
         ButterKnife.bind(this,view);
+
+        accountUtilDialog = new AccountUtilDialog();
+        accountUtilDialog.setCancelable(false);
 
         mProfileToolbar = view.findViewById(R.id.profileToolbar);
 
@@ -99,40 +107,79 @@ public class UserProfile extends Fragment {
             });
         }
 
+        mUserNameValueTextView.setOnLongClickListener(
+                new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        accountUtilDialog.isUsername(true);
+                        showAccountDialog();
+                        accountUtilDialog.setTitle(getString(R.string.change_username));
+                        accountUtilDialog.setPreviousData(mUserNameValueTextView.getText().toString());
+                        return true;
+                    }
+                });
 
-        mLogOutButton.setOnClickListener(new View.OnClickListener() {
+        mEmailValueTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onLongClick(View v) {
+                accountUtilDialog.isEmail(true);
+                showAccountDialog();
+                accountUtilDialog.setTitle(getString(R.string.change_email));
+                accountUtilDialog.setPreviousData(mEmailValueTextView.getText().toString());
 
-                SharedPreferences.Editor prefEditor = mPreferences.edit();
-//                SharedPreferences.Editor preEditorOnPause = mPreferencesOnPause.edit();
-//                preEditorOnPause.putBoolean()
-                prefEditor.putBoolean(MyUtil.LOGIN_REMEMBER_ME, false);
-                prefEditor.apply();
-
-                if (getActivity() != null){
-                    getActivity().finish();
-                }
-
-                mainMenuListeners.goToLoginActivity();
-
+                return true;
             }
         });
+
+        mPasswordValueTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                accountUtilDialog.isPassword(true);
+                showAccountDialog();
+                accountUtilDialog.setTitle(getString(R.string.change_password));
+                accountUtilDialog.setPreviousData(mPasswordValueTextView.getText().toString());
+                return true;
+            }
+        });
+
+
+                mLogOutButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SharedPreferences.Editor prefEditor = mPreferences.edit();
+                        prefEditor.putBoolean(MyUtil.LOGIN_REMEMBER_ME, false);
+                        prefEditor.apply();
+
+                        if (getActivity() != null) {
+                            getActivity().finish();
+                        }
+
+                        mainMenuListeners.goToLoginActivity();
+
+                    }
+                });
 
 
 
         mUserNameValueTextView.setText(mPreferences.getString(MyUtil.LOGIN_USERNAME_KEY,
                 MyUtil.LOGIN_USERNAME_VALUE_DEFAULT));
 
-        mEmailValueTextView.setText(mPreferences.getString(MyUtil.LOGIN_EMAIL_KEY, "NO EMAIL"));
+        mEmailValueTextView.setText(mPreferences.getString(MyUtil.LOGIN_EMAIL_KEY,
+                "NO EMAIL"));
 
-        mPasswordValueTextView.setText("******");
+        mPasswordValueTextView.setText(setPasswordAsterisks());
 
 
         mHardResetValueTextView.setText(mPreferences.getString(MyUtil.RESET_PASSCODE_KEY,
                 "NO PASSCODE"));
 
         return view;
+    }
+
+    private void showAccountDialog() {
+        if (getFragmentManager() != null) {
+            accountUtilDialog.show(getFragmentManager(), "account");
+        }
     }
 
     @Override
@@ -150,4 +197,21 @@ public class UserProfile extends Fragment {
         super.onDestroy();
         mainMenuListeners = null;
     }
+
+
+    private String setPasswordAsterisks() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        String password = mPreferences.
+                getString(MyUtil.LOGIN_PASSWORD_KEY, MyUtil.LOGIN_PASSWORD_VALUE_DEFAULT);
+        if (password != null) {
+            for (int i = 0; i < password.length(); i++) {
+
+                stringBuilder.append("*");
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+
 }

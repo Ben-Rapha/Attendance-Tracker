@@ -13,35 +13,28 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavOptions;
 
+import com.example.attendancetracker.LifeCycleObservers.LoginActivityLifeCycleObserver;
 import com.example.attendancetracker.R;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.Objects;
-
-import static androidx.navigation.Navigation.createNavigateOnClickListener;
 import static androidx.navigation.Navigation.findNavController;
 
 
 
 
 public class LoginActivity extends AppCompatActivity implements
-        LoginFragment.loginListeners, Reset_Fragment.resetListener,
-        SignUpFragment.SignUpListener {
-
-
-    MaterialButton mSignInButton;
+        LoginFragment.loginListeners, Reset_Fragment.resetListener{
 
     NavOptions options;
-
-    boolean canDestroyActivity = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_host);
-        getWindow().getDecorView().setBackgroundColor(getResources().
-                getColor(R.color.colorPrimaryDark));
+
         getWindow().setEnterTransition(new Fade(Fade.IN));
+
+        getLifecycle().addObserver(new LoginActivityLifeCycleObserver());
 
 
          options = new NavOptions.Builder().
@@ -51,8 +44,8 @@ public class LoginActivity extends AppCompatActivity implements
 
     private void removeStatusBar() {
         View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
+        getWindow().getDecorView()
+                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
 
@@ -78,7 +71,8 @@ public class LoginActivity extends AppCompatActivity implements
     @Override
     public void goToAuthenticatePassword() {
         findNavController(this,R.id.login_nav_host)
-                .navigate(R.id.action_reset_fragment_to_authenticatePasswordFragment,null,options);
+                .navigate(R.id.action_reset_fragment_to_authenticatePasswordFragment,
+                        null,options);
 
     }
 

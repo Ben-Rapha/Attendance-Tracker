@@ -11,7 +11,6 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
@@ -58,8 +57,6 @@ public class HistoryFragment extends Fragment {
     @BindView(R.id.historyRecyclerView)
     RecyclerView historyRecyclerView;
 
-    private LinearLayoutManager mLinearLayoutManager, mSearchLinearManger;
-
     private HistoryAdapter mHistoryAdapter;
 
     @BindView(R.id.historyToolbar)
@@ -86,12 +83,12 @@ public class HistoryFragment extends Fragment {
     @BindView(R.id.historyTitleTextView)
     TextView mTitleTextView;
 
-    SearchClassAdapter searchClassAdapter;
+    private SearchClassAdapter searchClassAdapter;
 
-    HandleFilterClassSessionDropdown handleFilterClassSessionDropdown;
+    private HandleFilterClassSessionDropdown handleFilterClassSessionDropdown;
 
 
-    List<AddClassSession> emptyList, addClassSessionList;
+    private List<AddClassSession> emptyList, addClassSessionList;
 
 
     public HistoryFragment() {
@@ -103,6 +100,11 @@ public class HistoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        emptyList = new ArrayList<>();
+
+        addClassSessionList = new ArrayList<>();
+
+        historyList = new ArrayList<>();
 
     }
 
@@ -113,16 +115,13 @@ public class HistoryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
         ButterKnife.bind(this, view);
 
-        historyList = new ArrayList<>();
-
-        emptyList = new ArrayList<>();
-        addClassSessionList = new ArrayList<>();
-
         mHistoryAdapter = new HistoryAdapter(getContext(), historyList);
+        searchClassAdapter = new SearchClassAdapter(getContext(),
+                addClassSessionList);
 
-        mLinearLayoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext());
 
-        mSearchLinearManger = new LinearLayoutManager(getContext());
+        LinearLayoutManager mSearchLinearManger = new LinearLayoutManager(getContext());
 
         historyRecyclerView.setLayoutManager(mLinearLayoutManager);
 
@@ -135,7 +134,7 @@ public class HistoryFragment extends Fragment {
 
         editText.setHintTextColor(getResources().getColor(R.color.colorAccent));
 
-        editText.setHint("Search class history");
+        editText.setHint(getString(R.string.search_class_history));
 
 
         historyRecyclerView.addItemDecoration
@@ -149,7 +148,11 @@ public class HistoryFragment extends Fragment {
 
         historyRecyclerView.setAdapter(mHistoryAdapter);
 
+        filterHistoryRecyclerView.setAdapter(searchClassAdapter);
+
         constraintLayout.setTranslationY(getHeight());
+
+
 
         handleFilterClassSessionDropdown = new HandleFilterClassSessionDropdown(getContext(),
                 constraintLayout, new AccelerateDecelerateInterpolator(),
@@ -160,7 +163,7 @@ public class HistoryFragment extends Fragment {
             public boolean onClose() {
                 Toast.makeText(getContext(), "query closed", Toast.LENGTH_SHORT).show();
                 handleFilterClassSessionDropdown.performAnimation();
-                mTitleTextView.setText("HISTORY CLASSES");
+                mTitleTextView.setText(getString(R.string.history_classes));
                 searchClassAdapter.UpdatedAdapter(emptyList);
                 return false;
             }
@@ -171,49 +174,51 @@ public class HistoryFragment extends Fragment {
             public void onClick(View v) {
                 historyRecyclerView.setVisibility(View.GONE);
                 handleFilterClassSessionDropdown.performAnimation();
-                searchClassAdapter = new SearchClassAdapter(getContext(),
-                        addClassSessionList);
-                filterHistoryRecyclerView.setAdapter(searchClassAdapter);
                 mTitleTextView.setText(null);
+                searchClassAdapter.UpdatedAdapter(addClassSessionList);
+                editText.clearFocus();
 
-                searchClassAdapter.setOnClassnameListener(addClassSession -> {
 
-                    for (History history : historyList) {
-                        if (history.getClassSession().getClassname().
-                                equals(addClassSession.getClassname())) {
-                        history1 = new History(history.getClassSession(),
-                                history.getTimeTaken(), history.getDateTaken());}
-                    }
-
-                    historyViewModel.setHistoryData(history1);
-                    searchView.onActionViewCollapsed();
-                    Objects.requireNonNull(getActivity()).
-                            getWindow().setSoftInputMode
-                            (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-                    findNavController(Objects.requireNonNull(getActivity()),
-                            R.id.mainActivityNavigationHost)
-                            .navigate(R.id.historyDetailFragment);
-                    editText.clearFocus();
-                });
             }
         });
+
+        searchClassAdapter.setOnClassnameListener(addClassSession -> {
+
+            for (History history : historyList) {
+                if (history.getClassSession().getClassname().
+                        equals(addClassSession.getClassname())) {
+                    history1 = new History(history.getClassSession(),
+                            history.getTimeTaken(), history.getDateTaken());}
+            }
+
+            historyViewModel.setHistoryData(history1);
+
+            searchView.onActionViewCollapsed();
+            Objects.requireNonNull(getActivity()).
+                    getWindow().setSoftInputMode
+                    (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+            findNavController(Objects.requireNonNull(getActivity()),
+                    R.id.mainActivityNavigationHost)
+                    .navigate(R.id.historyDetailFragment);
+        });
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(getContext(), "query submit", Toast.LENGTH_SHORT).show();
                 editText.clearFocus();
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Toast.makeText(getContext(), "query on text change", Toast.LENGTH_SHORT).show();
 
                 if (!newText.isEmpty()) {
                     searchClassAdapter.filter(newText);
+                }  else{
+                    searchClassAdapter.UpdatedAdapter(addClassSessionList);
                 }
-
                 return false;
             }
         });
@@ -266,9 +271,10 @@ public class HistoryFragment extends Fragment {
 
                             DeleteRegisteredSessionDialog deleteRegisteredSessionDialog =
                                     new DeleteRegisteredSessionDialog();
+                            deleteRegisteredSessionDialog.setCancelable(false);
 
-                            deleteRegisteredSessionDialog.setTitleAndMessage("Delete History",
-                                    "Are you sure you want to delete this class History?");
+                            deleteRegisteredSessionDialog.setTitleAndMessage(getString(R.string.delete_history),
+                                    getString(R.string.assert_delete_history));
 
                             deleteRegisteredSessionDialog.setOnDeleteSessionListener(
                                     new DeleteRegisteredSessionDialog.OnDeleteSessionListener() {
@@ -282,12 +288,17 @@ public class HistoryFragment extends Fragment {
                                 public void restoreSession() {
                                     mHistoryAdapter.insertItemInList(position, history);
                                 }
+
+                                @Override
+                                public void onDialogDismiss(){
+                                }
+
+
                             });
                             deleteRegisteredSessionDialog.show(Objects.requireNonNull(
                                     getFragmentManager()), "deleteHistoryDialog");
 
                         }
-
 
                     }
 
@@ -318,8 +329,7 @@ public class HistoryFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        historyViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()),
-                new SavedStateViewModelFactory(getActivity())).
+        historyViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).
                 get(HistoryViewModel.class);
 
 

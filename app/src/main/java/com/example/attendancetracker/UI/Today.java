@@ -27,6 +27,8 @@ public class Today extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    //TODO: MAKE SURE ALL PHOTO USED IS PLACED IN THEOR RIGHT FOLDER NOT JUST V-12
+
 
     public Today() {
         // Required empty public constructor

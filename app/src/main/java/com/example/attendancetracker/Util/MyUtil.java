@@ -1,10 +1,14 @@
 package com.example.attendancetracker.Util;
 
+import android.util.Log;
 import android.view.View;
+
+import com.example.attendancetracker.AddClassSession;
 
 import java.sql.Date;
 import java.sql.Time;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
 public class MyUtil {
@@ -50,6 +54,12 @@ public class MyUtil {
 
     public static final String  LOGIN_PASSWORD_VALUE_DEFAULT =
             "NO_PASSWORD";
+
+    public static final String  LOGIN_USERNAME_VALUE_DEFAULT_ON_PAUSE =
+            "NO_USERNAME_ON_PAUSE";
+
+    public static final String  LOGIN_PASSWORD_VALUE_DEFAULT_ON_PAUSE =
+            "NO_PASSWORD_ON_PAUSE";
 
     public static final String  LOGIN_REMEMBER_ME_ON_PAUSE =
             "REMEMBER_ON_PAUSE";
@@ -139,7 +149,10 @@ public class MyUtil {
 
     public static final String APP_EMAIL = "attendancetrackerlord@gmail.com";
 
+    public static final String APP_EMAIL_DEFAULT = "attendancetrackerlord@gmail.com";
+
     public static final String APP_PASSWORD = "Thelordismystay1_";
+
 
 
 
@@ -149,6 +162,20 @@ public class MyUtil {
     public static int getPassCodeRandom(){
         Random random = new Random();
         return random.nextInt((90000 - 10000) +1) + 10000;
+    }
+
+
+    public static void logMessages(String classname,String message){
+        Log.v(classname, message);
+    }
+
+
+    public static void loopDataIntoNewArray(List<AddClassSession> fromList, List<AddClassSession> toList){
+
+        for (AddClassSession addClassSession : fromList){
+            toList.add(addClassSession);
+        }
+
     }
 
 

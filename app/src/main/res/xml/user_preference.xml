@@ -27,13 +27,13 @@
 
     <PreferenceCategory
         android:key="about_app"
-        android:title="About">
-
+        android:title="@string/about"
+        >
         <Preference
-            android:key="about"
-            android:title="About App"
+            android:key="@string/about"
+            android:title="@string/about_app"
+            android:summary="@string/about_app_summary"
             />
-
     </PreferenceCategory>
 
 </PreferenceScreen>

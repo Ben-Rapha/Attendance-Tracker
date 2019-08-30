@@ -22,9 +22,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.ViewHolder> {
+public class StudentsAdapter extends
+        RecyclerView.Adapter<StudentsAdapter.ViewHolder> {
 
         private Context context;
+
         private List<Students> students;
 
         private  AddClassSession addClassSession;

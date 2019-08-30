@@ -2,6 +2,7 @@ package com.example.attendancetracker.UI.Dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -44,14 +45,16 @@ public class DeleteRegisteredSessionDialog extends DialogFragment {
 
 
         materialAlertDialogBuilder.setMessage(message);
-        materialAlertDialogBuilder.setNegativeButton("Cancel", (DialogInterface dialog, int which)
+        materialAlertDialogBuilder.setNegativeButton(getString(R.string.cancel),
+                (DialogInterface dialog, int which)
                 -> {
             onDeleteSessionListener.restoreSession();
-            reAffirmDialog.dismiss();
+            reAffirmDialog.cancel();
         });
 
 
-        materialAlertDialogBuilder.setPositiveButton("Yes", (dialog, which) -> {
+        materialAlertDialogBuilder.setPositiveButton(getString(R.string.yes),
+                (dialog, which) -> {
 
             if (onDeleteSessionListener != null){
                 onDeleteSessionListener.deleteSession();
@@ -61,8 +64,6 @@ public class DeleteRegisteredSessionDialog extends DialogFragment {
         });
 
         reAffirmDialog = materialAlertDialogBuilder.create();
-
-
 
         return reAffirmDialog;
     }
@@ -79,6 +80,8 @@ public class DeleteRegisteredSessionDialog extends DialogFragment {
         void deleteSession();
 
         void restoreSession();
+
+        void onDialogDismiss();
     }
 
     public void setOnDeleteSessionListener(OnDeleteSessionListener onDeleteSessionListener) {
@@ -88,5 +91,12 @@ public class DeleteRegisteredSessionDialog extends DialogFragment {
     public void setTitleAndMessage(String title,String message){
         this.title = title;
         this.message = message;
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+
+        onDeleteSessionListener.onDialogDismiss();
     }
 }

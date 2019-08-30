@@ -56,6 +56,9 @@
         <action
             android:id="@+id/action_registeredClasses_to_detailClassFragment"
             app:destination="@id/detailClassFragment" />
+        <action
+            android:id="@+id/action_registeredClasses_to_editClassSession2"
+            app:destination="@id/editClassSession2" />
     </fragment>
     <fragment
         android:id="@+id/userProfile"
@@ -115,5 +118,10 @@
         android:name="com.example.attendancetracker.UI.AddNewClassSessionFragment"
         android:label="fragment_new_class"
         tools:layout="@layout/fragment_new_class" />
+    <fragment
+        android:id="@+id/editClassSession2"
+        android:name="com.example.attendancetracker.UI.EditClassSession"
+        android:label="edit_class_session_fragment"
+        tools:layout="@layout/edit_class_session_fragment" />
 
 </navigation>

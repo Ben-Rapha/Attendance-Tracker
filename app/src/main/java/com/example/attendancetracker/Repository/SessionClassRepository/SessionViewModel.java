@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.attendancetracker.AddClassSession;
 import com.example.attendancetracker.UI.AddClassActivity;
 import com.example.attendancetracker.UI.CheckClassnameListener;
+import com.example.attendancetracker.UI.EmailSentListener;
 
 import androidx.lifecycle.SavedStateHandle;
 
@@ -22,24 +23,24 @@ public class SessionViewModel extends AndroidViewModel {
     private MutableLiveData<AddClassSession> mAddClassSessionData =
             new MutableLiveData<AddClassSession>();
 
+    public MutableLiveData<Boolean> isEmailSent = new MutableLiveData<>();
+
     private LiveData<List<AddClassSession>> mondayList, tuesdayList, wedList, thursList, friList,
             satList, sunList = new MutableLiveData<>();
 
     private SessionViewModel sessionViewModel;
 
-    private SavedStateHandle savedStateHandle;
-
     private static final String NAME_KEY = "classData";
 
 
-    public SessionViewModel(@NonNull Application application, SavedStateHandle savedStateHandle) {
+    public SessionViewModel(@NonNull Application application) {
         super(application);
 
         mSessionModelRepository = new SessionModelRepository(application);
 
-        this.savedStateHandle = savedStateHandle;
-
     }
+
+
 
     public void setAddClassSessionData(AddClassSession addClassSessionData) {
 
@@ -105,4 +106,10 @@ public class SessionViewModel extends AndroidViewModel {
     public SessionViewModel getSessionViewModel() {
         return sessionViewModel;
     }
+
+    public void sendUserPasscode(String passcode,String email){
+        mSessionModelRepository.sendUserEmailPasscode(passcode,email);
+    }
+
+
 }

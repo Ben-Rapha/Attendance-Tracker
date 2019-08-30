@@ -51,6 +51,7 @@ import com.example.attendancetracker.Repository.SessionClassRepository.SessionMo
 import com.example.attendancetracker.Repository.SessionClassRepository.SessionViewModel;
 import com.example.attendancetracker.Services.AlertNotificationJobService;
 import com.example.attendancetracker.Util.MyUtil;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -106,10 +107,7 @@ public class UserSettings extends PreferenceFragmentCompat
 
         notifyIntent = new Intent(getContext(), AlertSessionAlarmReceiver.class);
 
-
         String subject = "";
-
-//        setNextSessionAlarm();
 
          switchPreferenceNotifications
                 = findPreference(MyUtil.NOTIFICATIONS_KEY);
@@ -119,10 +117,12 @@ public class UserSettings extends PreferenceFragmentCompat
 
         Objects.requireNonNull(preferenceFeedback).
                 setOnPreferenceClickListener(preference -> {
-                    Toast.makeText(getContext(),
-                            "feedback is clicked ",
-                            Toast.LENGTH_SHORT).show();
-
+                    View view = getView();
+                    if (view!=null){
+                       Snackbar snackbar =  Snackbar.
+                               make(getView(),"feedback is clicked ",Snackbar.LENGTH_LONG);
+                       snackbar.show();
+                    }
                     Intent sendFeedback = new Intent(Intent.ACTION_SENDTO);
                     sendFeedback.setData(Uri.parse("mailto:"));
                     sendFeedback.putExtra(Intent.EXTRA_EMAIL,
@@ -145,7 +145,7 @@ public class UserSettings extends PreferenceFragmentCompat
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         sessionViewModel = ViewModelProviders.
-                of(Objects.requireNonNull(getActivity()), new SavedStateViewModelFactory(this))
+                of(Objects.requireNonNull(getActivity()))
                 .get(SessionViewModel.class);
 
 
@@ -256,18 +256,24 @@ public class UserSettings extends PreferenceFragmentCompat
 
 
 
-            Toast.makeText(getContext(),
-                    "notification is turned on ",
-                    Toast.LENGTH_SHORT).show();
+            View view = getView();
+            if (view!=null){
+                Snackbar snackbar =  Snackbar.
+                        make(getView(),"feedback is clicked ",Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
 
         } else {
             schedulerNotification = (JobScheduler) Objects.requireNonNull(getActivity()).
                     getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
             schedulerNotification.cancel(234);
-            Toast.makeText(getContext(),
-                    "notification is turned off ",
-                    Toast.LENGTH_SHORT).show();
+            View view = getView();
+            if (view!=null){
+                Snackbar snackbar =  Snackbar.
+                        make(getView(),"feedback is clicked ",Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
 
         }
     }

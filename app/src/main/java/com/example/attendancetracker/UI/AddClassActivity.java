@@ -158,7 +158,7 @@ public class AddClassActivity extends AppCompatActivity implements
         loseOrGainFocus(mAppCompatTextViewStartTime, false);
         loseOrGainFocus(mAppCompatTextViewEndTime, false);
 
-        sessionViewModel = ViewModelProviders.of(this,new SavedStateViewModelFactory(this))
+        sessionViewModel = ViewModelProviders.of(this)
                 .get(SessionViewModel.class);
 
         listLiveData = sessionViewModel.getAllClassSessionFromSessionRepository();

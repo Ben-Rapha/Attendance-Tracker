@@ -23,6 +23,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
 import com.example.attendancetracker.Adapters.CheckAttendanceAdapter;
@@ -57,8 +58,6 @@ public class CheckAttendanceFragment extends Fragment {
 
     private CheckAttendanceAdapter checkAttendanceAdapter;
 
-    private LinearLayoutManager mLinearLayoutManager;
-
     @BindView(R.id.checkAttendanceRecyclerView)
     RecyclerView checkAttendanceRecyclerView;
 
@@ -70,7 +69,7 @@ public class CheckAttendanceFragment extends Fragment {
 
     SessionViewModel sessionViewModel;
 
-    HistoryViewModel historyViewModel;
+    private HistoryViewModel historyViewModel;
 
     private List<Students> studentsList, studentsListFromAdapter;
 
@@ -106,7 +105,7 @@ public class CheckAttendanceFragment extends Fragment {
 
         studentsList = new ArrayList<>();
 
-        mLinearLayoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext());
         checkAttendanceRecyclerView.setLayoutManager(mLinearLayoutManager);
        checkAttendanceRecyclerView.setHasFixedSize(true);
 
@@ -132,12 +131,10 @@ public class CheckAttendanceFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        sessionViewModel = ViewModelProviders.of(getActivity(),
-                new SavedStateViewModelFactory(Objects.requireNonNull(getActivity()))).
+        sessionViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).
                 get(SessionViewModel.class);
 
-        historyViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()),
-                new SavedStateViewModelFactory(getActivity())).
+        historyViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).
                 get(HistoryViewModel.class);
 
         sessionViewModel.getAddClassSessionData().observe(getViewLifecycleOwner(), this::setData);

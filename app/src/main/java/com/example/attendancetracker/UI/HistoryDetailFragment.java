@@ -172,8 +172,7 @@ public class HistoryDetailFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        historyViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()),
-                new SavedStateViewModelFactory(getActivity())).
+        historyViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).
                 get(HistoryViewModel.class);
 
         historyViewModel.getHistoryMutableLiveData().

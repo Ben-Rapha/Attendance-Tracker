@@ -8,6 +8,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.transition.Explode;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
@@ -28,7 +29,9 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.vectordrawable.graphics.drawable.AnimationUtilsCompat;
 
 import com.example.attendancetracker.HandleMenuDropDownListener;
+import com.example.attendancetracker.LifeCycleObservers.LoadingScreenLifeCycleObserver;
 import com.example.attendancetracker.R;
+import com.example.attendancetracker.Util.MyUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,39 +39,35 @@ import butterknife.ButterKnife;
 public class LoadingScreenActivity extends AppCompatActivity {
 
     @BindView(R.id.imageViewLogo)
-    ImageView imageViewLogo;
+    ImageView mImageViewLogo;
 
-    ObjectAnimator animatorBlink;
+    public static final String PROPERTY_ALPHA = "alpha";
 
-    Boolean finishLoading = true;
+    ObjectAnimator mAnimatorBlink;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_screen_activity);
+        ButterKnife.bind(this);
+
         getWindow().getDecorView().setBackgroundColor(getResources().
                 getColor(R.color.colorPrimaryDark));
-        ButterKnife.bind(this);
+
         removeStatusBar();
 
-        getWindow().setExitTransition(new Explode());
+        setUpLogoAnimation();
 
-//        ObjectAnimator animatorX = ObjectAnimator.
-//                ofFloat(imageViewLogo, "scaleX", 1.0f, 1.0f);
-//
-//        ObjectAnimator animatorY = ObjectAnimator.
-//                ofFloat(imageViewLogo, "scaleY", 0.0f, 1.0f);
+        getLifecycle().addObserver(
+                new LoadingScreenLifeCycleObserver(mAnimatorBlink,this));
 
+        setUpAnimationListener();
 
-        animatorBlink = ObjectAnimator.
-                ofFloat(imageViewLogo, "Alpha", 0.0f, 1.0f);
-        animatorBlink.setRepeatMode(ValueAnimator.REVERSE);
-        animatorBlink.setDuration(1300);
-        animatorBlink.setRepeatCount(3);
-        animatorBlink.setInterpolator(new AccelerateInterpolator());
-        animatorBlink.start();
+    }
 
-        animatorBlink.addListener(new Animator.AnimatorListener() {
+    private void setUpAnimationListener() {
+        mAnimatorBlink.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
 
@@ -77,22 +76,13 @@ public class LoadingScreenActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
 
-                if (finishLoading){
-                    Intent mIntent = new Intent(LoadingScreenActivity.this,
-                            LoginActivity.class);
-
-                    startActivity(mIntent, ActivityOptions.makeSceneTransitionAnimation(
-                            LoadingScreenActivity.this).toBundle());
-                }
-
-
-
+                startActivity(new Intent(LoadingScreenActivity.this,
+                        LoginActivity.class), ActivityOptions.makeSceneTransitionAnimation(
+                        LoadingScreenActivity.this).toBundle());
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
-
-
             }
 
             @Override
@@ -100,109 +90,28 @@ public class LoadingScreenActivity extends AppCompatActivity {
 
             }
         });
+    }
 
-
-//        AnimatorSet animatorSet = new AnimatorSet();
-//
-//        animatorSet.setDuration(3000)
-//                .setInterpolator(new BounceInterpolator());
-//
-//        animatorSet.playTogether(animatorX, animatorY);
-//        animatorSet.start();
-//
-//        animatorX.addListener(new Animator.AnimatorListener() {
-//            @Override
-//            public void onAnimationStart(Animator animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//
-//
-////                finish();
-//
-//            }
-//
-//            @Override
-//            public void onAnimationCancel(Animator animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animator animation) {
-//
-//            }
-//        });
-
-//        loadToLoginActivity();
-
-
+    private void setUpLogoAnimation() {
+        mAnimatorBlink = ObjectAnimator.
+                ofFloat(mImageViewLogo, PROPERTY_ALPHA, 0.0f, 1.0f);
+        mAnimatorBlink.setRepeatMode(ValueAnimator.REVERSE);
+        mAnimatorBlink.setDuration(1300);
+        mAnimatorBlink.setRepeatCount(3);
+        mAnimatorBlink.setInterpolator(new AccelerateInterpolator());
+        mAnimatorBlink.start();
     }
 
     private void removeStatusBar() {
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
+        getWindow().getDecorView()
+                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
-//    private void loadToLoginActivity() {
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                try {
-//                    Thread.sleep(4 * 1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                LoadingScreenActivity.this.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Intent mIntent = new Intent(LoadingScreenActivity.this,
-//                                LoginActivity.class);
-//                        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.
-//                                makeSceneTransitionAnimation(LoadingScreenActivity.this,
-//                                        imageViewLogo,"appLogo");
-//                        startActivity(mIntent,optionsCompat.toBundle());
-//                        finish();
-//
-//                    }
-//                });
-//
-//            }
-//        });
-//        thread.start();
-//    }
-
-    //TODO set listener on menu list to navigate to right fragment
-    //TODO added the various menu items fragment, next compose the navigation graph tree
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        finishLoading = false;
-        animatorBlink.removeAllListeners();
-        animatorBlink.cancel();
-        animatorBlink.end();
-
-
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        finish();
-    }
 
     @Override
     public void onBackPressed() {
-        if (finishLoading){
-            super.onBackPressed();
-            finish();
-        }
+        super.onBackPressed();
+        finish();
     }
+
 }

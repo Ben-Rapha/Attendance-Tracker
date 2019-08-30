@@ -25,8 +25,12 @@
         <item name="boxBackgroundColor">@color/white</item>
         <item name="boxStrokeColor">@color/colorAccent</item>
         <item name="hintTextColor">@color/colorAccent</item>
-        <item name="android:textColorHint">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/colorPrimaryDark</item>
         <item name="errorTextColor">@color/red</item>
+        <item name="android:layout_marginStart">@dimen/sixteen_dp</item>
+        <item name="android:layout_marginEnd">@dimen/sixteen_dp</item>
+        <item name="endIconMode">clear_text</item>
+        <item name="hintEnabled">true</item>
     </style>
 
     <style name="TextLabel" parent="TextAppearance.MaterialComponents.Subtitle2">
@@ -79,12 +83,10 @@
     </style>
 
     <style name="PreferenceScreen" parent="AppTheme">
-
         <item name="android:textColor">@color/copperGold</item>
         <item name="android:textColorSecondary">@color/light_cyan</item>
-        <item name="android:background">@color/colorPrimaryDark</item>
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
 
     </style>
-
 
 </resources>

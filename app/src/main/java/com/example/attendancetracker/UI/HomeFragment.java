@@ -325,8 +325,7 @@ public class HomeFragment extends Fragment {
 //                new SavedStateVMFactory(getActivity())).
 //                get(SessionViewModel.class);
 
-        sessionViewModel = ViewModelProviders.of(getActivity(),
-                new SavedStateViewModelFactory(Objects.requireNonNull(getActivity()))).
+        sessionViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).
                 get(SessionViewModel.class);
     }
 
@@ -534,10 +533,13 @@ public class HomeFragment extends Fragment {
                 if (sessionViewModel.getMondayScheduledClass() != null) {
                     sessionViewModel.getMondayScheduledClass().
                             observe(getViewLifecycleOwner(),
-                                    addClassSessionList -> {
-                                        mTodayClassSessionList = addClassSessionList;
-                                        setUpClasses(calendar);
+                                    new Observer<List<AddClassSession>>() {
+                                        @Override
+                                        public void onChanged(List<AddClassSession> addClassSessionList) {
+                                            mTodayClassSessionList = addClassSessionList;
+                                            HomeFragment.this.setUpClasses(calendar);
 
+                                        }
                                     });
                 }
 

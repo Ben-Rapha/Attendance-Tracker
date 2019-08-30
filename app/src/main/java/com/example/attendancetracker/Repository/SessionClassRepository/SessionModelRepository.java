@@ -1,6 +1,8 @@
 package com.example.attendancetracker.Repository.SessionClassRepository;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -9,17 +11,24 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.attendancetracker.AddClassSession;
+import com.example.attendancetracker.GMailSender;
 import com.example.attendancetracker.Repository.SessionDatabase;
 import com.example.attendancetracker.UI.CheckClassnameListener;
+import com.example.attendancetracker.UI.EmailSentListener;
 import com.example.attendancetracker.UI.TodayClassSessionListener;
+import com.example.attendancetracker.Util.MyUtil;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SessionModelRepository {
 
     static CheckClassnameListener checkClassnameListener;
 
     static TodayClassSessionListener todayClassSessionListener;
+
+    static EmailSentListener emailSentListener;
+    private static MutableLiveData<Boolean> isEmailSentSuccessfully  = new MutableLiveData<>();
 
     private static LiveData<List<AddClassSession>>mClassSessionList,sundayList,
             mondayList,tuesdayList,wednesdayList,thursdayList,fridayList,saturdayList;
@@ -104,8 +113,10 @@ public class SessionModelRepository {
        return singleAddClassSession;
     }
 
-    public MutableLiveData<Boolean> getLiveProgress(){
-        return liveProgress;
+    public void sendUserEmailPasscode(String passcode,String email){
+       SendEmailAsyncTask emailAsyncTask =  new SendEmailAsyncTask(passcode, email);
+       emailAsyncTask.execute();
+
     }
 
 
@@ -322,12 +333,59 @@ public class SessionModelRepository {
 
         }
     }
+
+    public static class SendEmailAsyncTask extends AsyncTask<Void, String, LiveData<Boolean>> {
+        private static String sharedPrefPasscode,mUserEmail;
+
+
+        SendEmailAsyncTask(String code,String email){
+            sharedPrefPasscode = code;
+            mUserEmail = email;
+
+        }
+
+        @Override
+        protected LiveData<Boolean> doInBackground(Void... voids) {
+            try {
+                GMailSender gMailSender = new GMailSender(MyUtil.APP_EMAIL, MyUtil.APP_PASSWORD);
+                gMailSender.sendMail("Reset password Requested", "The reset code is: " +
+                                sharedPrefPasscode,
+                        MyUtil.APP_EMAIL, mUserEmail);
+
+                 isEmailSentSuccessfully.postValue(true);
+
+                 return isEmailSentSuccessfully;
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                isEmailSentSuccessfully.postValue(false);
+                return isEmailSentSuccessfully;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(LiveData<Boolean>isEmailSentSuccessfully) {
+            super.onPostExecute(isEmailSentSuccessfully);
+            emailSentListener.dismissDialog(isEmailSentSuccessfully);
+
+        }
+
+    }
+
+
+
    public  static void  setCheckClassnameListener(CheckClassnameListener listener){
         checkClassnameListener = listener;
     }
 
     public  static void  setTodayClassSessionListener(TodayClassSessionListener listener){
         todayClassSessionListener = listener;
+    }
+
+
+    public static void setEmailSentListener(EmailSentListener listener){
+        emailSentListener = listener;
     }
 
 

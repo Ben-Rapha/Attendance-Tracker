@@ -42,7 +42,7 @@ public class SettingActivity extends AppCompatActivity
         getWindow().setExitTransition(new Fade(Fade.OUT));
 
         sessionViewModel = ViewModelProviders.
-                of(this, new SavedStateViewModelFactory(this))
+                of(this)
                 .get(SessionViewModel.class);
 
         mSettingToolbar = findViewById(R.id.settingToolbarActivity);
